@@ -36,7 +36,7 @@ return new class extends Migration
             $table->foreign('academic_level_id')->references('id')->on('academic_level')->onDelete('cascade');
 
             $table->foreignId('department_id');
-            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
+            $table->foreign('department_id')->references('id')->on('department')->onDelete('cascade');
 
             $table->foreignId('position_id');
             $table->foreign('position_id')->references('id')->on('position')->onDelete('cascade');

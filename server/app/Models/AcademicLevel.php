@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class AcademicLevel extends Model
 {
     use HasFactory;
+
+    protected $table = 'academic_level';
+
+    protected $fillable = [
+        'name',
+        'specialized',
+        'rank'
+    ];
 }
