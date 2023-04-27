@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('timekeeping', function (Blueprint $table) {
             $table->id();
-            $table->dateTime('checkin', $precision = 0);
-            $table->dateTime('checkout', $precision = 0);
-            $table->integer('late');
-            $table->double('work_day');
+            $table->date('date');
+            $table->time('checkin', $precision = 0)->nullable();
+            $table->time('checkout', $precision = 0)->nullable();
+            $table->integer('late')->nullable();
+            $table->double('work_day')->nullable();
 
             $table->foreignId('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

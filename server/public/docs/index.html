@@ -83,6 +83,12 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-auth-logout">
                                 <a href="#endpoints-POSTapi-auth-logout">POST api/auth/logout</a>
                             </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-checkin">
+                                <a href="#endpoints-POSTapi-checkin">POST api/checkin</a>
+                            </li>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-checkout">
+                                <a href="#endpoints-POSTapi-checkout">POST api/checkout</a>
+                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-GETapi-auth-refresh">
                                 <a href="#endpoints-GETapi-auth-refresh">GET api/auth/refresh</a>
                             </li>
@@ -97,7 +103,7 @@
     </ul>
 
     <ul class="toc-footer" id="last-updated">
-        <li>Last updated: April 26, 2023</li>
+        <li>Last updated: April 27, 2023</li>
     </ul>
 </div>
 
@@ -260,8 +266,8 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"password\": \"et\",
-    \"email\": \"qui\"
+    \"password\": \"amet\",
+    \"email\": \"at\"
 }"
 </code></pre></div>
 
@@ -277,8 +283,8 @@ const headers = {
 };
 
 let body = {
-    "password": "et",
-    "email": "qui"
+    "password": "amet",
+    "email": "at"
 };
 
 fetch(url, {
@@ -367,10 +373,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="POSTapi-auth-login"
-               value="et"
+               value="amet"
                data-component="body">
     <br>
-<p>Example: <code>et</code></p>
+<p>Example: <code>amet</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
@@ -378,10 +384,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="POSTapi-auth-login"
-               value="qui"
+               value="at"
                data-component="body">
     <br>
-<p>Example: <code>qui</code></p>
+<p>Example: <code>at</code></p>
         </div>
         </form>
 
@@ -402,10 +408,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"name\": \"minima\",
-    \"email\": \"est\",
-    \"password\": \"_&gt;J{\\\"N$N\",
-    \"retype_password\": \"expedita\"
+    \"name\": \"sint\",
+    \"email\": \"nihil\",
+    \"password\": \"6[JF,ulMvlv&lt;\",
+    \"retype_password\": \"omnis\"
 }"
 </code></pre></div>
 
@@ -421,10 +427,10 @@ const headers = {
 };
 
 let body = {
-    "name": "minima",
-    "email": "est",
-    "password": "_&gt;J{\"N$N",
-    "retype_password": "expedita"
+    "name": "sint",
+    "email": "nihil",
+    "password": "6[JF,ulMvlv&lt;",
+    "retype_password": "omnis"
 };
 
 fetch(url, {
@@ -513,10 +519,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="name"                data-endpoint="POSTapi-auth-register"
-               value="minima"
+               value="sint"
                data-component="body">
     <br>
-<p>Example: <code>minima</code></p>
+<p>Example: <code>sint</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>email</code></b>&nbsp;&nbsp;
@@ -524,10 +530,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="email"                data-endpoint="POSTapi-auth-register"
-               value="est"
+               value="nihil"
                data-component="body">
     <br>
-<p>Example: <code>est</code></p>
+<p>Example: <code>nihil</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>password</code></b>&nbsp;&nbsp;
@@ -535,10 +541,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="password"                data-endpoint="POSTapi-auth-register"
-               value="_>J{"N$N"
+               value="6[JF,ulMvlv<"
                data-component="body">
     <br>
-<p>Must be at least 8 characters. Must not be greater than 32 characters. Example: <code>_&gt;J{"N$N</code></p>
+<p>Must be at least 8 characters. Must not be greater than 32 characters. Example: <code>6[JF,ulMvlv&lt;</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
             <b style="line-height: 2;"><code>retype_password</code></b>&nbsp;&nbsp;
@@ -546,10 +552,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="retype_password"                data-endpoint="POSTapi-auth-register"
-               value="expedita"
+               value="omnis"
                data-component="body">
     <br>
-<p>The value and <code>password</code> must match. Example: <code>expedita</code></p>
+<p>The value and <code>password</code> must match. Example: <code>omnis</code></p>
         </div>
         </form>
 
@@ -570,7 +576,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"token\": \"rerum\"
+    \"token\": \"accusamus\"
 }"
 </code></pre></div>
 
@@ -586,7 +592,7 @@ const headers = {
 };
 
 let body = {
-    "token": "rerum"
+    "token": "accusamus"
 };
 
 fetch(url, {
@@ -675,12 +681,228 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                name="token"                data-endpoint="POSTapi-auth-logout"
-               value="rerum"
+               value="accusamus"
                data-component="body">
     <br>
-<p>Example: <code>rerum</code></p>
+<p>Example: <code>accusamus</code></p>
         </div>
         </form>
+
+                    <h2 id="endpoints-POSTapi-checkin">POST api/checkin</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-checkin">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://qlns-backend.vn/api/checkin" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://qlns-backend.vn/api/checkin"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-checkin">
+</span>
+<span id="execution-results-POSTapi-checkin" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-checkin"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-checkin"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-checkin" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-checkin">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-checkin" data-method="POST"
+      data-path="api/checkin"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-checkin', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-checkin"
+                    onclick="tryItOut('POSTapi-checkin');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-checkin"
+                    onclick="cancelTryOut('POSTapi-checkin');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-checkin"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/checkin</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-checkin"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-checkin"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
+
+                    <h2 id="endpoints-POSTapi-checkout">POST api/checkout</h2>
+
+<p>
+</p>
+
+
+
+<span id="example-requests-POSTapi-checkout">
+<blockquote>Example request:</blockquote>
+
+
+<div class="bash-example">
+    <pre><code class="language-bash">curl --request POST \
+    "http://qlns-backend.vn/api/checkout" \
+    --header "Content-Type: application/json" \
+    --header "Accept: application/json"</code></pre></div>
+
+
+<div class="javascript-example">
+    <pre><code class="language-javascript">const url = new URL(
+    "http://qlns-backend.vn/api/checkout"
+);
+
+const headers = {
+    "Content-Type": "application/json",
+    "Accept": "application/json",
+};
+
+fetch(url, {
+    method: "POST",
+    headers,
+}).then(response =&gt; response.json());</code></pre></div>
+
+</span>
+
+<span id="example-responses-POSTapi-checkout">
+</span>
+<span id="execution-results-POSTapi-checkout" hidden>
+    <blockquote>Received response<span
+                id="execution-response-status-POSTapi-checkout"></span>:
+    </blockquote>
+    <pre class="json"><code id="execution-response-content-POSTapi-checkout"
+      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
+</span>
+<span id="execution-error-POSTapi-checkout" hidden>
+    <blockquote>Request failed with error:</blockquote>
+    <pre><code id="execution-error-message-POSTapi-checkout">
+
+Tip: Check that you&#039;re properly connected to the network.
+If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
+You can check the Dev Tools console for debugging information.</code></pre>
+</span>
+<form id="form-POSTapi-checkout" data-method="POST"
+      data-path="api/checkout"
+      data-authed="0"
+      data-hasfiles="0"
+      data-isarraybody="0"
+      autocomplete="off"
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-checkout', this);">
+    <h3>
+        Request&nbsp;&nbsp;&nbsp;
+                    <button type="button"
+                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-tryout-POSTapi-checkout"
+                    onclick="tryItOut('POSTapi-checkout');">Try it out ⚡
+            </button>
+            <button type="button"
+                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-canceltryout-POSTapi-checkout"
+                    onclick="cancelTryOut('POSTapi-checkout');" hidden>Cancel 🛑
+            </button>&nbsp;&nbsp;
+            <button type="submit"
+                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
+                    id="btn-executetryout-POSTapi-checkout"
+                    data-initial-text="Send Request 💥"
+                    data-loading-text="⏱ Sending..."
+                    hidden>Send Request 💥
+            </button>
+            </h3>
+            <p>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/checkout</code></b>
+        </p>
+                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Content-Type"                data-endpoint="POSTapi-checkout"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                                <div style="padding-left: 28px; clear: unset;">
+                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
+&nbsp;
+ &nbsp;
+                <input type="text" style="display: none"
+               name="Accept"                data-endpoint="POSTapi-checkout"
+               value="application/json"
+               data-component="header">
+    <br>
+<p>Example: <code>application/json</code></p>
+            </div>
+                        </form>
 
                     <h2 id="endpoints-GETapi-auth-refresh">GET api/auth/refresh</h2>
 
@@ -769,21 +991,21 @@ access-control-allow-origin: *
         },
         {
             &quot;file&quot;: &quot;C:\\OpenServer\\domains\\QLNS\\server\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\ThrottleRequests.php&quot;,
-            &quot;line&quot;: 126,
+            &quot;line&quot;: 152,
             &quot;function&quot;: &quot;Illuminate\\Pipeline\\{closure}&quot;,
             &quot;class&quot;: &quot;Illuminate\\Pipeline\\Pipeline&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
             &quot;file&quot;: &quot;C:\\OpenServer\\domains\\QLNS\\server\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\ThrottleRequests.php&quot;,
-            &quot;line&quot;: 102,
+            &quot;line&quot;: 128,
             &quot;function&quot;: &quot;handleRequest&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\ThrottleRequests&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;
         },
         {
             &quot;file&quot;: &quot;C:\\OpenServer\\domains\\QLNS\\server\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\ThrottleRequests.php&quot;,
-            &quot;line&quot;: 54,
+            &quot;line&quot;: 80,
             &quot;function&quot;: &quot;handleRequestUsingNamedLimiter&quot;,
             &quot;class&quot;: &quot;Illuminate\\Routing\\Middleware\\ThrottleRequests&quot;,
             &quot;type&quot;: &quot;-&gt;&quot;

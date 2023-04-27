@@ -67,19 +67,19 @@ endpoints:
         name: password
         description: ''
         required: true
-        example: et
+        example: amet
         type: string
         custom: []
       email:
         name: email
         description: ''
         required: true
-        example: qui
+        example: at
         type: string
         custom: []
     cleanBodyParameters:
-      password: et
-      email: qui
+      password: amet
+      email: at
     fileParameters: []
     responses: []
     responseFields: []
@@ -113,35 +113,35 @@ endpoints:
         name: name
         description: ''
         required: true
-        example: minima
+        example: sint
         type: string
         custom: []
       email:
         name: email
         description: ''
         required: true
-        example: est
+        example: nihil
         type: string
         custom: []
       password:
         name: password
         description: 'Must be at least 8 characters. Must not be greater than 32 characters.'
         required: true
-        example: '_>J{"N$N'
+        example: '6[JF,ulMvlv<'
         type: string
         custom: []
       retype_password:
         name: retype_password
         description: 'The value and <code>password</code> must match.'
         required: true
-        example: expedita
+        example: omnis
         type: string
         custom: []
     cleanBodyParameters:
-      name: minima
-      email: est
-      password: '_>J{"N$N'
-      retype_password: expedita
+      name: sint
+      email: nihil
+      password: '6[JF,ulMvlv<'
+      retype_password: omnis
     fileParameters: []
     responses: []
     responseFields: []
@@ -175,11 +175,71 @@ endpoints:
         name: token
         description: ''
         required: true
-        example: rerum
+        example: accusamus
         type: string
         custom: []
     cleanBodyParameters:
-      token: rerum
+      token: accusamus
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/checkin
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/checkout
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
     fileParameters: []
     responses: []
     responseFields: []
@@ -251,21 +311,21 @@ endpoints:
                   },
                   {
                       "file": "C:\\OpenServer\\domains\\QLNS\\server\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\ThrottleRequests.php",
-                      "line": 126,
+                      "line": 152,
                       "function": "Illuminate\\Pipeline\\{closure}",
                       "class": "Illuminate\\Pipeline\\Pipeline",
                       "type": "->"
                   },
                   {
                       "file": "C:\\OpenServer\\domains\\QLNS\\server\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\ThrottleRequests.php",
-                      "line": 102,
+                      "line": 128,
                       "function": "handleRequest",
                       "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
                       "type": "->"
                   },
                   {
                       "file": "C:\\OpenServer\\domains\\QLNS\\server\\vendor\\laravel\\framework\\src\\Illuminate\\Routing\\Middleware\\ThrottleRequests.php",
-                      "line": 54,
+                      "line": 80,
                       "function": "handleRequestUsingNamedLimiter",
                       "class": "Illuminate\\Routing\\Middleware\\ThrottleRequests",
                       "type": "->"

@@ -9,9 +9,10 @@ class Timekeeping extends Model
 {
     use HasFactory;
 
-    protected $table = 'contract';
+    protected $table = 'timekeeping';
 
     protected $fillable = [
+        'date',
         'checkin',
         'checkout',
         'late',

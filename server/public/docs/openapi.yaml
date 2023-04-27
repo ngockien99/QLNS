@@ -48,11 +48,11 @@ paths:
                 password:
                   type: string
                   description: ''
-                  example: et
+                  example: amet
                 email:
                   type: string
                   description: ''
-                  example: qui
+                  example: at
               required:
                 - password
                 - email
@@ -76,19 +76,19 @@ paths:
                 name:
                   type: string
                   description: ''
-                  example: minima
+                  example: sint
                 email:
                   type: string
                   description: ''
-                  example: est
+                  example: nihil
                 password:
                   type: string
                   description: 'Must be at least 8 characters. Must not be greater than 32 characters.'
-                  example: '_>J{"N$N'
+                  example: '6[JF,ulMvlv<'
                 retype_password:
                   type: string
                   description: 'The value and <code>password</code> must match.'
-                  example: expedita
+                  example: omnis
               required:
                 - name
                 - email
@@ -114,9 +114,29 @@ paths:
                 token:
                   type: string
                   description: ''
-                  example: rerum
+                  example: accusamus
               required:
                 - token
+      security: []
+  /api/checkin:
+    post:
+      summary: ''
+      operationId: postApiCheckin
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
+  /api/checkout:
+    post:
+      summary: ''
+      operationId: postApiCheckout
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
       security: []
   /api/auth/refresh:
     get:
@@ -163,19 +183,19 @@ paths:
                       type: '->'
                     -
                       file: 'C:\OpenServer\domains\QLNS\server\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
-                      line: 126
+                      line: 152
                       function: 'Illuminate\Pipeline\{closure}'
                       class: Illuminate\Pipeline\Pipeline
                       type: '->'
                     -
                       file: 'C:\OpenServer\domains\QLNS\server\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
-                      line: 102
+                      line: 128
                       function: handleRequest
                       class: Illuminate\Routing\Middleware\ThrottleRequests
                       type: '->'
                     -
                       file: 'C:\OpenServer\domains\QLNS\server\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
-                      line: 54
+                      line: 80
                       function: handleRequestUsingNamedLimiter
                       class: Illuminate\Routing\Middleware\ThrottleRequests
                       type: '->'
@@ -521,19 +541,19 @@ paths:
                         type: '->'
                       -
                         file: 'C:\OpenServer\domains\QLNS\server\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
-                        line: 126
+                        line: 152
                         function: 'Illuminate\Pipeline\{closure}'
                         class: Illuminate\Pipeline\Pipeline
                         type: '->'
                       -
                         file: 'C:\OpenServer\domains\QLNS\server\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
-                        line: 102
+                        line: 128
                         function: handleRequest
                         class: Illuminate\Routing\Middleware\ThrottleRequests
                         type: '->'
                       -
                         file: 'C:\OpenServer\domains\QLNS\server\vendor\laravel\framework\src\Illuminate\Routing\Middleware\ThrottleRequests.php'
-                        line: 54
+                        line: 80
                         function: handleRequestUsingNamedLimiter
                         class: Illuminate\Routing\Middleware\ThrottleRequests
                         type: '->'
