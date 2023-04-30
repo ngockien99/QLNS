@@ -27,8 +27,11 @@ Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('auth/logout', [AuthController::class, 'logout']);
+
   Route::post('checkin', [TimekeepingController::class, 'checkin']);
   Route::post('checkout', [TimekeepingController::class, 'checkout']);
+
+  Route::get('get-time-sheet', [TimekeepingController::class, 'getTimeSheet']);
 });
 // Route::post('checkin', [TimekeepingController::class, 'checkin']);
 Route::group(['middleware' => 'jwt.refresh'], function(){
