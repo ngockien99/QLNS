@@ -21,7 +21,8 @@ class Specialize extends Model
      * @var array
      */
     protected $fillable = [
-        'name'
+        'name',
+        'description'
     ];
 
     public function users()

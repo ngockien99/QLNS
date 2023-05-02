@@ -15,6 +15,7 @@ class SpecializeSeeder extends Seeder
     {
         $spe = new Specialize();
         $spe->name = 'test';
+        $spe->description = 'description';
         $spe->save();
     }
 }

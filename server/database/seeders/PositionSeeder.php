@@ -15,6 +15,7 @@ class PositionSeeder extends Seeder
     {
         $po = new Position();
         $po->name = 'test';
+        $po->description = 'description';
         $po->save();
     }
 }

@@ -31,9 +31,8 @@ class User extends Authenticatable implements JWTSubject
         'marital_status',
         'start_work',
         'end_work',
-        'salary_basic',
-        'salary_factor',
         'manager_id',
+        'role',
         'level_id',
         'academic_level_id',
         'department_id',
@@ -101,13 +100,23 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Specialize::class);
     }
 
-    public function salaries()
+    public function salary()
     {
-        return $this->hasMany(Salaries::class);
+        return $this->belongsTo(Salary::class);
     }
     
     public function timekeeping()
     {
         return $this->hasMany(Timekeeping::class);
+    }
+
+    public function contract()
+    {
+        return $this->hasMany(Contract::class);
+    }
+
+    public function payroll()
+    {
+        return $this->hasMany(Payroll::class);
     }
 }

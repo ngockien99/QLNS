@@ -11,10 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('position', function (Blueprint $table) {
+        Schema::create('salary', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); 
-            $table->string('description'); 
+
+            $table->integer('salary_basic');  // Lương cơ bản
+            $table->integer('salary_factor'); // Hệ số lương
+            $table->integer('allowance_money')->default(0); // Tiền phụ cấp
+            $table->integer('insurance_premium_salary'); // Lương đóng bảo hiểm
+            
             $table->timestamps();
         });
     }
@@ -24,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('position');
+        Schema::dropIfExists('salary');
     }
 };

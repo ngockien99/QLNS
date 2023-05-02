@@ -25,12 +25,14 @@ return new class extends Migration
             $table->tinyInteger('marital_status')->default(1); //tình trạng hôn nhân: 1: single
             $table->date('start_work')->nullable(); // ngày bắt đầu công việc
             $table->date('end_work')->nullable(); // ngày kết thúc công việc
-            $table->double('salary_basic')->nullable(); // lương cơ bản
-            $table->double('salary_factor')->nullable(); // hệ số lương
             $table->bigInteger('manager_id'); // id người quản lý
+            $table->integer('role');
 
             $table->foreignId('level_id');
             $table->foreign('level_id')->references('id')->on('level')->onDelete('cascade');
+
+            $table->foreignId('salary_id');
+            $table->foreign('salary_id')->references('id')->on('salary')->onDelete('cascade');
 
             $table->foreignId('academic_level_id');
             $table->foreign('academic_level_id')->references('id')->on('academic_level')->onDelete('cascade');

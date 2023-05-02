@@ -18,6 +18,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'linkFile' => env('APP_FILE'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

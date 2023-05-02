@@ -18,8 +18,9 @@ class DatabaseSeeder extends Seeder
             SpecializeSeeder::class,
             LevelSeeder::class,
             AcademicLevelSeeder::class,
+            SalarySeeder::class,
             UserSeeder::class,
-            // SalarySeeder::class,
+            PayrollSeeder::class,
         ]);
     }
 }

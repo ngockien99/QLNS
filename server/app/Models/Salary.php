@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Salaries extends Model
+class Salary extends Model
 {
     use HasFactory;
     /**
@@ -13,7 +13,7 @@ class Salaries extends Model
      *
      * @var string
      */
-    protected $table = 'salaries';
+    protected $table = 'salary';
 
     /**
      * The attributes that are mass assignable.
@@ -24,17 +24,11 @@ class Salaries extends Model
         'salary_basic',
         'salary_factor',
         'allowance_money',
-        'bonus_money',
-        'insurance_premium_salary',
-        'month_pay',
-        'total_working_days',
-        'total_working_days_standard',
-        'total_money_actual_receive',
-        'user_id',
+        'insurance_premium_salary'
     ];
 
-    public function user()
+    public function users()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(User::class);
     }
 }
