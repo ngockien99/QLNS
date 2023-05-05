@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\PositionController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\SpecicalizeController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\DashBoardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -102,6 +103,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
     Route::delete('delete', [SpecicalizeController::class, 'deleteSpecialize']);
     Route::post('create', [SpecicalizeController::class, 'createSpecialize']);
   });
+
+  Route::get('dashboard', [DashBoardController::class, 'showDashboard']);
 });
 
 // Route::post('checkin', [TimekeepingController::class, 'checkin']);
