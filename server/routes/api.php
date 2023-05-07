@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\SpecicalizeController;
 use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ResetPasswordController;
+use App\Http\Controllers\Api\DashBoardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +94,8 @@ Route::group(['middleware' => 'jwt.auth', 'middleware' => 'permission',], functi
     Route::delete('delete', [SpecicalizeController::class, 'deleteSpecialize']);
     Route::post('create', [SpecicalizeController::class, 'createSpecialize']);
   });
+
+  Route::get('dashboard', [DashBoardController::class, 'showDashboard']);
 });
 
 Route::group(['middleware' => 'jwt.auth', 'middleware' => 'auth.admin',], function(){
