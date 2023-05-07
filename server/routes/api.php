@@ -4,14 +4,15 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\TimekeepingController;
-use App\Http\Controllers\Api\AcademicLevelController;
 use App\Http\Controllers\Api\ContractController;
 use App\Http\Controllers\Api\DepartmentController;
 use App\Http\Controllers\Api\LevelController;
 use App\Http\Controllers\Api\PositionController;
 use App\Http\Controllers\Api\PayrollController;
 use App\Http\Controllers\Api\SpecicalizeController;
+use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ResetPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,13 +34,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //Login
 Route::post('auth/login', [AuthController::class, 'login']);
 Route::post('auth/register', [AuthController::class, 'register']);
-Route::group(['middleware' => 'jwt.auth'], function(){
-  Route::post('auth/logout', [AuthController::class, 'logout']);
+Route::post('reset-password', [ResetPasswordController::class, 'sendMail']);
+Route::post('reset', [ResetPasswordController::class, 'reset']);
 
-  Route::post('checkin', [TimekeepingController::class, 'checkin']);
-  Route::post('checkout', [TimekeepingController::class, 'checkout']);
 
-  Route::get('get-time-sheet', [TimekeepingController::class, 'getTimeSheet']);
+Route::group(['middleware' => 'jwt.auth', 'middleware' => 'permission',], function(){
 
   // User
   Route::group(['prefix' => 'user'], function(){
@@ -49,14 +48,6 @@ Route::group(['middleware' => 'jwt.auth'], function(){
     Route::delete('delete', [UserController::class, 'deleteUser']);
     Route::post('create', [UserController::class, 'createUser']);
   });
-
-  // Academic level
-  // Route::group(['prefix' => 'academic'], function(){
-  //   Route::get('list', [AcademicLevelController::class, 'listAcademic']);
-  //   Route::put('update', [AcademicLevelController::class, 'updateAcademic']);
-  //   Route::delete('delete', [AcademicLevelController::class, 'deleteAcademic']);
-  //   Route::post('create', [AcademicLevelController::class, 'createAcademic']);
-  // });
 
   Route::group(['prefix' => 'contract'], function(){
     Route::get('list', [ContractController::class, 'listContract']);
@@ -104,7 +95,19 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   });
 });
 
-// Route::post('checkin', [TimekeepingController::class, 'checkin']);
+Route::group(['middleware' => 'jwt.auth', 'middleware' => 'auth.admin',], function(){
+  Route::post('auth/logout', [AuthController::class, 'logout']);
+
+  Route::post('checkin', [TimekeepingController::class, 'checkin']);
+  Route::post('checkout', [TimekeepingController::class, 'checkout']);
+
+  Route::get('get-time-sheet', [TimekeepingController::class, 'getTimeSheet']);
+
+  Route::group(['prefix' => 'staff'], function(){
+    Route::get('detail', [StaffController::class, 'detailStaff']);
+    Route::put('update', [StaffController::class, 'updateStaff']);
+  });
+});
 Route::group(['middleware' => 'jwt.refresh'], function(){
   Route::get('auth/refresh', [AuthController::class, 'refresh']);
 });

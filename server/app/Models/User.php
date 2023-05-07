@@ -32,6 +32,7 @@ class User extends Authenticatable implements JWTSubject
         'start_work',
         'end_work',
         'manager_id',
+        'annual_leave',
         'role',
         'level_id',
         'academic_level_id',
@@ -118,5 +119,10 @@ class User extends Authenticatable implements JWTSubject
     public function payroll()
     {
         return $this->hasMany(Payroll::class);
+    }
+
+    public function logRequest()
+    {
+        return $this->hasMany(LogRequest::class);
     }
 }

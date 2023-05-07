@@ -12,6 +12,7 @@ use App\Models\Salary;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Throwable;
 
 class UserController extends Controller
@@ -74,7 +75,7 @@ class UserController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
             'avatar' => $fileNameToStore,
             'address' => $request->address,
             'phone' => $request->phone,
@@ -135,7 +136,7 @@ class UserController extends Controller
         $data = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
             'avatar' => $fileNameToStore,
             'address' => $request->address,
             'phone' => $request->phone,
