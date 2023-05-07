@@ -91,7 +91,7 @@ class StaffController extends Controller
         ];
 
         if ($request->type === config('constants.log_request.type.leave')) {
-            if ($user->annual_leave >= $request->time_leave) {
+            if ($user->annual_leave >= $request->time_leave && $user->work_status === config('constants.work_status.doing')) {
                 $data["check_paid"] = config('constants.log_request.check_paid.paid');
             } else {
                 $data["check_paid"] = config('constants.log_request.check_paid.unpaid');
@@ -116,7 +116,7 @@ class StaffController extends Controller
         $logRequest = LogRequestModel::create($data);
 
         if ($request->type === config('constants.log_request.type.leave')) {
-            if ($user->annual_leave >= $request->time_leave) {
+            if ($user->annual_leave >= $request->time_leave && $user->work_status === config('constants.work_status.doing')) {
                 $user->update(['annual_leave' => $user->annual_leave - $request->time_leave]);
             }
         }
