@@ -1,0 +1,32 @@
+#components-layout-demo-side .logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.site-layout .site-layout-background {
+  background: #fff;
+}
+
+.flex {
+  display: flex;
+  box-shadow: 5px 10px #888888;
+}
+
+.logo {
+  width: 90px;
+  height: 52px;
+  margin-left: 20px;
+}
+
+.box {
+  display: flex;
+}
+
+.ant-btn-primary {
+  background-color: #2bc48a;
+}
+
+.ant-btn-primary:hover {
+  background-color: #ff512f !important;
+}
