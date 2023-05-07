@@ -18,12 +18,12 @@ return new class extends Migration
             $table->integer('type'); // nghỉ phép hay OT
             $table->string('date'); // ngày áp dụng
             $table->integer('manager_id'); // người quản lý
-            $table->integer('status'); // trạng thái
+            $table->integer('status')->default(0); // trạng thái
 
             // Nghi phép
             $table->string('reason')->nullable(); // lý do
             $table->double('time_leave')->nullable(); // Thời gian nghỉ (nửa ngày hoặc 1)
-
+            $table->integer('check_paid'); // check xem nghỉ có lương hay không lương
             // OT
             $table->string('title')->nullable(); // tiêu đề
             $table->integer('time_ot_start')->nullable(); // thời gian bắt đầu ot

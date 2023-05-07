@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class LogRequest extends Model
+class LogRequestModel extends Model
 {
     use HasFactory;
     public $table = "log_request";
@@ -17,6 +17,7 @@ class LogRequest extends Model
         'status',
         'reason',
         'time_leave',
+        'check_paid',
         'title',
         'time_ot_start',
         'time_ot_end',

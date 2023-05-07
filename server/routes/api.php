@@ -110,6 +110,14 @@ Route::group(['middleware' => 'jwt.auth', 'middleware' => 'auth.admin',], functi
     Route::get('detail', [StaffController::class, 'detailStaff']);
     Route::put('update', [StaffController::class, 'updateStaff']);
   });
+
+  Route::group(['prefix' => 'request'], function(){
+    Route::get('list', [StaffController::class, 'listRequest']);
+    Route::post('create', [StaffController::class, 'createLeave']);
+    Route::put('approve', [StaffController::class, 'approveLogRequest']);
+    Route::put('reject', [StaffController::class, 'rejectLogRequest']);
+
+  });
 });
 Route::group(['middleware' => 'jwt.refresh'], function(){
   Route::get('auth/refresh', [AuthController::class, 'refresh']);

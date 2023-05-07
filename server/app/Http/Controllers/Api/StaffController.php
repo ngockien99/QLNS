@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\AcademicLevel;
 use App\Models\Salary;
 use App\Models\Timekeeping;
+use App\Models\LogRequestModel;
 use Carbon\Carbon;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\File;
@@ -80,14 +81,104 @@ class StaffController extends Controller
         $user = User::findOrFail($getUser->id);
 
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-    }
 
-    public function refuseLogRequest() {
+        $data = [
+            "day_create" => $today,
+            "type" => $request->type,
+            "date" => $request->date,
+            "manager_id" => $user->manager_id,
+            "user_id" => $user->id
+        ];
 
-    }
+        if ($request->type === config('constants.log_request.type.leave')) {
+            if ($user->annual_leave >= $request->time_leave) {
+                $data["check_paid"] = config('constants.log_request.check_paid.paid');
+            } else {
+                $data["check_paid"] = config('constants.log_request.check_paid.unpaid');
+            }
 
-    public function acceptLogRequest() {
+            if ($request->time_leave === config('constants.log_request.time_leave.morning') || $request->time_leave === config('constants.log_request.time_leave.afternoon')) {
+                $data["time_leave"] = 0.5;
+            } else if ($request->time_leave === config('constants.log_request.time_leave.allday')) {
+                $data["time_leave"] = 1;
+            } else {
+                return $this->responseError('Lỗi hệ thống');
+            }
+            $data["reason"] = $request->reason;
+        }
+
+        if ($request->type === config('constants.log_request.type.OT')) {
+            $data["title"] = $request->title;
+            $data["time_ot_start"] = $request->time_ot_start;
+            $data["time_ot_end"] = $request->time_ot_end;
+        }
+
+        $logRequest = LogRequestModel::create($data);
+
+        if ($request->type === config('constants.log_request.type.leave')) {
+            if ($user->annual_leave >= $request->time_leave) {
+                $user->update(['annual_leave' => $user->annual_leave - $request->time_leave]);
+            }
+        }
+        return $this->responseSuccess(['success' => 'Tạo request thành công']);
         
+    }
+
+    public function rejectLogRequest(Request $request) {
+        $logRequest = LogRequestModel::findOrFail($request->id);
+        $getUser = $this->getUser($request);
+        $user = User::findOrFail($getUser->id);
+        if ($logRequest && $logRequest->manager_id === $user->id && $logRequest->status === config('constants.log_request.status.pending')) {
+            $data = [
+                'status' => config('constants.log_request.status.reject')
+            ];
+
+            $logRequest->update($data);
+
+            $user->update(['annual_leave' => $user->annual_leave + $logRequest->time_leave]);
+
+            return $this->responseSuccess(['success' => 'Từ chối request thành công']);
+
+        } else {
+            return $this->responseError('Lỗi hệ thống');
+        }
+    }
+
+    public function approveLogRequest(Request $request) {
+        $logRequest = LogRequestModel::findOrFail($request->id);
+        $getUser = $this->getUser($request);
+        $user = User::findOrFail($getUser->id);
+        if ($logRequest && $logRequest->manager_id === $user->id && $logRequest->status === config('constants.log_request.status.pending')) {
+            $data = [
+                'status' => config('constants.log_request.status.approve')
+            ];
+
+            $logRequest->update($data);
+            return $this->responseSuccess(['success' => 'Chấp nhận request thành công']);
+
+        } else {
+            return $this->responseError('Lỗi hệ thống');
+        }
+    }
+
+    public function listRequest(Request $request) {
+        $month = Carbon::now()->format('Y-m');
+        $getUser = $this->getUser($request);
+        $user = User::findOrFail($getUser->id);
+        $logRequestMe = LogRequestModel::where('user_id', $user->id)
+            ->where('day_create', 'like', "%$month%")
+            ->get();
+        $logRequestLower = LogRequestModel::where('manager_id', $user->id)
+            ->where('day_create', 'like', "%$month%")
+            ->where('status', config('constants.log_request.status.pending'))
+            ->get();
+
+        $data = [
+            'my_request' => $logRequestMe,
+            'people_request' => $logRequestLower
+        ];
+
+        return $this->responseSuccess($data); 
     }
 
     public function getUser($request) {

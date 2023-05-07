@@ -28,12 +28,12 @@ class LogRequest extends FormRequest
             'date' => 'required|date_format:Y-m-d',
         ];
 
-        if ($this->type === 1) {
+        if ($this->type === config('constants.log_request.type.leave')) {
             $rules['reason'] = 'required';
-            $rules['time_leave'] = 'required';
+            $rules['time_leave'] = 'required|numeric';
         }
 
-        if ($this->type === 1) {
+        if ($this->type === config('constants.log_request.type.OT')) {
             $rules['title'] = 'required';
             $rules['time_ot_start'] = 'required|date_format:H:i';
             $rules['time_ot_end'] = 'required|date_format:H:i';
@@ -50,6 +50,7 @@ class LogRequest extends FormRequest
             'type.numeric' => 'Kiểu phải là dạng số',
             'reason.required' => 'Bạn chưa nhập lý do nghỉ phép',
             'time_leave.required' => 'Bạn chưa chọn thời gian nghỉ (sáng hoặc chiều)',
+            'time_leave.numeric' => 'thời gian phải là số (0: sáng, 1: chiều, 2: cả ngày)',
             'title.required' => 'Bạn chưa nhập tiêu đề OT',
             'time_ot_start.required' => 'Bạn chưa chọn thời gian bắt đầu OT',
             'time_ot_start.date_format' => 'Định dạng giờ sai',
