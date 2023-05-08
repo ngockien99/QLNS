@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('bonus_money')->default(0);   // Tiền thưởng
             $table->integer('total_working_days_standard'); // Công chuẩn
             $table->integer('total_working_days'); // Tổng ngày tính công
-
+            $table->integer('tax')->nullable();
             $table->integer('total_money_actual_receive'); // Tiền thực nhận
 
             $table->foreignId('user_id');

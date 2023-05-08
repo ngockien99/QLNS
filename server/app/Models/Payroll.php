@@ -16,6 +16,7 @@ class Payroll extends Model
         'bonus_money',
         'total_working_days_standard',
         'total_working_days',
+        'tax',
         'total_money_actual_receive',
         'user_id'
     ];

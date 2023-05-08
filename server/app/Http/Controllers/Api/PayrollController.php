@@ -53,7 +53,7 @@ class PayrollController extends Controller
         $month = Carbon::now()->subMonth()->format('Y-m');
 
         // check xem bảng công đã tồn tại hay chưa
-        $checkPayroll = Payroll::where('month_pay', $month)->where('user_id', $request->user_id)->get();
+        $checkPayroll = Payroll::where('month_pay', $month)->where('user_id', $request->user_id)->first();
         if ($checkPayroll) {
             return $this->responseError('Bảng công của nhân viên đã tồn tại');
         }
@@ -65,17 +65,19 @@ class PayrollController extends Controller
         $user = User::findOrFail($request->user_id);
         $salary = Salary::where('id', $user->salary_id)->first();
         $timeSheet = Timekeeping::where('date', 'like', "%$month%")->where('user_id', $request->user_id)->get();
-
+        
         $totalWorkDayUser = 0;
         foreach($timeSheet as $time) {
             $totalWorkDayUser += $time->work_day;
         }
 
-        $totalMoney = ($salary->salary_basic + $salary->salary_factor + $salary->allowance_money + $request->bonus_money - $salary->insurance_premium_salary) * $totalWorkDayUser;
+        $totalMoney = (($salary->salary_basic + $salary->salary_factor + $salary->allowance_money + $request->bonus_money - $salary->insurance_premium_salary) * $totalWorkDayUser) / $totalDayWork;
         
         // Tính toán trừ thuế
+        $tax = 0;
         if ($totalMoney > 11000000) {
-            $totalMoney = ($totalMoney-11000000) * 0.05;
+            $tax = ($totalMoney-11000000) * 0.05;
+            $totalMoney = $totalMoney - $tax;
         }
 
         $data = [
@@ -83,6 +85,7 @@ class PayrollController extends Controller
             'bonus_money' => $request->bonus_money,
             'total_working_days_standard' => $totalDayWork,
             'total_working_days' => $totalWorkDayUser,
+            'tax' => $tax,
             'total_money_actual_receive' => $totalMoney,
             'user_id' => $user->id
         ];

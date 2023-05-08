@@ -11,6 +11,7 @@ use App\Models\Timekeeping;
 use App\Models\Salary;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
@@ -45,8 +46,9 @@ class UserController extends Controller
         return $this->responseSuccess($user);
     } 
 
-    public function updateRole(UserRequest $request) {
+    public function updateUser(UpdateUserRequest $request) {
         $validated = $request->validated();
+        $data = $request->all();
 
         $user = User::findOrFail($request->id);
         $fileOld = User::find($request->id)->avatar;
@@ -60,42 +62,20 @@ class UserController extends Controller
             if ($fileOld) {
                 File::delete(public_path("uploads/user/".$fileOld));
             }
+
+            $data['avatar'] = $fileNameToStore;
         }
 
-        if ($request->academic_name && $request->academic_specialized && $request->academic_rank) {
-            $academic = AcademicLevel::findOrFail($user->academic_level_id)->update([
-                'name' => $request->academic_name,
-                'specialized' => $request->academic_specialized,
-                'rank' => $request->academic_rank
-            ]);
-        } else {
-            return $this->responseError('Bạn chưa nhập đủ thông tin trường đại học của nhân viên');
-        }
+        
+        $academic = AcademicLevel::findOrFail($user->academic_level_id);
+        $academic->update([
+            'name' => $request->academic_name ? $request->academic_name : $academic->name,
+            'specialized' => $request->academic_specialized ? $request->academic_specialized : $academic->specialized,
+            'rank' => $request->academic_rank ? $request->academic_rank : $academic->rank
+        ]);
+        
 
-        $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'avatar' => $fileNameToStore,
-            'address' => $request->address,
-            'phone' => $request->phone,
-            'gender' => $request->gender,
-            'work_status' => $request->work_status,
-            'marital_status' => $request->marital_status,
-            'start_work' => $request->start_work,
-            'end_work' => $request->end_work,
-            'salary_basic' => $request->salary_basic,
-            'salary_factor' => $request->salary_factor,
-            'manager_id' => $request->manager_id,
-            'role' => $request->role,
-            'level_id' => $request->level_id,
-            'department_id' => $request->department_id,
-            'position_id' => $request->position_id,
-            'specialize_id' => $request->specialize_id,
-            'academic_level_id' => $user->academic_level_id
-        ];
-
-        $user = $user->update($data);
+        $user = $user->update($request->all());
         return $this->responseSuccess(['success' => 'Cập nhật nhân viên thành công']);
     }
 

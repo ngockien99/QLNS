@@ -14,10 +14,10 @@ class SalarySeeder extends Seeder
     public function run(): void
     {
         $sa = new Salary();
-        $sa->salary_basic = 1;
-        $sa->salary_factor = 1;
-        $sa->allowance_money = 1;
-        $sa->insurance_premium_salary = 1;
+        $sa->salary_basic = 5000000;
+        $sa->salary_factor = 9000000;
+        $sa->allowance_money = 1000000;
+        $sa->insurance_premium_salary = 500000;
         $sa->save();
     }
 }

@@ -47,7 +47,7 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            'name' => 'Bạn chưa nhập tên tài khoản',
+            'name.required' => 'Bạn chưa nhập tên tài khoản',
             'email.required' => 'Bạn chưa nhập Email',
             'email.email' => 'Email không đúng định dạng',
             'email.unique' => 'Email đã tồn tại',
@@ -60,13 +60,13 @@ class UserRequest extends FormRequest
             'phone.regex' => 'Số điện thoại chưa đúng định dạng',
             'phone.unique' => 'Số điện thoại đã tồn tại',
             'gender.required' => 'Bạn chưa chọn giới tính',
-            'work_status' => 'Bạn chưa chọn tình trạng làm việc',
+            'work_status.required' => 'Bạn chưa chọn tình trạng làm việc',
             'marital_status.required' => 'Bạn chưa chọn tình trạng hôn nhân',
             'start_work.required' => 'Bạn chưa nhập ngày bắt đầu làm việc',
             'start_work.date_format' => 'Định dạng ngày phải là Năm-Tháng-Ngày',
             'end_work.date_format' => 'Định dạng ngày phải là Năm-Tháng-Ngày',
             'manager_id.required' => "Bạn chưa chọn người quản lý",
-            'role' => "Bạn chưa chọn quyền cho nhân viên",
+            'role.required' => "Bạn chưa chọn quyền cho nhân viên",
             'level_id.required' => "Bạn chưa chọn cấp bậc",
             'department_id.required' => "Bạn chưa chọn phòng ban",
             'position_id.required' => "Bạn chưa chọn chức vụ",

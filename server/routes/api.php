@@ -45,7 +45,7 @@ Route::group(['middleware' => 'jwt.auth', 'middleware' => 'permission',], functi
   Route::group(['prefix' => 'user'], function(){
     Route::get('list', [UserController::class, 'listUser']);
     Route::get('detail', [UserController::class, 'detailUser']);
-    Route::put('update', [UserController::class, 'updateRole']);
+    Route::put('update', [UserController::class, 'updateUser']);
     Route::delete('delete', [UserController::class, 'deleteUser']);
     Route::post('create', [UserController::class, 'createUser']);
   });
