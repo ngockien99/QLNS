@@ -90,6 +90,7 @@ class PayrollController extends Controller
             'user_id' => $user->id
         ];
         $payroll = Payroll::create($data);
+
         return $this->responseSuccess('Thêm bảng lương thành công');
     }
 
@@ -117,8 +118,10 @@ class PayrollController extends Controller
         $totalMoney = ($salary->salary_basic + $salary->salary_factor + $salary->allowance_money + $request->bonus_money - $salary->insurance_premium_salary) * $totalWorkDayUser;
         
         // Tính toán trừ thuế
+        $tax = 0;
         if ($totalMoney > 11000000) {
-            $totalMoney = ($totalMoney-11000000) * 0.05;
+            $tax = ($totalMoney-11000000) * 0.05;
+            $totalMoney = $totalMoney - $tax;
         }
 
         $data = [
@@ -126,6 +129,7 @@ class PayrollController extends Controller
             'bonus_money' => $request->bonus_money,
             'total_working_days_standard' => $totalDayWork,
             'total_working_days' => $totalWorkDayUser,
+            'tax' => $tax,
             'total_money_actual_receive' => $totalMoney,
             'user_id' => $user->id
         ];

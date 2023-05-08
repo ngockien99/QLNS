@@ -12,6 +12,7 @@ use App\Models\Salary;
 use App\Models\Timekeeping;
 use App\Models\LogRequestModel;
 use Carbon\Carbon;
+use App\Notifications\NotifiManager;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -114,6 +115,11 @@ class StaffController extends Controller
         }
 
         $logRequest = LogRequestModel::create($data);
+        Log::info($logRequest->manager_id);
+
+        $manager = User::findOrFail($logRequest->manager_id);
+
+        $manager->notify(new NotifiManager($manager));
 
         if ($request->type === config('constants.log_request.type.leave')) {
             if ($user->annual_leave >= $request->time_leave && $user->work_status === config('constants.work_status.doing')) {
