@@ -1,5 +1,5 @@
-import { roleAdmin } from "./route-config-admin";
-import { roleStaff } from "./route-config-staff";
+import { RoleAdmin } from "./route-config-admin";
+import { RoleStaff } from "./route-config-staff";
 
 const getRoutes = (role) => {
   const roleType = getMenu(role);
@@ -9,9 +9,9 @@ const getRoutes = (role) => {
 const getMenu = (role) => {
   switch (role) {
     case "admin":
-      return roleAdmin();
+      return RoleAdmin;
     case "staff":
-      return roleStaff();
+      return RoleStaff;
     default:
       return null;
   }

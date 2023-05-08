@@ -29,7 +29,7 @@ class StaffController extends Controller
 
             $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
             $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
-            
+
             $data = [
                 "user" => $user,
                 "academic" => AcademicLevel::where('id', $user->academic_level_id)->first(),
@@ -41,8 +41,8 @@ class StaffController extends Controller
         } else {
             return $this->responseError('Lỗi hệ thống');
         }
-        
-    } 
+
+    }
 
     public function updateStaff(StaffRequest $request) {
         $validated = $request->validated();
@@ -127,7 +127,7 @@ class StaffController extends Controller
             }
         }
         return $this->responseSuccess(['success' => 'Tạo request thành công']);
-        
+
     }
 
     public function rejectLogRequest(Request $request) {
@@ -184,7 +184,7 @@ class StaffController extends Controller
             'people_request' => $logRequestLower
         ];
 
-        return $this->responseSuccess($data); 
+        return $this->responseSuccess($data);
     }
 
     public function getUser($request) {

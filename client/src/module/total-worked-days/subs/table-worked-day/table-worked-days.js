@@ -1,9 +1,25 @@
 import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Col, Row, Table } from "antd";
 import { Fragment, useCallback, useRef } from "react";
+import { useQuery } from "react-query";
+import API from "util/api";
 import FormVerify from "../form-verify";
 
 const TableWorkedDays = () => {
+  useQuery(
+    "QUERY_REQUEST",
+    () => {
+      const config = {
+        url: "request/list",
+      };
+      return API.request(config);
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
+      },
+    }
+  );
   const modalRef = useRef();
   const openModal = useCallback(() => modalRef.current.show(), []);
   const editModal = useCallback((data) => {
