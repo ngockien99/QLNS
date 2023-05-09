@@ -30,11 +30,10 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
 
   const { mutate } = useMutation(
     (data) => {
-      const newData = { ...userInfo?.user, ...data };
       const config = {
         url: "user/update",
         method: "put",
-        data: newData,
+        data: { ...userInfo?.user, ...data },
       };
       return API.request(config);
     },

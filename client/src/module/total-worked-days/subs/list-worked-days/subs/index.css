@@ -1,0 +1,15 @@
+th.background_total {
+  background-color: #ff9933 !important;
+}
+
+td.background_not_working_day {
+  background-color: #ffff00 !important;
+}
+
+th.background_element {
+  background-color: #c4d79b !important;
+}
+
+.table-border-color {
+  background-color: black !important;
+}

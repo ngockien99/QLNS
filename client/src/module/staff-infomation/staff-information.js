@@ -26,7 +26,6 @@ const StaffInformation = () => {
     },
     {
       onSuccess: (data) => {
-        console.log(data);
         setUserInfo(data);
       },
       onError: (error) => {

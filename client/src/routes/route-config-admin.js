@@ -10,7 +10,7 @@ import ManagementRewardAndDiscipline from "module/management-reward-discipline";
 import ManagementStaff from "module/management-staff";
 import ManagementWorkedDays from "module/management-working-days";
 
-export const roleAdmin = [
+export const RoleAdmin = [
   {
     title: "",
     items: [

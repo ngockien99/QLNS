@@ -56,8 +56,8 @@ class StaffController extends Controller
         } else {
             return $this->responseError('Lỗi hệ thống');
         }
-        
-    } 
+
+    }
 
     public function updateStaff(StaffRequest $request) {
         $validated = $request->validated();
@@ -137,7 +137,7 @@ class StaffController extends Controller
             }
         }
         return $this->responseSuccess(['success' => 'Tạo request thành công']);
-        
+
     }
 
     public function updateRequest(LogRequest $request) {
@@ -261,7 +261,7 @@ class StaffController extends Controller
             'people_request' => $logRequestLower
         ];
 
-        return $this->responseSuccess($data); 
+        return $this->responseSuccess($data);
     }
 
     public function getUser($request) {

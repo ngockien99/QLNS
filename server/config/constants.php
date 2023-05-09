@@ -25,5 +25,15 @@ return [
             'afternoon' => 1,
             'allday' => 2
         ]
-    ]
+    ],
+    'user' => [
+        'gender' => [
+            'male' => 0,
+            'female' => 1
+        ],
+        'marital_status' => [
+            'no' => 0,
+            'yes' => 1
+        ]
+    ]  
 ];
