@@ -26,7 +26,7 @@ return new class extends Migration
             $table->date('start_work')->nullable(); // ngày bắt đầu công việc
             $table->date('end_work')->nullable(); // ngày kết thúc công việc
             $table->bigInteger('manager_id'); // id người quản lý
-            $table->integer('annual_leave')->default(12);; // số ngày phép trong năm
+            $table->double('annual_leave')->default(12);; // số ngày phép trong năm
             $table->integer('role');
 
             $table->foreignId('level_id');

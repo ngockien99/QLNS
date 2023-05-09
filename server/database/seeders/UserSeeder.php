@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
         $user->email = 'dungshinichi99@gmail.com';
         $user->password = Hash::make('12345678');
         $user->address = "Hà Nội";
-        $user->manager_id = 2;
+        $user->manager_id = 1;
         $user->role = 2;
         $user->level_id = 2;   // Inter
         $user->academic_level_id = 1;

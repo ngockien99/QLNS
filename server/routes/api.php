@@ -113,7 +113,9 @@ Route::group(['middleware' => 'jwt.auth', 'middleware' => 'auth.admin',], functi
 
   Route::group(['prefix' => 'request'], function(){
     Route::get('list', [StaffController::class, 'listRequest']);
-    Route::post('create', [StaffController::class, 'createLeave']);
+    Route::post('create', [StaffController::class, 'createRequest']);
+    Route::put('update', [StaffController::class, 'updateRequest']);
+    Route::delete('delete', [StaffController::class, 'deleteRequest']);
     Route::put('approve', [StaffController::class, 'approveLogRequest']);
     Route::put('reject', [StaffController::class, 'rejectLogRequest']);
 
