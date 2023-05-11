@@ -1,12 +1,26 @@
-import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Col, Row, Table } from "antd";
-import { Fragment, useCallback, useRef } from "react";
+import {
+  CheckCircleOutlined,
+  ClockCircleOutlined,
+  CloseCircleOutlined,
+  CopyOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
+import { Button, Col, Row, Table, Tag } from "antd";
+import dayjs from "dayjs";
+import { Fragment, useCallback, useRef, useState } from "react";
 import { useQuery } from "react-query";
+import { useRecoilValue } from "recoil";
+import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
 import FormVerify from "../form-verify";
 
 const TableWorkedDays = () => {
-  useQuery(
+  const userInfo = useRecoilValue(UserInfoAtom) ?? {};
+  console.log(userInfo?.user);
+  const { name = "ha2" } = userInfo?.user ?? {};
+  const [data, setData] = useState();
+  const { isLoading } = useQuery(
     "QUERY_REQUEST",
     () => {
       const config = {
@@ -16,16 +30,24 @@ const TableWorkedDays = () => {
     },
     {
       onSuccess: (data) => {
-        console.log(data);
+        const newData = data.my_request.map((e) => {
+          return { ...e, name };
+        });
+        console.log(newData);
+        setData(newData);
       },
     }
   );
   const modalRef = useRef();
   const openModal = useCallback(() => modalRef.current.show(), []);
   const editModal = useCallback((data) => {
+    const { date } = data;
+    data.date = dayjs(date, "YYYY-MM-DD");
     modalRef.current.show();
     modalRef?.current?.setValue(data);
   }, []);
+
+  console.log(data);
   const columns = [
     {
       title: "Họ và tên",
@@ -33,19 +55,46 @@ const TableWorkedDays = () => {
       key: "name",
     },
     {
-      title: "Ngày bắt đầu",
-      dataIndex: "start_date",
-      key: "start_date",
-    },
-    {
-      title: "Ngày kết thúc",
-      dataIndex: "end_date",
-      key: "end_date",
-    },
-    {
       title: "Thời gian",
-      dataIndex: "type_time",
+      dataIndex: "date",
       key: "type_time",
+    },
+    {
+      title: "Loại nghỉ",
+      dataIndex: "check_paid",
+      key: "start_date",
+      render: (_, record) => {
+        if (record.check_paid === 0) {
+          return "Nghỉ phép";
+        }
+        return "Nghỉ không lương";
+      },
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "end_date",
+      render: (_, record) => {
+        if (record.status === 1) {
+          return (
+            <Tag icon={<CheckCircleOutlined />} color="success">
+              Đã phê duyệt
+            </Tag>
+          );
+        } else if (record.status === 2) {
+          return (
+            <Tag icon={<CloseCircleOutlined />} color="error">
+              Từ chối phê duyệt
+            </Tag>
+          );
+        } else {
+          return (
+            <Tag icon={<ClockCircleOutlined />} color="processing">
+              Chờ phê duyệt
+            </Tag>
+          );
+        }
+      },
     },
     {
       title: "Hành động",
@@ -95,14 +144,6 @@ const TableWorkedDays = () => {
     },
   ];
 
-  const data = [
-    {
-      name: "Nguyễn Ngọc Kiên",
-      start_date: "12/02/2021",
-      end_date: "12/02/2021",
-      type_time: "Buổi chiều",
-    },
-  ];
   return (
     <Fragment>
       <Table columns={columns} dataSource={data} />
