@@ -44,7 +44,7 @@ class API {
       })
       .catch((error) => {
         error.statusCode = 404;
-        throw error;
+        throw error.message;
       });
   };
 }

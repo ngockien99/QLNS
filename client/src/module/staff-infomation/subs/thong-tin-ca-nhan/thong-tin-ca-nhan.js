@@ -21,6 +21,7 @@ const ThongTinCaNhan = () => {
     academic_level_id,
     marital_status,
   } = userInfo?.user || {};
+  console.log(userInfo?.user);
 
   const data = useMemo(() => {
     return [
@@ -32,6 +33,18 @@ const ThongTinCaNhan = () => {
       { title: "Giới tính", value: gender, type: "radio" },
       {
         title: "Trình độ chuyên môn",
+        value: academic_level_id,
+      },
+      { title: "Tình trạng hôn nhân", value: marital_status },
+
+      { title: "Trạng thái làm việc", value: name },
+      { title: "Ngày bắt đầu công việc", value: date_of_birth || "15/09/99" },
+      { title: "Ngày nghỉ việc", value: address },
+      { title: "Quản lý", value: phone || "0236627637" },
+      { title: "Vị trí", value: id },
+      { title: "Bậc lương", value: gender, type: "radio" },
+      {
+        title: "Phòng ban",
         value: academic_level_id,
       },
       { title: "Tình trạng hôn nhân", value: marital_status },

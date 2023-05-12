@@ -1,6 +1,9 @@
 import Home from "module/home";
 import Login from "module/login";
 import Main from "module/main";
+import ManagementLevel from "module/management-level";
+import ManagementPosition from "module/management-position";
+import ManagementSpecialize from "module/management-specialize";
 import { Route, Routes } from "react-router-dom";
 import ManagementRewardAndDiscipline from "./module/management-reward-discipline";
 import ManagementStaff from "./module/management-staff";
@@ -23,6 +26,9 @@ function App() {
       <Route path="/" element={<Main />}>
         <Route index element={<Home />} />
         <Route path="/quan-ly-nhan-su" element={<ManagementStaff />} />
+        <Route path="/quan-ly-vi-tri" element={<ManagementPosition />} />
+        <Route path="/quan-ly-chuyen-mon" element={<ManagementSpecialize />} />
+        <Route path="/quan-ly-cap-bac" element={<ManagementLevel />} />
         <Route
           path="/quan-ly-khen-thuong-ky-luat"
           element={<ManagementRewardAndDiscipline />}
