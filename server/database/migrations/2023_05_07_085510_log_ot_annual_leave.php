@@ -23,11 +23,11 @@ return new class extends Migration
             // Nghi phép
             $table->string('reason')->nullable(); // lý do
             $table->double('time_leave')->nullable(); // Thời gian nghỉ (nửa ngày hoặc 1)
-            $table->integer('check_paid'); // check xem nghỉ có lương hay không lương
+            $table->integer('check_paid')->nullable(); // check xem nghỉ có lương hay không lương
             // OT
             $table->string('title')->nullable(); // tiêu đề
-            $table->integer('time_ot_start')->nullable(); // thời gian bắt đầu ot
-            $table->integer('time_ot_end')->nullable(); // thời gian kết thúc ot
+            $table->string('time_ot_start')->nullable(); // thời gian bắt đầu ot
+            $table->string('time_ot_end')->nullable(); // thời gian kết thúc ot
             
             $table->foreignId('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

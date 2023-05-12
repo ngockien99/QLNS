@@ -123,12 +123,12 @@ class StaffController extends Controller
             $data["time_ot_start"] = $request->time_ot_start;
             $data["time_ot_end"] = $request->time_ot_end;
         }
-
+        Log::info($data);
         $logRequest = LogRequestModel::create($data);
 
         $manager = User::findOrFail($logRequest->manager_id);
 
-        // $manager->notify(new NotifiManager($manager));
+        $manager->notify(new NotifiManager($manager));
 
         $dayLeave = $this->calculateDayLeave($request->time_leave);
         if ($request->type === config('constants.log_request.type.leave')) {
