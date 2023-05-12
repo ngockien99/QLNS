@@ -26,6 +26,7 @@ class StaffController extends Controller
         if ($getUser) {
             $user = User::findOrFail($getUser->id);
             $user->file = config('app.linkFile') . '/uploads/user/' . $user->avatar;
+            $user->manager_name = User::find($user->manager_id)->name;
 
             $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
             $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
@@ -37,6 +38,8 @@ class StaffController extends Controller
             ->where('status', config('constants.log_request.status.approve'))
             ->count();
 
+            $checkManager = User::where('manager_id', $user->id)->get();
+
             $leave = [
                 "total_leave" => 12,
                 "leave_used" =>  12 - $user->annual_leave,
@@ -46,6 +49,7 @@ class StaffController extends Controller
 
             $data = [
                 "user" => $user,
+                "check_manager" => count($checkManager) === 0 ? false : true,
                 "academic" => AcademicLevel::where('id', $user->academic_level_id)->first(),
                 "salary" => Salary::where('id', $user->salary_id)->first(),
                 "leave" => $leave,
