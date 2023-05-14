@@ -17,13 +17,26 @@ class PayrollController extends Controller
 {
     public function listPayroll(Request $request) {
         $key_search = $request->search;
-        $user = DB::table('payroll')
+        $payroll = DB::table('payroll')
         ->where(function ($query) use($key_search) {
             $query->where('payroll.month_pay', 'like' , "%$key_search%");
         })
         ->paginate(10,['*'],'page', $request->page);
 
-        return $this->responseSuccess($user);
+        $payroll->getCollection()->transform(function ($value) {
+            $pay = Payroll::findOrFail($value->id);
+            $user = User::where('id', $value->user_id)->first();
+            $salary = Salary::where('id', $user->salary_id)->first();
+            
+            $data = [
+                'payroll' => $pay,
+                'user' => $user,
+                'salary' => $salary
+            ];
+            return $data;
+        });
+
+        return $this->responseSuccess($payroll);
     }
     
     public function detailPayroll(Request $request) {

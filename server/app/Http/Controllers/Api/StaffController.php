@@ -222,7 +222,7 @@ class StaffController extends Controller
 
             $logRequest->update($data);
 
-            $user->update(['annual_leave' => $user->annual_leave + $this->calculateDayLeave($logLeaveOt->time_leave)]);
+            $user->update(['annual_leave' => $user->annual_leave + $this->calculateDayLeave($logRequest->time_leave)]);
 
             return $this->responseSuccess(['success' => 'Từ chối request thành công']);
 
