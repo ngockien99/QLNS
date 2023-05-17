@@ -100,12 +100,19 @@ class TimekeepingController extends Controller
         $dates = [];
         foreach ($period as $key => $date) {
             $timeSheet = Timekeeping::where('date', $date->format('Y-m-d'))->where('user_id', $user->id)->first();
+            $abnormal = false;
+            if ($timeSheet && ($timeSheet->checkin == null || $timeSheet->checkout == null || $timeSheet->work_day == 0)) {
+                $abnormal = true;
+            } else {
+                $abnormal = false;
+            }
             $dates[] = [
                 'date' => $date->format('d-m-Y'),
                 'checkin' => $timeSheet ? $timeSheet->checkin : '',
                 'checkout' => $timeSheet ? $timeSheet->checkout : '',
                 'late' => $timeSheet ? $timeSheet->late : '',
-                'work_day' => $timeSheet ? $timeSheet->work_day : ''
+                'work_day' => $timeSheet ? $timeSheet->work_day : '',
+                'abnormal' => $abnormal
             ];
         }
         return $this->responseSuccess($dates);
