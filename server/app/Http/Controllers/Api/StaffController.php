@@ -29,7 +29,7 @@ class StaffController extends Controller
 
             $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
             $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
-            
+
             $month = Carbon::now()->format('Y-m');
             $logRequestPaid = LogRequestModel::where('user_id', $user->id)
             ->where('day_create', 'like', "%$month%")
@@ -187,7 +187,7 @@ class StaffController extends Controller
             }
         }
         return $this->responseSuccess(['success' => 'Cập nhật request thành công']);
-        
+
     }
 
     public function deleteRequest(Request $request) {
