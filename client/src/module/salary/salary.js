@@ -3,15 +3,37 @@ import { Button, Table } from "antd";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
 import { useCallback } from "react";
+import { useQuery } from "react-query";
+import { useRecoilValue } from "recoil";
+import { UserInfoAtom } from "state-management/recoil";
+import API from "util/api";
 
 const Salary = () => {
-  const download = useCallback(() => {
+  const userInfo = useRecoilValue(UserInfoAtom);
+  const { name, id } = userInfo?.user ?? {};
+  const { data: queryData } = useQuery("QUERY_PAYROLL_LIST", () => {
+    const config = {
+      url: "payroll/list",
+    };
+    return API.request(config);
+  });
+
+  const download = useCallback((data) => {
     const doc = new jsPDF({ orientation: "portrait" });
     const PADDING = 10;
     const LINE_HEIGHT = 8;
     const PAGE_WIDTH =
       doc.internal.pageSize.width || doc.internal.pageSize.getWidth();
 
+    const {
+      bonus_money,
+      id,
+      month_pay,
+      tax,
+      total_money_actual_receive,
+      total_working_days,
+      total_working_days_standard,
+    } = data;
     let drawCell = function (data) {
       const doc = data.doc;
       console.log(data, doc);
@@ -47,7 +69,7 @@ const Salary = () => {
       PADDING,
       currentY,
       doc.splitTextToSize(
-        "Phong nhan su gui Anh/Chi bang luong thang  3/2023, neu co thac mac Anh/Chi vui long lien he voi phong nhan su de duoc giai dap.",
+        `Phong nhan su gui Anh/Chi bang luong thang ${month_pay}, neu co thac mac Anh/Chi vui long lien he voi phong nhan su de duoc giai dap.`,
         180
       )
     );
@@ -61,17 +83,16 @@ const Salary = () => {
       body: [
         ["A", "Tong luong Gross theo hop dong", "Dong", "18000000"],
         ["1", "Luong co ban", "Dong", "50000"],
-        ["2", "Thuong hieu qua cong viec", "Dong", "18000"],
-        ["3", "Thuong kinh doanh", "Dong", "1800"],
-        ["B", "Ngay cong", "Ngay", "18000000"],
-        ["1", "Ngay lam viec thuc te", "Ngay", "50000"],
+        ["2", "Thuong hieu qua cong viec", "Dong", bonus_money],
+        ["B", "Ngay cong", "Ngay", total_working_days_standard],
+        ["1", "Ngay lam viec thuc te", "Ngay", total_working_days],
         ["2", "Ngay nghi phep", "Ngay", "18000"],
         ["3", "Ngay nghi khong luong", "Ngay", "1800"],
-        ["4", "Ngay nghe nguyen luong", "Ngay", "18000000"],
-        ["C", "Tong thu nhap", "Dong", "18000000"],
+        ["4", "Ngay nghi nguyen luong", "Ngay", "18000000"],
+        ["C", "Tong thu nhap", "Dong", total_money_actual_receive],
         ["D", "Cac khoan khau tru ca nhan", "Dong", "50000"],
         ["1", "Tru tien dong BHXH, BHYT, BHTN", "Dong", "18000"],
-        ["3", "Tru tien khau tru thuu TNCN", "Dong", "1800"],
+        ["3", "Tru tien khau tru thuu TNCN", "Dong", tax],
         ["4", "Cac khoan tru khac", "Dong", "18000000"],
         ["E", "Luong thuc nhan", "Dong", "1800"],
       ],
@@ -101,6 +122,11 @@ const Salary = () => {
     doc.save("test.pdf");
   }, []);
 
+  console.log(name, userInfo, queryData);
+  const data = queryData?.data.map((e) => {
+    return { ...e, name: name, id: id };
+  });
+
   const columns = [
     {
       title: "Mã Nhân Viên",
@@ -114,8 +140,8 @@ const Salary = () => {
     },
     {
       title: "Lương tháng",
-      dataIndex: "month",
-      key: "start_date",
+      dataIndex: "month_pay",
+      key: "month_pay",
     },
 
     {
@@ -129,7 +155,7 @@ const Salary = () => {
             borderRadius: "4px",
           }}
           icon={<FilePdfOutlined />}
-          onClick={(record) => download(record)}
+          onClick={() => download(record)}
         >
           Tải về
         </Button>
@@ -137,13 +163,6 @@ const Salary = () => {
     },
   ];
 
-  const data = [
-    {
-      id: "HO012032",
-      name: "Nguyễn Ngọc Kiên",
-      month: "12/2021",
-    },
-  ];
   return <Table columns={columns} dataSource={data} />;
 };
 

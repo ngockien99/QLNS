@@ -19,7 +19,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import API from "util/api";
 
 const { TextArea } = Input;
@@ -28,23 +28,26 @@ const FormVerify = forwardRef((_, ref) => {
   const [form] = Form.useForm();
 
   const [show, setShow] = useState(false);
-  const [newData, setNewData] = useState("");
   const [value, setValue] = useState(0);
+  const [isEdit, setIsEdit] = useState(false);
+  const [id, setId] = useState("");
+  const queryClient = useQueryClient();
   useImperativeHandle(ref, () => ({
     show: () => {
       setShow(true);
     },
     setValue: (value) => {
-      console.log(value);
       Object.entries(value).map(([formKey, value]) => {
         return form.setFields([{ name: formKey, value: value }]);
       });
-      setNewData(value);
+      setIsEdit(!!value?.isEdit);
+      setId(value?.id);
+      setValue(value?.type);
     },
   }));
   const title = useMemo(
-    () => (newData ? "Sửa báo cáo" : "Thêm báo cáo"),
-    [newData]
+    () => (isEdit ? "Sửa báo cáo" : "Thêm báo cáo"),
+    [isEdit]
   );
   const onChange = (e) => {
     setValue(e.target.value);
@@ -53,9 +56,9 @@ const FormVerify = forwardRef((_, ref) => {
 
   const { mutate } = useMutation(
     (data) => {
-      const method = newData ? "put" : "post";
-      const url = newData ? "request/update" : "request/create";
-      data.id = newData?.id;
+      const method = isEdit ? "put" : "post";
+      const url = isEdit ? "request/update" : "request/create";
+      data.id = id;
       const config = {
         url,
         data,
@@ -66,7 +69,12 @@ const FormVerify = forwardRef((_, ref) => {
     },
     {
       onSuccess: () => {
+        queryClient.invalidateQueries("QUERY_REQUEST");
         message.success("Bạn đã gửi duyệt công thành công!");
+        !!isEdit && form.resetFields();
+        setShow(false);
+        setIsEdit(false);
+        setId("");
       },
       onError: (error) => {
         message.error(error);
@@ -78,7 +86,7 @@ const FormVerify = forwardRef((_, ref) => {
     form
       .validateFields()
       .then((values) => {
-        console.log(dayjs(values?.time_ot_start).format("HH:mm"));
+        values.type = value;
         const params =
           value === 1
             ? {
@@ -104,13 +112,14 @@ const FormVerify = forwardRef((_, ref) => {
       onCancel={() => {
         setShow(false);
         form.resetFields();
-        setNewData("");
+        setIsEdit(false);
+        setId("");
       }}
       onOk={onSubmit}
     >
       <Form form={form} layout="vertical" name="form_in_modal">
         <Form.Item name="type" label="Loại báo cáo:">
-          <Radio.Group defaultValue={value} disabled={newData}>
+          <Radio.Group defaultValue={value} disabled={isEdit}>
             <Radio onChange={onChange} value={0}>
               Nghỉ Phép
             </Radio>

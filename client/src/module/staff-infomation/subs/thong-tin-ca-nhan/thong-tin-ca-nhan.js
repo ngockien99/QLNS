@@ -2,7 +2,7 @@ import { Button, Col, Form, Input, Radio, Row } from "antd";
 import { useCallback, useMemo, useRef } from "react";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
-import UpdateFormStaff1 from "../update-form/update-info-staff-in-life";
+import UpdateFormStaffInLife from "../update-form/update-info-staff-in-life";
 
 const ThongTinCaNhan = () => {
   const modalRef = useRef();
@@ -20,22 +20,22 @@ const ThongTinCaNhan = () => {
     gender,
     academic_level_id,
     marital_status,
+    email,
   } = userInfo?.user || {};
   console.log(userInfo?.user);
 
   const data = useMemo(() => {
     return [
+      { title: "Mã nhân viên", value: id },
+
       { title: "Tên nhân viên", value: name },
       { title: "Ngày sinh", value: date_of_birth || "15/09/99" },
+      { title: "Giới tính", value: gender, type: "radio" },
       { title: "Địa chỉ", value: address },
       { title: "Số điện thoại", value: phone || "0236627637" },
-      { title: "Mã nhân viên", value: id },
-      { title: "Giới tính", value: gender, type: "radio" },
-      {
-        title: "Trình độ chuyên môn",
-        value: academic_level_id,
-      },
+      { title: "email", value: email },
       { title: "Tình trạng hôn nhân", value: marital_status },
+      { title: "Trình độ chuyên môn", value: academic_level_id },
 
       { title: "Trạng thái làm việc", value: name },
       { title: "Ngày bắt đầu công việc", value: date_of_birth || "15/09/99" },
@@ -47,17 +47,17 @@ const ThongTinCaNhan = () => {
         title: "Phòng ban",
         value: academic_level_id,
       },
-      { title: "Tình trạng hôn nhân", value: marital_status },
     ];
   }, [
-    academic_level_id,
-    address,
+    id,
+    name,
     date_of_birth,
     gender,
-    marital_status,
-    name,
+    address,
     phone,
-    id,
+    email,
+    marital_status,
+    academic_level_id,
   ]);
 
   return (
@@ -95,7 +95,7 @@ const ThongTinCaNhan = () => {
           </Row>
         </Form>
       </div>
-      <UpdateFormStaff1 ref={modalRef} />
+      <UpdateFormStaffInLife ref={modalRef} />
     </div>
   );
 };

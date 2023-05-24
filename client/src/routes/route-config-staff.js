@@ -39,7 +39,7 @@ export const RoleStaff = [
       },
       {
         title: "Báo cáo tổng hợp công",
-        to: "/bao-cao-tong-hop-cong",
+        to: "/bao-cao-tong-hop-cong/danh-sach-cong-trong-thang",
         component: <TotalWorkedDays />,
         icon: <FileSyncOutlined />,
       },

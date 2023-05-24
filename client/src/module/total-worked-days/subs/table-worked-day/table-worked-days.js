@@ -13,15 +13,16 @@ import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
+import { GET_REQUEST_LIST } from "util/const";
 import FormVerify from "../form-verify";
 
 const TableWorkedDays = () => {
   const userInfo = useRecoilValue(UserInfoAtom) ?? {};
   console.log(userInfo?.user);
-  const { name = "ha2" } = userInfo?.user ?? {};
+  const { name = "kiennn" } = userInfo?.user ?? {};
   const [data, setData] = useState();
-  const { isLoading } = useQuery(
-    "QUERY_REQUEST",
+  useQuery(
+    GET_REQUEST_LIST,
     () => {
       const config = {
         url: "request/list",
@@ -33,7 +34,6 @@ const TableWorkedDays = () => {
         const newData = data.my_request.map((e) => {
           return { ...e, name };
         });
-        console.log(newData);
         setData(newData);
       },
     }
@@ -41,13 +41,17 @@ const TableWorkedDays = () => {
   const modalRef = useRef();
   const openModal = useCallback(() => modalRef.current.show(), []);
   const editModal = useCallback((data) => {
-    const { date } = data;
+    const { date, time_ot_start = "", time_ot_end = "", type } = data;
     data.date = dayjs(date, "YYYY-MM-DD");
+    if (type === 1) {
+      data.time_ot_start = dayjs(time_ot_start, '"HH:mm"');
+      data.time_ot_end = dayjs(time_ot_end, "HH:mm");
+    }
+    data.isEdit = true;
     modalRef.current.show();
     modalRef?.current?.setValue(data);
   }, []);
 
-  console.log(data);
   const columns = [
     {
       title: "Họ và tên",
@@ -60,14 +64,14 @@ const TableWorkedDays = () => {
       key: "type_time",
     },
     {
-      title: "Loại nghỉ",
+      title: "Loại báo cáo",
       dataIndex: "check_paid",
       key: "start_date",
       render: (_, record) => {
         if (record.check_paid === 0) {
-          return "Nghỉ phép";
+          return "Nghỉ";
         }
-        return "Nghỉ không lương";
+        return "Làm thêm giờ";
       },
     },
     {

@@ -1,5 +1,5 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Form, Image, Input } from "antd";
+import { Button, Form, Image, Input, message } from "antd";
 import logo from "assets/image/logo-sunoffice.jpg";
 import banner from "assets/image/quy-trinh-cham-cong-1.jpg";
 import { useCallback } from "react";
@@ -30,6 +30,9 @@ const Login = () => {
         localStorage.setItem("role", data.role);
         delete data.token;
         setUseInfo(data);
+      },
+      onError: (error) => {
+        message.error(error);
       },
     }
   );
