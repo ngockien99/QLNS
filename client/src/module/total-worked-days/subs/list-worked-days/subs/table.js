@@ -1,19 +1,17 @@
 import { Spin, Table } from "antd";
 import { useQuery } from "react-query";
 import API from "util/api";
+import { GET_TIME_SHEET } from "util/const";
 import { useColumn } from "./custom-hook";
 import "./index.css";
 
 const TableComponent = () => {
-  const { data: queryData = [], isLoading } = useQuery(
-    "QUERY_TIME_SHEET",
-    () => {
-      const config = {
-        url: "get-time-sheet",
-      };
-      return API.request(config);
-    }
-  );
+  const { data: queryData = [], isLoading } = useQuery(GET_TIME_SHEET, () => {
+    const config = {
+      url: "get-time-sheet",
+    };
+    return API.request(config);
+  });
 
   const data = [
     {

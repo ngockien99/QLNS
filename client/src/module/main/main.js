@@ -17,7 +17,7 @@ const Main = () => {
     [id, "QUERY_STAFF_INFO"],
     () => {
       const config = {
-        url: `/user/detail`,
+        url: `/staff/detail`,
         params: { id },
       };
       return API.request(config);
@@ -25,6 +25,7 @@ const Main = () => {
     {
       onSuccess: (data) => {
         setUserInfo(data);
+        console.log(data);
       },
       onError: (error) => {
         console.log(error);

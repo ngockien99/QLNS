@@ -6,10 +6,12 @@ import {
   useMemo,
   useState,
 } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
+import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
+import { GET_STAFF_INFO } from "util/const";
 
 const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
   const [form] = Form.useForm();
@@ -21,12 +23,14 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
     name,
     date_of_birth,
     address,
-    id,
     phone,
     gender,
     academic_level_id,
     marital_status,
   } = userInfo?.user || {};
+  const queryClient = useQueryClient();
+  const params = useParams();
+  const { id } = params;
 
   const { mutate } = useMutation(
     (data) => {
@@ -38,8 +42,11 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
       return API.request(config);
     },
     {
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: (_, variables) => {
+        setUserInfo((pre) => ({ ...pre, ...variables }));
+        queryClient.invalidateQueries([id, GET_STAFF_INFO]);
+        message.success("Bạn đã cập nhật thông tin thành công!");
+        setOpen(false);
       },
       onError: (error) => {
         message.error(error.message);
@@ -73,7 +80,6 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
       },
       { title: "Địa chỉ", value: address, key: "address" },
       { title: "Số điện thoại", value: phone || "0236627637", key: "phone" },
-      { title: "Mã nhân viên", value: id, key: "id" },
       { title: "Giới tính", value: gender, type: "radio", key: "gender" },
       {
         title: "Trình độ chuyên môn",
@@ -94,7 +100,6 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
     marital_status,
     name,
     phone,
-    id,
   ]);
 
   return (
@@ -108,7 +113,7 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
     >
       <Form
         form={form}
-        name="update-info-staff-in-life"
+        name="update-info-staff"
         onFinish={onFinish}
         layout="vertical"
       >
@@ -120,8 +125,8 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
                 <Form.Item name={key} label={title}>
                   {type ? (
                     <Radio.Group defaultValue={initValue}>
-                      <Radio value="male"> Nam </Radio>
-                      <Radio value="female"> Nữ </Radio>
+                      <Radio value={0}> Nam </Radio>
+                      <Radio value={1}> Nữ </Radio>
                     </Radio.Group>
                   ) : (
                     <Input defaultValue={initValue} />

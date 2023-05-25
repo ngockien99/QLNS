@@ -6,6 +6,8 @@ import {
 } from "@ant-design/icons";
 
 import Home from "module/home";
+import ManagementContract from "module/management-contract/management-contract";
+import ManagementDepartment from "module/management-department/management-department";
 import ManagementLevel from "module/management-level";
 import ManagementPosition from "module/management-position";
 import ManagementRewardAndDiscipline from "module/management-reward-discipline";
@@ -19,7 +21,7 @@ export const RoleAdmin = [
     items: [
       {
         title: "Trang chủ",
-        to: "/",
+        to: "/dash-board",
         component: <Home />,
         icon: <HomeOutlined />,
       },
@@ -51,6 +53,18 @@ export const RoleAdmin = [
         title: "Quản lý vị trí chuyên môn",
         to: "/quan-ly-chuyen-mon",
         component: <ManagementSpecialize />,
+        icon: <BookOutlined />,
+      },
+      {
+        title: "Quản lý hợp đồng",
+        to: "/quan-ly-hop-dong",
+        component: <ManagementContract />,
+        icon: <TableOutlined />,
+      },
+      {
+        title: "Quản lý phòng ban",
+        to: "/quan-ly-phong-ban",
+        component: <ManagementDepartment />,
         icon: <BookOutlined />,
       },
       {

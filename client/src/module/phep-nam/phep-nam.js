@@ -1,6 +1,11 @@
 import { Table } from "antd";
+import { useRecoilValue } from "recoil";
+import { UserInfoAtom } from "state-management/recoil";
 
 const PhepNam = () => {
+  const userInfo = useRecoilValue(UserInfoAtom);
+  const { leave, user } = userInfo ?? {};
+  const dataSource = [{ ...leave, id: user?.id, name: user?.name }];
   const columns = [
     {
       title: "Mã nhân viên",
@@ -14,45 +19,33 @@ const PhepNam = () => {
     },
     {
       title: "Phép còn dư từ năm trước",
-      dataIndex: "phep_con_thua",
+      dataIndex: "leave_used_pay",
       key: "phep_con_thua",
     },
-
     {
-      title: "Phép chưa sử dụng",
-      dataIndex: "phep_chua_su_dung",
-      key: "phep_chua_su_dung",
-    },
-    {
-      title: "Phép đã dùng ở thời điểm hiện tại",
-      dataIndex: "phep_da_dung_o_thoi_diem_hien_tai",
-      key: "phep_da_dung_o_thoi_diem_hien_tai",
-    },
-    {
-      title: "Phép được sử dụng ở thời điểm hiện tại",
-      dataIndex: "phep_duoc_dung_o_thoi_diem_hien_tai",
-      key: "phep_duoc_dung_o_thoi_diem_hien_tai",
+      title: "Tổng phép được sử dụng trong năm",
+      dataIndex: "total_leave",
+      key: "total_leave",
     },
     {
       title: "Phép đã sử dụng",
-      dataIndex: "phep_da_su_dung",
-      key: "phep_da_su_dung",
+      dataIndex: "leave_used",
+      key: "leave_used",
+    },
+    {
+      title: "Phép chưa sử dụng",
+      dataIndex: "leave_remaining",
+      key: "leave_remaining",
     },
   ];
 
-  const data = [
-    {
-      id: "HO020202",
-      name: "Nguyễn Ngọc Kiên",
-      phep_con_thua: "12",
-      phep_chua_su_dung: "24",
-      phep_da_dung_o_thoi_diem_hien_tai: "0",
-      phep_duoc_dung_o_thoi_diem_hien_tai: "16",
-      phep_da_su_dung: "0",
-    },
-  ];
   return (
-    <Table columns={columns} dataSource={data} bordered pagination={false} />
+    <Table
+      columns={columns}
+      dataSource={dataSource}
+      bordered
+      pagination={false}
+    />
   );
 };
 

@@ -5,6 +5,7 @@ import { Link, Outlet, useParams } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
+import { GET_STAFF_INFO } from "util/const";
 
 const StaffInformation = () => {
   const [route, setRoute] = useState("thong-tin-ca-nhan");
@@ -16,7 +17,7 @@ const StaffInformation = () => {
   const { id } = params;
 
   useQuery(
-    [id, "QUERY_STAFF_INFO"],
+    [id, GET_STAFF_INFO],
     () => {
       const config = {
         url: `/user/detail`,
@@ -43,6 +44,16 @@ const StaffInformation = () => {
     {
       label: <Link to={`thong-tin-lam-viec/${id}`}>Thông tin làm việc</Link>,
       key: "thong-tin-lam-viec",
+    },
+    {
+      label: (
+        <Link to={`thong-tin-luong-thuong/${id}`}>Thông tin tiền lương</Link>
+      ),
+      key: "tien-luong",
+    },
+    {
+      label: <Link to={`qua-trinh-dao-tao/${id}`}>Qúa trình đào tạo</Link>,
+      key: "qua-trinh-dao-tao",
     },
   ];
 
