@@ -38,8 +38,8 @@ class User extends Authenticatable implements JWTSubject
         'academic_level_id',
         'department_id',
         'position_id',
-        'specialize_id'
-
+        'specialize_id',
+        'salary_id'
     ];
 
     /**
@@ -124,5 +124,10 @@ class User extends Authenticatable implements JWTSubject
     public function logRequest()
     {
         return $this->hasMany(LogRequest::class);
+    }
+
+    public function rewardDiscipline()
+    {
+        return $this->hasMany(RewardDiscipline::class);
     }
 }
