@@ -30,7 +30,7 @@ const NavBar = (props) => {
     >
       <Menu
         theme="light"
-        defaultSelectedKeys={pathname || "/"}
+        defaultSelectedKeys={pathname || "/dashboard"}
         defaultOpenKeys="home"
         mode="inline"
         style={{

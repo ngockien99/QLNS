@@ -3,10 +3,11 @@ import { Button, Col, Popconfirm, Row, Table, message } from "antd";
 import { Fragment, useCallback, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import API from "util/api";
+import { GET_LIST_POSITION } from "util/const";
 import FormPosition from "./form-position";
 
 const TableComponent = () => {
-  const { data = [] } = useQuery("QUERY_POSITION_LIST", () => {
+  const { data = [] } = useQuery(GET_LIST_POSITION, () => {
     const config = {
       url: "position/list",
     };
@@ -35,7 +36,7 @@ const TableComponent = () => {
       onSuccess: (_, variable) => {
         const { name } = variable;
         message.success(`Bạn đã xoá vị trí ${name} thành công`);
-        queryClient.invalidateQueries("QUERY_POSITION_LIST");
+        queryClient.invalidateQueries(GET_LIST_POSITION);
       },
       onError: (error) => {
         message.error(error);
