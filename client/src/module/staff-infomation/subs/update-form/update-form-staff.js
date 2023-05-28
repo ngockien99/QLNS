@@ -6,7 +6,6 @@ import {
   Radio,
   Row,
   Select,
-  Spin,
   message,
 } from "antd";
 import dayjs from "dayjs";
@@ -20,17 +19,17 @@ import {
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import {
+  LisLevelAtom,
+  ListDepartmentAtom,
+  ListPositionAtom,
+  ListSpecializedAtom,
+  ListUserAtom,
+  UserInfoAtom,
+} from "state-management/recoil";
 import API from "util/api";
 import { GET_STAFF_INFO } from "util/const";
-import {
-  useQueryDepartmentList,
-  useQueryLevelList,
-  useQueryManagerList,
-  useQueryPositionList,
-  useQuerySpecializedList,
-} from "util/custom-hook";
 
 const UpdateFormStaff = forwardRef((_, ref) => {
   const [form] = Form.useForm();
@@ -52,28 +51,23 @@ const UpdateFormStaff = forwardRef((_, ref) => {
   const params = useParams();
   const { id } = params;
 
-  const { options: specialize_list, isLoading: specialize_loading } =
-    useQuerySpecializedList();
-  const { options: level_list, isLoading: level_loading } = useQueryLevelList();
-  const { options: position_list, isLoading: position_loading } =
-    useQueryPositionList();
-  const { options: department_list, isLoading: department_loading } =
-    useQueryDepartmentList();
-  const { options: manager_list, isLoading: manager_loading } =
-    useQueryManagerList();
+  const specialize_list = useRecoilValue(ListSpecializedAtom);
+  const level_list = useRecoilValue(LisLevelAtom);
+  const position_list = useRecoilValue(ListPositionAtom);
+  const manager_list = useRecoilValue(ListUserAtom);
+  const department_list = useRecoilValue(ListDepartmentAtom);
 
   const { mutate } = useMutation(
     (data) => {
       const config = {
         url: "user/update",
         method: "put",
-        data: { ...userInfo?.user, ...data },
+        data: { ...userInfo?.user, ...userInfo?.salary, ...data },
       };
       return API.request(config);
     },
     {
-      onSuccess: (_, variables) => {
-        // setUserInfo((pre) => ({ ...pre, ...variables }));
+      onSuccess: () => {
         queryClient.invalidateQueries([id, GET_STAFF_INFO]);
         message.success("Bạn đã cập nhật thông tin thành công!");
         setOpen(false);
@@ -114,13 +108,13 @@ const UpdateFormStaff = forwardRef((_, ref) => {
       },
       {
         title: "Ngày bắt đầu công việc",
-        value: dayjs(start_work, "YYYY-MM-DD"),
+        value: dayjs(start_work || "2021-12-06", "YYYY-MM-DD"),
         type: "date",
         key: "start_work",
       },
       {
         title: "Ngày nghỉ việc",
-        value: dayjs(end_work, "YYYY-MM-DD"),
+        value: dayjs(end_work || "2023-03-02", "YYYY-MM-DD"),
         type: "date",
         key: "end_work",
       },
@@ -181,16 +175,6 @@ const UpdateFormStaff = forwardRef((_, ref) => {
       return form.setFields([{ name: e.key, value: e.value }]);
     });
   }, [data, form]);
-
-  if (
-    specialize_loading ||
-    level_loading ||
-    manager_loading ||
-    position_loading ||
-    department_loading
-  ) {
-    return <Spin />;
-  }
 
   return (
     <Modal

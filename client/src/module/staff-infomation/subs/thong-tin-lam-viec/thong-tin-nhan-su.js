@@ -1,60 +1,82 @@
 import { Button, Col, Form, Input, Radio, Row } from "antd";
-import { useCallback, useRef } from "react";
+import dayjs from "dayjs";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
+import { ROLE } from "util/const";
 import UpdateFormStaff from "../update-form/update-form-staff";
 
 const ThongTinNhanSu = () => {
+  const [form] = Form.useForm();
   const modalRef = useRef();
   const showModal = useCallback(() => {
     modalRef.current.show();
   }, []);
   const userInfo = useRecoilValue(UserInfoAtom);
-  const { user } = userInfo ?? {};
+  const { user, specialize, position, level, department } = userInfo ?? {};
+  const showEditButton = useMemo(() => (ROLE === "admin" ? true : false), []);
+  const { work_status, start_work, end_work, manager_name } = user ?? {};
 
-  const {
-    work_status,
-    start_work,
-    end_work,
-    level_id,
-    department_id,
-    position_id,
-    specialize_id,
-    manager_name,
-  } = user ?? {};
-  console.log(user);
-  const data = useRef({
-    work_status: {
-      title: "Trạng thái làm việc",
-      value:
-        work_status === 1
-          ? "Nhân viên đang làm việc"
-          : "Nhân viên đã nghỉ việc",
-    },
-    start_work: {
-      title: "Ngày bắt đầu công việc",
-      value: start_work || "06/12/2021",
-    },
-    end_work: { title: "Ngày nghỉ việc", value: end_work || "02/03/2023" },
-    manager_id: { title: "Quản lý", value: manager_name || "Nguyễn Hoàng Sơn" },
-    level_id: {
-      title: "Vị trí",
-      value: level_id === 1 ? "Chuyên viên" : "Ăn hại",
-    },
-    salary_id: { title: "Bậc lương", value: "2" },
-    department_id: {
-      title: "Phòng ban",
-      value: department_id === 1 ? "Công nghệ" : "Phòng kinh doanh",
-    },
-    position_id: {
-      title: "Chức vụ",
-      value: position_id === 1 ? "Nhân viên" : "Qủan lý",
-    },
-    specialize_id: {
-      title: "Chuyên môn",
-      value: specialize_id === 1 ? "FrontEnd Developer" : "Ăn hại",
-    },
-  });
+  const data = useMemo(
+    () => [
+      {
+        key: "work_status",
+        title: "Trạng thái làm việc",
+        value:
+          work_status === 1
+            ? "Nhân viên đang làm việc"
+            : "Nhân viên đã nghỉ việc",
+      },
+      {
+        key: "start_work",
+        title: "Ngày bắt đầu công việc",
+        value: dayjs(start_work || "2021-12-06").format("DD/MM/YYYY"),
+      },
+      {
+        key: "end_work",
+        title: "Ngày nghỉ việc",
+        value: dayjs(end_work || "2023-03-02").format("DD/MM/YYYY"),
+      },
+      { title: "Quản lý", value: manager_name, key: " manager" },
+      {
+        key: "level",
+        title: "Vị trí",
+        value: level?.name,
+      },
+      {
+        key: "department",
+        title: "Phòng ban",
+        value: department?.name,
+      },
+      {
+        key: "position",
+        title: "Chức vụ",
+        value: position?.name,
+      },
+      {
+        key: "specialize",
+        title: "Chuyên môn",
+        value: specialize?.name,
+      },
+    ],
+    [
+      work_status,
+      start_work,
+      end_work,
+      manager_name,
+      level?.name,
+      department?.name,
+      position?.name,
+      specialize?.name,
+    ]
+  );
+
+  useEffect(() => {
+    data.map((e) => {
+      form.setFieldsValue({ [e.key]: e.value });
+    });
+  }, [data, form]);
+
   return (
     <div>
       <div
@@ -65,23 +87,27 @@ const ThongTinNhanSu = () => {
         }}
       >
         <h1>Thông tin nhân sự</h1>
-        <Button onClick={showModal}>Edit</Button>
+        {showEditButton && <Button onClick={showModal}>Chỉnh sửa</Button>}
       </div>
       <div>
-        <Form name="customized_form_controls" layout="vertical" disabled>
+        <Form name="form-info-staff-2" layout="vertical" disabled form={form}>
           <Row gutter={24}>
-            {Object.entries(data.current).map(([key, value]) => {
-              const { title, value: initValue, type } = value;
+            {data.map((item) => {
+              const { title, type, key } = item;
               return (
-                <Col span={8}>
+                <Col span={12}>
                   <Form.Item name={key} label={title}>
                     {type ? (
-                      <Radio.Group defaultValue={initValue}>
-                        <Radio value="male"> Nam </Radio>
-                        <Radio value="female"> Nữ </Radio>
+                      <Radio.Group name={key}>
+                        <Radio value="male" name={key}>
+                          Nam
+                        </Radio>
+                        <Radio value="female" name={key}>
+                          Nữ
+                        </Radio>
                       </Radio.Group>
                     ) : (
-                      <Input defaultValue={initValue} />
+                      <Input name={key} />
                     )}
                   </Form.Item>
                 </Col>

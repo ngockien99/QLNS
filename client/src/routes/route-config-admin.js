@@ -21,7 +21,7 @@ export const RoleAdmin = [
     items: [
       {
         title: "Trang chủ",
-        to: "/dash-board",
+        to: "/dashboard",
         component: <Home />,
         icon: <HomeOutlined />,
       },

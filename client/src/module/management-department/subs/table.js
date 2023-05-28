@@ -10,6 +10,7 @@ const TableComponent = () => {
   const { data = [] } = useQuery(GET_LIST_DEPARTMENT, () => {
     const config = {
       url: "department/list",
+      params: { status: 1 },
     };
     return API.request(config);
   });
@@ -35,7 +36,7 @@ const TableComponent = () => {
     {
       onSuccess: (_, variable) => {
         const { name } = variable;
-        message.success(`Bạn đã xoá vị trí ${name} thành công`);
+        message.success(`Bạn đã xoá phòng ban ${name} thành công`);
         queryClient.invalidateQueries(GET_LIST_DEPARTMENT);
       },
       onError: (error) => {
@@ -91,7 +92,7 @@ const TableComponent = () => {
           </Col>
           <Col span="auto">
             <Popconfirm
-              description={`Bạn có chắc chắn muốn xoá vị trí ${record?.name}?`}
+              description={`Bạn có chắc chắn muốn xoá phòng ban ${record?.name}?`}
               onConfirm={() => confirm(record)}
               okText="Có, tôi chắc chắn"
               cancelText="Không"

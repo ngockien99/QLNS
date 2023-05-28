@@ -2,17 +2,18 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Image, Input, message } from "antd";
 import logo from "assets/image/logo-sunoffice.jpg";
 import banner from "assets/image/quy-trinh-cham-cong-1.jpg";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { useMutation } from "react-query";
 import { Navigate } from "react-router";
 import { useSetRecoilState } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
-import { TOKEN_JWT } from "util/const";
+import { ROLE, TOKEN_JWT } from "util/const";
 
 const Login = () => {
   const token = localStorage.getItem(TOKEN_JWT);
   const setUseInfo = useSetRecoilState(UserInfoAtom);
+  const [id, setId] = useState("");
 
   const { mutate } = useMutation(
     (formValue) => {
@@ -30,6 +31,7 @@ const Login = () => {
         localStorage.setItem("role", data.role);
         delete data.token;
         setUseInfo(data);
+        setId(data.user_id);
       },
       onError: (error) => {
         message.error(error);
@@ -43,7 +45,11 @@ const Login = () => {
     [mutate]
   );
   if (token) {
-    return <Navigate to="/" />;
+    const redirectTo =
+      ROLE === "admin"
+        ? "/dashboard"
+        : `/quan-ly-ho-so-ca-nhan/thong-tin-ca-nhan/${id}`;
+    return <Navigate to={redirectTo} />;
   }
   return (
     <div

@@ -20,6 +20,7 @@ const UpdateAcademic = forwardRef((_, ref) => {
   const [userInfo, setUserInfo] = useRecoilState(UserInfoAtom);
 
   const { name, rank, specialized } = userInfo?.academic || {};
+  console.log(name, rank, specialized);
   const queryClient = useQueryClient();
   const params = useParams();
   const { id } = params;
@@ -29,13 +30,12 @@ const UpdateAcademic = forwardRef((_, ref) => {
       const config = {
         url: "user/update",
         method: "put",
-        data: { ...userInfo?.user, ...data },
+        data: { ...userInfo?.user, ...userInfo?.salary, ...data },
       };
       return API.request(config);
     },
     {
-      onSuccess: (_, variables) => {
-        // setUserInfo((pre) => ({ ...pre, ...variables }));
+      onSuccess: () => {
         queryClient.invalidateQueries([id, GET_STAFF_INFO]);
         message.success("Bạn đã cập nhật thông tin thành công!");
         setOpen(false);
@@ -72,26 +72,19 @@ const UpdateAcademic = forwardRef((_, ref) => {
       {
         title: "Trình độ",
         value: rank,
-        key: "rank",
+        key: "academic_rank",
         type: "select",
         option: [
-          { label: "Trung cấp", value: 0 },
-          { label: "Cao đẳng", value: 1 },
-          { label: "Đại học", value: 2 },
-          { label: "Cao học", value: 3 },
+          { label: "Trung cấp", value: 1 },
+          { label: "Cao đẳng", value: 2 },
+          { label: "Đại học", value: 3 },
+          { label: "Cao học", value: 4 },
         ],
       },
       {
-        title: "Vị trí hiện tại",
+        title: "Ngành học",
         value: specialized,
-        key: "specialized",
-        type: "select",
-        option: [
-          { label: "Thực tập sinh", value: "Thực tập sinh" },
-          { label: "Nhân viên thử việc", value: "Nhân viên thử việc" },
-          { label: "Nhân viên chính thức", value: "Nhân viên chính thức" },
-          { label: "Quản lý", value: "Quản lý" },
-        ],
+        key: "academic_specialized",
       },
     ];
   }, [name, rank, specialized]);
@@ -111,9 +104,9 @@ const UpdateAcademic = forwardRef((_, ref) => {
         onFinish={onFinish}
         layout="vertical"
         initialValues={{
-          name: name,
-          rank: rank,
-          specialized: specialized,
+          academic_name: name,
+          academic_rank: rank,
+          academic_specialized: specialized,
         }}
       >
         <Row gutter={24}>

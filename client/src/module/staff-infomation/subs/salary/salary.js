@@ -1,7 +1,8 @@
 import { Button, Table } from "antd";
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
+import { ROLE } from "util/const";
 import UpdateFormSalary from "../update-form/update-form-salary";
 
 const Salary = () => {
@@ -11,11 +12,12 @@ const Salary = () => {
   const showModal = useCallback(() => {
     modalRef.current.show();
   }, []);
-  const data = [{ ...salary, id: user?.id, name: user?.name }];
+  const data = [{ ...salary, name: user?.name }];
+  const showEditButton = useMemo(() => (ROLE === "admin" ? true : false), []);
 
   const columns = [
     {
-      title: "MNV",
+      title: "id",
       dataIndex: "id",
       key: "id",
     },
@@ -23,6 +25,11 @@ const Salary = () => {
       title: "Họ và tên",
       dataIndex: "name",
       key: "name",
+    },
+    {
+      title: "Hệ số lương",
+      dataIndex: "salary_factor",
+      key: "salary_factor",
     },
     {
       title: "Lương cơ bản",
@@ -51,7 +58,7 @@ const Salary = () => {
         }}
       >
         <h1>Thông tin nhân sự</h1>
-        <Button onClick={showModal}>Edit</Button>
+        {showEditButton && <Button onClick={showModal}>Chỉnh sửa</Button>}
       </div>
       <Table
         columns={columns}

@@ -3,24 +3,21 @@ import {
   ClockCircleOutlined,
   CloseCircleOutlined,
   CopyOutlined,
-  DeleteOutlined,
-  EditOutlined,
 } from "@ant-design/icons";
-import { Button, Col, Popconfirm, Row, Table, Tag, message } from "antd";
+import { Button, Table, Tag } from "antd";
 import dayjs from "dayjs";
 import { Fragment, useCallback, useRef, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_REQUEST_LIST } from "util/const";
-import FormVerify from "../form-verify";
+import FormApprove from "./subs/form-approve";
 
-const TableWorkedDays = () => {
+const ListRequestAwaitApprove = () => {
   const userInfo = useRecoilValue(UserInfoAtom) ?? {};
   console.log(userInfo?.user);
   const { name = "kiennn" } = userInfo?.user ?? {};
-  const queryClient = useQueryClient();
   const [data, setData] = useState();
   useQuery(
     GET_REQUEST_LIST,
@@ -32,43 +29,22 @@ const TableWorkedDays = () => {
     },
     {
       onSuccess: (data) => {
-        const newData = data.my_request.map((e) => {
+        console.log(data);
+        const newData = data.people_request.map((e) => {
           return { ...e, name };
         });
         setData(newData);
       },
     }
   );
-
-  const { mutate } = useMutation(
-    (id) => {
-      const config = {
-        url: "request/delete",
-        data: { id },
-        method: "delete",
-      };
-      return API.request(config);
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(GET_REQUEST_LIST);
-        message.success("Bạn đã xoá báo cáo duyệt công thành công!");
-      },
-      onError: (error) => {
-        message.error(error);
-      },
-    }
-  );
   const modalRef = useRef();
-  const openModal = useCallback(() => modalRef.current.show(), []);
-  const editModal = useCallback((data) => {
+  const openModal = useCallback((data) => {
     const { date, time_ot_start = "", time_ot_end = "", type } = data;
     data.date = dayjs(date, "YYYY-MM-DD");
     if (type === 1) {
       data.time_ot_start = dayjs(time_ot_start, '"HH:mm"');
       data.time_ot_end = dayjs(time_ot_end, "HH:mm");
     }
-    data.isEdit = true;
     modalRef.current.show();
     modalRef?.current?.setValue(data);
   }, []);
@@ -125,53 +101,17 @@ const TableWorkedDays = () => {
       title: "Hành động",
       key: "action",
       render: (_, record) => (
-        <Row gutter={8}>
-          <Col span="auto">
-            <Button
-              style={{
-                background: "#62a73b",
-                color: "#fff",
-                borderRadius: "4px",
-              }}
-              icon={<CopyOutlined />}
-              onClick={openModal}
-            >
-              Xem chi tiết
-            </Button>
-          </Col>
-          <Col span="auto">
-            <Button
-              style={{
-                backgroundColor: "#f56a00",
-                color: "#fff",
-                borderRadius: "4px",
-              }}
-              icon={<EditOutlined />}
-              onClick={() => editModal(record)}
-            >
-              Sửa
-            </Button>
-          </Col>
-          <Col span="auto">
-            <Popconfirm
-              description={`Bạn có chắc chắn muốn xoá báo cáo này không}?`}
-              onConfirm={() => mutate(record.id)}
-              okText="Có, tôi chắc chắn"
-              cancelText="Không"
-            >
-              <Button
-                type="primary"
-                danger
-                style={{
-                  borderRadius: "4px",
-                }}
-                icon={<DeleteOutlined />}
-              >
-                Xoá
-              </Button>
-            </Popconfirm>
-          </Col>
-        </Row>
+        <Button
+          style={{
+            background: "#62a73b",
+            color: "#fff",
+            borderRadius: "4px",
+          }}
+          icon={<CopyOutlined />}
+          onClick={() => openModal(record)}
+        >
+          Xem chi tiết
+        </Button>
       ),
     },
   ];
@@ -179,9 +119,9 @@ const TableWorkedDays = () => {
   return (
     <Fragment>
       <Table columns={columns} dataSource={data} />
-      <FormVerify ref={modalRef} />
+      <FormApprove ref={modalRef} />
     </Fragment>
   );
 };
 
-export default TableWorkedDays;
+export default ListRequestAwaitApprove;

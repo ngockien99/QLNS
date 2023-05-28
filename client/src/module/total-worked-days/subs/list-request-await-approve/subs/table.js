@@ -6,10 +6,10 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { Button, Col, Popconfirm, Row, Table, Tag, message } from "antd";
+import { Button, Col, Row, Table, Tag } from "antd";
 import dayjs from "dayjs";
 import { Fragment, useCallback, useRef, useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
@@ -20,7 +20,6 @@ const TableWorkedDays = () => {
   const userInfo = useRecoilValue(UserInfoAtom) ?? {};
   console.log(userInfo?.user);
   const { name = "kiennn" } = userInfo?.user ?? {};
-  const queryClient = useQueryClient();
   const [data, setData] = useState();
   useQuery(
     GET_REQUEST_LIST,
@@ -36,26 +35,6 @@ const TableWorkedDays = () => {
           return { ...e, name };
         });
         setData(newData);
-      },
-    }
-  );
-
-  const { mutate } = useMutation(
-    (id) => {
-      const config = {
-        url: "request/delete",
-        data: { id },
-        method: "delete",
-      };
-      return API.request(config);
-    },
-    {
-      onSuccess: () => {
-        queryClient.invalidateQueries(GET_REQUEST_LIST);
-        message.success("Bạn đã xoá báo cáo duyệt công thành công!");
-      },
-      onError: (error) => {
-        message.error(error);
       },
     }
   );
@@ -153,23 +132,16 @@ const TableWorkedDays = () => {
             </Button>
           </Col>
           <Col span="auto">
-            <Popconfirm
-              description={`Bạn có chắc chắn muốn xoá báo cáo này không}?`}
-              onConfirm={() => mutate(record.id)}
-              okText="Có, tôi chắc chắn"
-              cancelText="Không"
+            <Button
+              type="primary"
+              danger
+              style={{
+                borderRadius: "4px",
+              }}
+              icon={<DeleteOutlined />}
             >
-              <Button
-                type="primary"
-                danger
-                style={{
-                  borderRadius: "4px",
-                }}
-                icon={<DeleteOutlined />}
-              >
-                Xoá
-              </Button>
-            </Popconfirm>
+              Xoá
+            </Button>
           </Col>
         </Row>
       ),

@@ -1,40 +1,15 @@
 import { Menu } from "antd";
 import { useState } from "react";
-import { useQuery } from "react-query";
 import { Link, Outlet, useParams } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
-import API from "util/api";
-import { GET_STAFF_INFO } from "util/const";
 
 const StaffInformation = () => {
   const [route, setRoute] = useState("thong-tin-ca-nhan");
   const onClick = (e) => {
     setRoute(e.key);
   };
-  const setUserInfo = useSetRecoilState(UserInfoAtom);
+
   const params = useParams();
   const { id } = params;
-
-  useQuery(
-    [id, GET_STAFF_INFO],
-    () => {
-      const config = {
-        url: `/user/detail`,
-        params: { id },
-      };
-      return API.request(config);
-    },
-    {
-      onSuccess: (data) => {
-        setUserInfo(data);
-      },
-      onError: (error) => {
-        console.log(error);
-      },
-      enabled: !!id,
-    }
-  );
 
   const items = [
     {
@@ -52,7 +27,7 @@ const StaffInformation = () => {
       key: "tien-luong",
     },
     {
-      label: <Link to={`qua-trinh-dao-tao/${id}`}>Qúa trình đào tạo</Link>,
+      label: <Link to={`qua-trinh-dao-tao/${id}`}>Quá trình đào tạo</Link>,
       key: "qua-trinh-dao-tao",
     },
   ];

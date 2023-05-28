@@ -35,7 +35,7 @@ const TableComponent = () => {
     {
       onSuccess: (_, variable) => {
         const { name } = variable;
-        message.success(`Bạn đã xoá vị trí ${name} thành công`);
+        message.success(`Bạn đã xoá cấp bậc ${name} thành công`);
         queryClient.invalidateQueries(GET_LIST_LEVEL);
       },
       onError: (error) => {
@@ -59,7 +59,7 @@ const TableComponent = () => {
       width: "10%",
     },
     {
-      title: "Tên vị trí",
+      title: "Tên cấp bậc",
       dataIndex: "name",
       key: "name",
       width: "20%",
@@ -97,7 +97,7 @@ const TableComponent = () => {
           </Col>
           <Col span="auto">
             <Popconfirm
-              description={`Bạn có chắc chắn muốn xoá vị trí ${record?.name}?`}
+              description={`Bạn có chắc chắn muốn xoá cấp bậc ${record?.name}?`}
               onConfirm={() => confirm(record)}
               okText="Có, tôi chắc chắn"
               cancelText="Không"

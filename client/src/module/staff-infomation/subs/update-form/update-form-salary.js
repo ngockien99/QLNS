@@ -8,7 +8,7 @@ import {
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_STAFF_INFO } from "util/const";
@@ -17,10 +17,8 @@ const UpdateFormSalary = forwardRef((_, ref) => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
 
-  const [userInfo, setUserInfo] = useRecoilState(UserInfoAtom);
+  const userInfo = useRecoilValue(UserInfoAtom);
 
-  const { salary_basic, allowance_money, insurance_premium_salary } =
-    userInfo?.salary || {};
   const queryClient = useQueryClient();
   const params = useParams();
   const { id } = params;
@@ -30,13 +28,12 @@ const UpdateFormSalary = forwardRef((_, ref) => {
       const config = {
         url: "user/update",
         method: "put",
-        data: { ...userInfo?.user, ...data },
+        data: { ...userInfo?.user, ...userInfo?.salary, ...data },
       };
       return API.request(config);
     },
     {
-      onSuccess: (_, variables) => {
-        // setUserInfo((pre) => ({ ...pre, ...variables }));
+      onSuccess: () => {
         queryClient.invalidateQueries([id, GET_STAFF_INFO]);
         message.success("Bạn đã cập nhật thông tin thành công!");
         setOpen(false);
@@ -55,6 +52,7 @@ const UpdateFormSalary = forwardRef((_, ref) => {
           values.insurance_premium_salary
         );
         values.allowance_money = Number(values.allowance_money);
+        values.salary_factor = Number(values.salary_factor);
         mutate(values);
       })
       .catch((info) => {
@@ -71,30 +69,23 @@ const UpdateFormSalary = forwardRef((_, ref) => {
   const data = useMemo(() => {
     return [
       {
+        title: "Hệ số lương",
+        key: "salary_factor",
+      },
+      {
         title: "Lương cơ bản",
-        value: salary_basic,
         key: "salary_basic",
       },
       {
         title: "Thưởng kinh doanh",
-        value: allowance_money,
         key: "allowance_money",
       },
       {
-        title: "Ngày nghỉ việc",
-        value: insurance_premium_salary,
+        title: "Mức đóng BHYT,BHXH",
         key: "insurance_premium_salary",
       },
     ];
   }, []);
-
-  //   useEffect(() => {
-  //     if (open) {
-  //       data.forEach((e) => {
-  //         return form.setFields([{ name: e.key, value: e.value }]);
-  //       });
-  //     }
-  //   }, [data, form, open]);
 
   return (
     <Modal
@@ -110,11 +101,7 @@ const UpdateFormSalary = forwardRef((_, ref) => {
         name="update-info-salary"
         onFinish={onFinish}
         layout="vertical"
-        initialValues={{
-          salary_basic: salary_basic,
-          allowance_money: allowance_money,
-          insurance_premium_salary: insurance_premium_salary,
-        }}
+        initialValues={userInfo?.salary}
       >
         <Row gutter={24}>
           {data.map((item) => {
