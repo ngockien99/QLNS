@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\RewardDiscipline;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,6 +23,7 @@ class DatabaseSeeder extends Seeder
             SalarySeeder::class,
             UserSeeder::class,
             PayrollSeeder::class,
+            RewardDisciplineSeeder::class,
         ]);
     }
 }

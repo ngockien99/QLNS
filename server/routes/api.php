@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\StaffController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ResetPasswordController;
 use App\Http\Controllers\Api\DashBoardController;
+use App\Http\Controllers\Api\RewardDisciplineController;
 
 /*
 |--------------------------------------------------------------------------
@@ -93,6 +94,13 @@ Route::group(['middleware' => 'jwt.auth', 'middleware' => 'permission',], functi
     Route::put('update', [SpecicalizeController::class, 'updateSpecialize']);
     Route::delete('delete', [SpecicalizeController::class, 'deleteSpecialize']);
     Route::post('create', [SpecicalizeController::class, 'createSpecialize']);
+  });
+
+  Route::group(['prefix' => 'reward-discipline'], function(){
+    Route::get('list', [RewardDisciplineController::class, 'listRewardDiscipline']);
+    Route::put('update', [RewardDisciplineController::class, 'updateRewardDiscipline']);
+    Route::delete('delete', [RewardDisciplineController::class, 'deleteRewardDiscipline']);
+    Route::post('create', [RewardDisciplineController::class, 'createRewardDiscipline']);
   });
 
   Route::get('dashboard', [DashBoardController::class, 'showDashboard']);

@@ -8,9 +8,13 @@ use App\Http\Requests\LogRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\AcademicLevel;
+use App\Models\Department;
+use App\Models\Level;
 use App\Models\Salary;
 use App\Models\Timekeeping;
 use App\Models\LogRequestModel;
+use App\Models\Position;
+use App\Models\Specialize;
 use Carbon\Carbon;
 use App\Notifications\NotifiManager;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -38,7 +42,7 @@ class StaffController extends Controller
             ->where('status', config('constants.log_request.status.approve'))
             ->count();
 
-            $checkManager = User::where('manager_id', $user->id)->get();
+            $checkManager = User::where('manager_id', $user->id)->first();
 
             $leave = [
                 "total_leave" => 12,
@@ -49,12 +53,17 @@ class StaffController extends Controller
 
             $data = [
                 "user" => $user,
-                "check_manager" => count($checkManager) === 0 ? false : true,
+                "check_manager" => $checkManager ? false : true,
                 "academic" => AcademicLevel::where('id', $user->academic_level_id)->first(),
                 "salary" => Salary::where('id', $user->salary_id)->first(),
+                "department" => Department::findOrFail($user->department_id),
+                "level" => Level::findOrFail($user->level_id),
                 "leave" => $leave,
                 "checkin" => $findToday && $findToday->checkin ? true : false,
                 "checkout" => $findToday && $findToday->checkout ? true : false,
+                "manager" => $checkManager->name,
+                "position" => Position::findOrFail($user->position_id),
+                "specialize" => Specialize::findOrFail($user->specialize_id)
             ];
             return $this->responseSuccess($data);
         } else {
@@ -127,7 +136,7 @@ class StaffController extends Controller
             $data["time_ot_start"] = $request->time_ot_start;
             $data["time_ot_end"] = $request->time_ot_end;
         }
-        Log::info($data);
+        
         $logRequest = LogRequestModel::create($data);
 
         $manager = User::findOrFail($logRequest->manager_id);

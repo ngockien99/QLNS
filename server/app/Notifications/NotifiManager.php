@@ -38,7 +38,6 @@ class NotifiManager extends Notification
     public function toMail(object $notifiable): Mailable
     {
         $url = url('test');
-        Log::info($this->manager->email);
         return (new Mailable)
                 ->view('notifiManager', ['url' => $url])
                 ->subject("Bạn có một request cần duyệt")
