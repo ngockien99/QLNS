@@ -21,7 +21,6 @@ class Permission
         try {
             $token = $request->bearerToken();
             $user = JWTAuth::toUser(JWTAuth::setToken($token)->getPayload());
-
             if (!$user) {
                 return response()->json([
                     'status' => false,
@@ -39,7 +38,6 @@ class Permission
             }
 
             $permission = $this->_checkPermission($request, $user);
-
             if (!$permission) {
                 return response()->json([
                     'status' => false,
@@ -50,6 +48,7 @@ class Permission
 
             return $next($request);
         } catch (\Exception $e) {
+            Log::info($e);
             return response()->json([
                 'status' => false,
                 'message' => 'Lỗi hệ thống'
@@ -72,7 +71,7 @@ class Permission
 
         $permission = @$permissions[$prefix];
         if (!empty($permission)) {
-            if (($user->role & $permission) == 0) {
+            if (($user->role & $permission) !== 0) {
                 return true;
             }
         }

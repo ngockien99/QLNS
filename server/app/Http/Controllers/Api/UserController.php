@@ -73,6 +73,13 @@ class UserController extends Controller
             'specialized' => $request->academic_specialized ? $request->academic_specialized : $academic->specialized,
             'rank' => $request->academic_rank ? $request->academic_rank : $academic->rank
         ]);
+
+        $salary = Salary::findOrFail($user->salary_id)->update([
+            'salary_basic' => $request->salary_basic,
+            'salary_factor' => $request->salary_factor,
+            'allowance_money' => $request->allowance_money,
+            'insurance_premium_salary' => $request->insurance_premium_salary
+        ]);
         
 
         $user = $user->update($request->all());
