@@ -127,6 +127,8 @@ class UserController extends Controller
             'avatar' => $fileNameToStore,
             'address' => $request->address,
             'phone' => $request->phone,
+            'cccd' => $request->cccd,
+            'mst' => $request->mst,
             'gender' => $request->gender,
             'work_status' => $request->work_status,
             'marital_status' => $request->marital_status,
