@@ -1,7 +1,7 @@
 import Highcharts from "highcharts";
 import { memo, useEffect, useRef } from "react";
 
-export default memo(() => {
+export default memo(({ data }) => {
   const refContainer = useRef();
   useEffect(() => {
     Highcharts.chart(refContainer.current, {
@@ -37,22 +37,7 @@ export default memo(() => {
         {
           name: "Tỉ trọng",
           colorByPoint: true,
-          data: [
-            {
-              name: "Khối Công Nghệ",
-              y: 70.67,
-              sliced: true,
-              selected: true,
-            },
-            {
-              name: "Khối Nhân Sự",
-              y: 14.77,
-            },
-            {
-              name: "Khối Kinh Doanh",
-              y: 4.86,
-            },
-          ],
+          data: data,
         },
       ],
     });

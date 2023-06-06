@@ -1,13 +1,13 @@
 import { Button, Table } from "antd";
+import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import { useCallback, useMemo, useRef } from "react";
 import { useRecoilValue } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
 import { ROLE } from "util/const";
 import UpdateFormSalary from "../update-form/update-form-salary";
 
 const Salary = () => {
-  const userInfo = useRecoilValue(UserInfoAtom);
-  const { salary, user } = userInfo ?? {};
+  const activeUserInfo = useRecoilValue(ActiveUserInfoAtom);
+  const { salary, user } = activeUserInfo ?? {};
   const modalRef = useRef();
   const showModal = useCallback(() => {
     modalRef.current.show();

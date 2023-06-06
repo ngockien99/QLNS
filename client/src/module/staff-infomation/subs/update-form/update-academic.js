@@ -1,4 +1,5 @@
 import { Col, Form, Input, Modal, Row, Select, message } from "antd";
+import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import {
   forwardRef,
   useCallback,
@@ -9,7 +10,6 @@ import {
 import { useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_STAFF_INFO } from "util/const";
 
@@ -17,9 +17,9 @@ const UpdateAcademic = forwardRef((_, ref) => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
 
-  const [userInfo, setUserInfo] = useRecoilState(UserInfoAtom);
+  const activeUserInfo = useRecoilState(ActiveUserInfoAtom);
 
-  const { name, rank, specialized } = userInfo?.academic || {};
+  const { name, rank, specialized } = activeUserInfo?.academic || {};
   console.log(name, rank, specialized);
   const queryClient = useQueryClient();
   const params = useParams();
@@ -30,7 +30,7 @@ const UpdateAcademic = forwardRef((_, ref) => {
       const config = {
         url: "user/update",
         method: "put",
-        data: { ...userInfo?.user, ...userInfo?.salary, ...data },
+        data: { ...activeUserInfo?.user, ...activeUserInfo?.salary, ...data },
       };
       return API.request(config);
     },

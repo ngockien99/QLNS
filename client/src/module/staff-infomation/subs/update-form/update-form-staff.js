@@ -9,6 +9,7 @@ import {
   message,
 } from "antd";
 import dayjs from "dayjs";
+import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import {
   forwardRef,
   useCallback,
@@ -19,14 +20,13 @@ import {
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import {
   LisLevelAtom,
   ListDepartmentAtom,
   ListPositionAtom,
   ListSpecializedAtom,
   ListUserAtom,
-  UserInfoAtom,
 } from "state-management/recoil";
 import API from "util/api";
 import { GET_STAFF_INFO } from "util/const";
@@ -35,7 +35,7 @@ const UpdateFormStaff = forwardRef((_, ref) => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
 
-  const [userInfo, setUserInfo] = useRecoilState(UserInfoAtom);
+  const activeUserInfo = useRecoilValue(ActiveUserInfoAtom);
 
   const {
     work_status,
@@ -46,7 +46,7 @@ const UpdateFormStaff = forwardRef((_, ref) => {
     position_id,
     specialize_id,
     manager_id,
-  } = userInfo?.user || {};
+  } = activeUserInfo?.user || {};
   const queryClient = useQueryClient();
   const params = useParams();
   const { id } = params;
@@ -62,7 +62,7 @@ const UpdateFormStaff = forwardRef((_, ref) => {
       const config = {
         url: "user/update",
         method: "put",
-        data: { ...userInfo?.user, ...userInfo?.salary, ...data },
+        data: { ...activeUserInfo?.user, ...activeUserInfo?.salary, ...data },
       };
       return API.request(config);
     },

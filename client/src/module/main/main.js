@@ -1,7 +1,7 @@
-import { Spin } from "antd";
+import { Spin, message } from "antd";
 import Layout from "component/layout";
 import { useQuery } from "react-query";
-import { Navigate, Outlet, useParams } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
@@ -16,10 +16,9 @@ import {
 
 const Main = () => {
   const token = localStorage.getItem(TOKEN_JWT);
+
   const setUserInfo = useSetRecoilState(UserInfoAtom);
-  const idLocal = localStorage.getItem("user_id");
-  const params = useParams();
-  const id = params?.id || idLocal;
+  const id = localStorage.getItem("user_id");
 
   const { isLoading } = useQueryManagerList();
   const { isLoading: specialize_loading } = useQuerySpecializedList();
@@ -38,10 +37,13 @@ const Main = () => {
     },
     {
       onSuccess: (data) => {
+        // message.success(
+        //   "Chào mừng bạn đến với hệ thống quản lý nhân sự công ty Trico"
+        // );
         setUserInfo(data);
       },
       onError: (error) => {
-        console.log(error);
+        message.error(error);
       },
       enabled: !!id,
     }

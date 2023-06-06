@@ -1,25 +1,23 @@
 import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Col, Popconfirm, Row, Table, message } from "antd";
-import { Fragment, useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useNavigate } from "react-router";
 import API from "util/api";
 import { GET_LIST_STAFF } from "util/const";
-import ModalCreateStaff from "./form-create-staff";
 
 const TableComponent = () => {
   const navigate = useNavigate();
+  const onEditInfo = useCallback(
+    (id) => navigate(`/chinh-sua-thong-tin-nhan-su/${id}`),
+    [navigate]
+  );
 
   const navigateToInfo = useCallback(
     (id) => navigate(`/quan-ly-ho-so-ca-nhan/thong-tin-ca-nhan/${id}`),
     [navigate]
   );
 
-  const modalRef = useRef();
-  const showModal = useCallback((value) => {
-    modalRef.current.show();
-    modalRef.current.setValue(value);
-  }, []);
   const queryClient = useQueryClient();
   const { data: queryData } = useQuery(GET_LIST_STAFF, () => {
     const config = {
@@ -96,7 +94,7 @@ const TableComponent = () => {
                 borderRadius: "4px",
               }}
               icon={<EditOutlined />}
-              onClick={() => showModal(record)}
+              onClick={() => onEditInfo(record.id)}
             >
               Sửa
             </Button>
@@ -125,12 +123,7 @@ const TableComponent = () => {
     },
   ];
 
-  return (
-    <Fragment>
-      <Table columns={columns} dataSource={queryData?.data} bordered />
-      <ModalCreateStaff ref={modalRef} />
-    </Fragment>
-  );
+  return <Table columns={columns} dataSource={queryData?.data} bordered />;
 };
 
 export default TableComponent;

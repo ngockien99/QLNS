@@ -10,6 +10,7 @@ import {
   message,
 } from "antd";
 import dayjs from "dayjs";
+import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import {
   forwardRef,
   useCallback,
@@ -20,7 +21,6 @@ import {
 import { useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
 import { useRecoilValue } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_STAFF_INFO } from "util/const";
 import { Marital } from "util/data-form";
@@ -29,7 +29,7 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
 
-  const userInfo = useRecoilValue(UserInfoAtom);
+  const activeUserInfo = useRecoilValue(ActiveUserInfoAtom);
 
   const queryClient = useQueryClient();
   const params = useParams();
@@ -40,7 +40,7 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
       const config = {
         url: "user/update",
         method: "put",
-        data: { ...userInfo?.user, ...userInfo?.salary, ...data },
+        data: { ...activeUserInfo?.user, ...activeUserInfo?.salary, ...data },
       };
       return API.request(config);
     },
@@ -112,8 +112,11 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
         onFinish={onFinish}
         layout="vertical"
         initialValues={{
-          ...userInfo?.user,
-          date_of_birth: dayjs(userInfo?.user?.date_of_birth, "YYYY-MM-DD"),
+          ...activeUserInfo?.user,
+          date_of_birth: dayjs(
+            activeUserInfo?.user?.date_of_birth,
+            "YYYY-MM-DD"
+          ),
         }}
       >
         <Row gutter={24}>

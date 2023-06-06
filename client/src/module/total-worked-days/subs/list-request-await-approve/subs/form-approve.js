@@ -24,17 +24,16 @@ const FormVerify = forwardRef((_, ref) => {
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
-  const [id, setId] = useState("");
+  const [data, setData] = useState("");
   const queryClient = useQueryClient();
+
   useImperativeHandle(ref, () => ({
     show: () => {
       setShow(true);
     },
     setValue: (value) => {
-      Object.entries(value).map(([formKey, value]) => {
-        return form.setFields([{ name: formKey, value: value }]);
-      });
-      setId(value.id);
+      setData(value);
+      setValue(value.type);
     },
   }));
 
@@ -47,7 +46,7 @@ const FormVerify = forwardRef((_, ref) => {
     () => {
       const config = {
         url: "request/approve",
-        data: { id },
+        data: { id: data?.id },
         method: "put",
       };
       return API.request(config);
@@ -68,7 +67,7 @@ const FormVerify = forwardRef((_, ref) => {
     () => {
       const config = {
         url: "request/reject",
-        data: { id },
+        data: { id: data?.id },
         method: "put",
       };
       return API.request(config);
@@ -93,6 +92,7 @@ const FormVerify = forwardRef((_, ref) => {
           layout="vertical"
           name="form_in_modal-approve"
           disabled
+          initialValues={data}
         >
           <Form.Item name="type" label="Loại báo cáo:">
             <Radio.Group defaultValue={value} disabled={isEdit}>
@@ -201,7 +201,7 @@ const FormVerify = forwardRef((_, ref) => {
           <Button
             onClick={() => {
               setShow(false);
-              setId("");
+              setValue(0);
             }}
           >
             Huỷ

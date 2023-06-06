@@ -1,5 +1,5 @@
 export const TOKEN_JWT = "web_qlns_token_jwt";
-export const ROLE = "admin";
+export const ROLE = "staff";
 
 export const GET_LIST_CONTACT = "GET_LIST_CONTACT";
 export const GET_LIST_DEPARTMENT = "GET_LIST_DEPARTMENT";

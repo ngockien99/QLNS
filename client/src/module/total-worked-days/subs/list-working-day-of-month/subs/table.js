@@ -66,17 +66,29 @@ const TableComponent = () => {
       key: "type_time",
       render: (_, record) => {
         const { checkin, checkout, work_day } = record;
+        console.log(work_day, checkin, checkout);
         if (!checkin || !checkout) {
-          return "Ngày làm việc không hợp lệ!";
+          return 0;
         }
-        return Number.isNumber(work_day) * 8;
+        return work_day * 8;
+      },
+    },
+    {
+      title: "Trạng thái",
+      key: "status",
+      render: (_, record) => {
+        const { checkin, checkout, work_day } = record;
+        if (!checkin || !checkout || work_day * 8 < 8) {
+          return "NLVKHL";
+        }
+        return "";
       },
     },
     {
       title: "Hành động",
       key: "action",
       render: (_, record) => {
-        if (!record.checkin || !record.checkout) {
+        if (!record.checkin || !record.checkout || record.work_day * 8 < 8) {
           return (
             <Button
               style={{
@@ -102,7 +114,12 @@ const TableComponent = () => {
 
   return (
     <Fragment>
-      <Table columns={columns} dataSource={data} pagination={{ pageSize: 5 }} />
+      <Table
+        columns={columns}
+        dataSource={data}
+        pagination={{ pageSize: 5 }}
+        bordered
+      />
       <FormVerify ref={modalRef} />
     </Fragment>
   );

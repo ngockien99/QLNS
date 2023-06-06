@@ -1,10 +1,44 @@
-import { RiseOutlined } from "@ant-design/icons";
-import { Card, Col, Image, Row } from "antd";
+import { Col, Image, Row, Spin } from "antd";
 import helloImage from "assets/image/hello.png";
+import { useMemo } from "react";
+import { useQuery } from "react-query";
+import { useRecoilValue } from "recoil";
+import { UserInfoAtom } from "state-management/recoil";
+import API from "util/api";
+import CardComponent from "./subs/card";
 import ChartPie from "./subs/chart-pie";
 import TableComponent from "./subs/table";
+import TotalStaff from "./subs/total-staff";
 
 const Home = () => {
+  const userInfo = useRecoilValue(UserInfoAtom);
+  const { name } = userInfo?.user ?? {};
+  const { data, isLoading } = useQuery("GET_DATA_DASHBOARD", () => {
+    const config = {
+      url: "dashboard",
+    };
+    return API.request(config);
+  });
+  const topDepartment = useMemo(() => {
+    return data?.percent_department
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 4);
+  }, [data?.percent_department]);
+
+  const chartPie = useMemo(() => {
+    return data?.percent_department.map((e) => {
+      return {
+        name: e.name,
+        y: Number(e.percent),
+        sliced: true,
+        selected: true,
+      };
+    });
+  }, [data?.percent_department]);
+
+  if (isLoading) {
+    return <Spin />;
+  }
   return (
     <div
       style={{ backgroundColor: "#ccc", padding: 12, gap: 16, height: "100%" }}
@@ -25,170 +59,22 @@ const Home = () => {
               <Image src={helloImage} preview={false} width={90} />
             </Col>
             <Col style={{ color: "#fff" }}>
-              <Row style={{ fontSize: 16 }}>Xin chào Nguyễn Ngọc Kiên.</Row>
-              <Row>Bạn đang xem tổng quan về nhân sự công ty HocMai.</Row>
+              <Row style={{ fontSize: 16 }}>Xin chào {name}.</Row>
+              <Row>Bạn đang xem tổng quan về nhân sự công ty Trico.</Row>
             </Col>
           </Row>
-          <Row gutter={12}>
-            <Col span={8}>
-              <div
-                style={{
-                  backgroundColor: "#fff",
-                  borderRadius: 4,
-                  padding: 12,
-                  gap: 4,
-                  borderLeft: "4px solid green",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 500,
-                  }}
-                >
-                  Nhân viên thử việc
-                </span>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 16,
-                  }}
-                >
-                  <h2>1</h2>
-                  <RiseOutlined
-                    style={{ fontSize: "20px" }}
-                    twoToneColor={"red"}
-                  />
-                </div>
-              </div>
-            </Col>
-            <Col span={8}>
-              <div
-                style={{
-                  backgroundColor: "#fff",
-                  borderRadius: 4,
-                  padding: 12,
-                  gap: 4,
-                  borderLeft: "4px solid blue",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 500,
-                  }}
-                >
-                  Nhân viên chính thức
-                </span>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 16,
-                  }}
-                >
-                  <h2>1</h2>
-                  <RiseOutlined
-                    style={{ fontSize: "20px" }}
-                    twoToneColor={"red"}
-                  />
-                </div>
-              </div>
-            </Col>
-            <Col span={8}>
-              <div
-                style={{
-                  backgroundColor: "#fff",
-                  borderRadius: 4,
-                  padding: 12,
-                  gap: 4,
-                  borderLeft: "4px solid orange",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 16,
-                    fontWeight: 500,
-                  }}
-                >
-                  Nhân viên nghỉ việc
-                </span>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 16,
-                  }}
-                >
-                  <h2>1</h2>
-                  <RiseOutlined
-                    style={{ fontSize: "20px" }}
-                    twoToneColor={"red"}
-                  />
-                </div>
-              </div>
-            </Col>
-          </Row>
+          <CardComponent data={data?.count_user} />
         </Col>
         <Col span={6}>
-          <Card title="Tổng số nhân viên">
-            <Row style={{ display: "flex", justifyContent: "center" }}>
-              <h4 style={{ marginTop: 0 }}>112</h4>
-            </Row>
-            <Row>
-              <Col span={8} style={{ textAlign: "start" }}>
-                icon
-              </Col>
-              <Col span={8} style={{ textAlign: "center" }}>
-                Thử việc
-              </Col>
-              <Col span={8} style={{ textAlign: "end" }}>
-                6
-              </Col>
-            </Row>
-            <Row>
-              <Col span={8} style={{ textAlign: "start" }}>
-                icon
-              </Col>
-              <Col span={8} style={{ textAlign: "center" }}>
-                Thử việc
-              </Col>
-              <Col span={8} style={{ textAlign: "end" }}>
-                6
-              </Col>
-            </Row>
-            <Row>
-              <Col span={8} style={{ textAlign: "start" }}>
-                icon
-              </Col>
-              <Col span={8} style={{ textAlign: "center" }}>
-                Thử việc
-              </Col>
-              <Col span={8} style={{ textAlign: "end" }}>
-                6
-              </Col>
-            </Row>
-            <Row>
-              <Col span={8} style={{ textAlign: "start" }}>
-                icon
-              </Col>
-              <Col span={8} style={{ textAlign: "center" }}>
-                Thử việc
-              </Col>
-              <Col span={8} style={{ textAlign: "end" }}>
-                6
-              </Col>
-            </Row>
-          </Card>
+          <TotalStaff total={data?.count_user?.total} data={topDepartment} />
         </Col>
       </Row>
       <Row style={{ marginTop: 16 }} gutter={16}>
         <Col span={12} style={{ borderRadius: 8, overflow: "hidden" }}>
-          <ChartPie />
+          <ChartPie data={chartPie} />
         </Col>
         <Col span={12}>
-          <TableComponent />
+          <TableComponent data={data?.user_late} />
         </Col>
       </Row>
     </div>
