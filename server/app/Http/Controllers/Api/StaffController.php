@@ -16,11 +16,13 @@ use App\Models\LogRequestModel;
 use App\Models\Position;
 use App\Models\Specialize;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use App\Notifications\NotifiManager;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 
 class StaffController extends Controller
@@ -106,51 +108,74 @@ class StaffController extends Controller
     }
 
     public function createRequest(LogRequest $request) {
-        $getUser = $this->getUser($request);
-        $user = User::findOrFail($getUser->id);
+        \DB::transaction(function() use ($request, &$logRequest, &$data){
+            $getUser = $this->getUser($request);
+            $user = User::findOrFail($getUser->id);
+            $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+            $period = CarbonPeriod::create($request->date[0], $request->date[1]);
 
-        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+            $data = [];
+            if ($request->type === config('constants.log_request.type.leave')) {
+                foreach ($period as $key => $date) {
+                    $log = LogRequestModel::where('date', $date->format('Y-m-d'))->where('time_leave', $request->time_leave)->first();
+                    if ($log) {
+                        continue;
+                    }
+                    $params = [
+                        "day_create" => $today,
+                        "type" => $request->type,
+                        "date" => $date->format('Y-m-d'),
+                        "manager_id" => $user->manager_id,
+                        "user_id" => $user->id
+                    ];
+                
+                    // check xem ngày phép có lớn hơn ngày tạo nghỉ không
+                    $dayLeave = $this->calculateDayLeave($request->time_leave);
+                    if ($user->annual_leave >= $dayLeave && $user->work_status === config('constants.work_status.doing')) {
+                        $params["check_paid"] = config('constants.log_request.check_paid.paid');
+                        $user->update(['annual_leave' => $user->annual_leave - $dayLeave]);
+                    } else {
+                        $params["check_paid"] = config('constants.log_request.check_paid.unpaid');
+                    }
 
-        $data = [
-            "day_create" => $today,
-            "type" => $request->type,
-            "date" => $request->date,
-            "manager_id" => $user->manager_id,
-            "user_id" => $user->id
-        ];
+                    $params["time_leave"] = $request->time_leave;
+                    $params["reason"] = $request->reason;
 
-        if ($request->type === config('constants.log_request.type.leave')) {
-            // check xem ngày phép có lớn hơn ngày tạo nghỉ không
-            if ($user->annual_leave >= $request->time_leave && $user->work_status === config('constants.work_status.doing')) {
-                $data["check_paid"] = config('constants.log_request.check_paid.paid');
-            } else {
-                $data["check_paid"] = config('constants.log_request.check_paid.unpaid');
+                    array_push($data, $params);
+                }
+                
+                $logRequest = LogRequestModel::insert($data);
             }
 
-            $data["time_leave"] = $request->time_leave;
-            $data["reason"] = $request->reason;
-        }
+            if ($request->type === config('constants.log_request.type.OT')) {
 
-        if ($request->type === config('constants.log_request.type.OT')) {
-            $data["title"] = $request->title;
-            $data["time_ot_start"] = $request->time_ot_start;
-            $data["time_ot_end"] = $request->time_ot_end;
-        }
-        
-        $logRequest = LogRequestModel::create($data);
+                $data["day_create"] = $today;
+                $data["type"] = $request->type;
+                $data["date"] = new Carbon($request->date[0]);
+                $data["manager_id"] = $user->manager_id;
+                $data["user_id"] = $user->id;
+                $data["title"] = $request->title;
+                $data["time_ot_start"] = $request->time_ot_start;
+                $data["time_ot_end"] = $request->time_ot_end;
+                $log = LogRequestModel::where('date', new Carbon($request->date[0]))->first();
 
-        $manager = User::findOrFail($logRequest->manager_id);
-
-        $manager->notify(new NotifiManager($manager));
-
-        $dayLeave = $this->calculateDayLeave($request->time_leave);
-        if ($request->type === config('constants.log_request.type.leave')) {
-            if ($user->annual_leave >= $dayLeave && $user->work_status === config('constants.work_status.doing')) {
-                $user->update(['annual_leave' => $user->annual_leave - $dayLeave]);
+                if ($log) {
+                    $data = [];
+                } else {
+                    $logRequest = LogRequestModel::create($data);
+                }
             }
-        }
-        return $this->responseSuccess(['success' => 'Tạo request thành công']);
 
+            $manager = User::findOrFail($user->manager_id);
+
+            $manager->notify(new NotifiManager($manager));
+        });
+
+        if (count($data)) {
+            return $this->responseSuccess(['success' => 'Tạo request thành công']);
+        } else {
+            return $this->responseError('Ngày nghỉ (OT) đã tồn tại');
+        }
     }
 
     public function updateRequest(LogRequest $request) {

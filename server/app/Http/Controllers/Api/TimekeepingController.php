@@ -36,7 +36,7 @@ class TimekeepingController extends Controller
 
         // Giờ check quy đinh
         $startCheck = new Carbon('08:00:00');
-        $endCheck = new Carbon('17:00:00');
+        $endCheck = new Carbon('23:59:59');
 
         //Giờ nghỉ trưa quy định
         $lunchBreak = 60;
