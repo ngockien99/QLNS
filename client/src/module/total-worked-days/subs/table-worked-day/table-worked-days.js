@@ -6,10 +6,10 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { Button, Col, Row, Table, Tag } from "antd";
+import { Button, Col, Popconfirm, Row, Table, Tag, message } from "antd";
 import dayjs from "dayjs";
 import { Fragment, useCallback, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
@@ -20,6 +20,7 @@ const TableWorkedDays = () => {
   const userInfo = useRecoilValue(UserInfoAtom) ?? {};
   console.log(userInfo?.user);
   const { name = "kiennn" } = userInfo?.user ?? {};
+  const queryClient = useQueryClient();
   const [data, setData] = useState();
   useQuery(
     GET_REQUEST_LIST,
@@ -38,8 +39,38 @@ const TableWorkedDays = () => {
       },
     }
   );
+
+  const { mutate } = useMutation(
+    (id) => {
+      const config = {
+        url: "request/delete",
+        data: { id },
+        method: "delete",
+      };
+      return API.request(config);
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(GET_REQUEST_LIST);
+        message.success("Bạn đã xoá báo cáo duyệt công thành công!");
+      },
+      onError: (error) => {
+        message.error(error);
+      },
+    }
+  );
   const modalRef = useRef();
-  const openModal = useCallback(() => modalRef.current.show(), []);
+  const openModal = useCallback((data) => {
+    const { date, time_ot_start = "", time_ot_end = "", type } = data;
+    data.date = dayjs(date, "YYYY-MM-DD");
+    if (type === 1) {
+      data.time_ot_start = dayjs(time_ot_start, '"HH:mm"');
+      data.time_ot_end = dayjs(time_ot_end, "HH:mm");
+    }
+    data.disabled = true;
+    modalRef?.current?.setValue(data);
+    modalRef.current.show();
+  }, []);
   const editModal = useCallback((data) => {
     const { date, time_ot_start = "", time_ot_end = "", type } = data;
     data.date = dayjs(date, "YYYY-MM-DD");
@@ -48,6 +79,7 @@ const TableWorkedDays = () => {
       data.time_ot_end = dayjs(time_ot_end, "HH:mm");
     }
     data.isEdit = true;
+    data.disabled = false;
     modalRef.current.show();
     modalRef?.current?.setValue(data);
   }, []);
@@ -68,7 +100,7 @@ const TableWorkedDays = () => {
       dataIndex: "check_paid",
       key: "start_date",
       render: (_, record) => {
-        if (record.check_paid === 0) {
+        if (record.type === 0) {
           return "Nghỉ";
         }
         return "Làm thêm giờ";
@@ -113,7 +145,7 @@ const TableWorkedDays = () => {
                 borderRadius: "4px",
               }}
               icon={<CopyOutlined />}
-              onClick={openModal}
+              onClick={() => openModal(record)}
             >
               Xem chi tiết
             </Button>
@@ -132,16 +164,23 @@ const TableWorkedDays = () => {
             </Button>
           </Col>
           <Col span="auto">
-            <Button
-              type="primary"
-              danger
-              style={{
-                borderRadius: "4px",
-              }}
-              icon={<DeleteOutlined />}
+            <Popconfirm
+              description={`Bạn có chắc chắn muốn xoá báo cáo này không}?`}
+              onConfirm={() => mutate(record.id)}
+              okText="Có, tôi chắc chắn"
+              cancelText="Không"
             >
-              Xoá
-            </Button>
+              <Button
+                type="primary"
+                danger
+                style={{
+                  borderRadius: "4px",
+                }}
+                icon={<DeleteOutlined />}
+              >
+                Xoá
+              </Button>
+            </Popconfirm>
           </Col>
         </Row>
       ),

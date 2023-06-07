@@ -2,13 +2,14 @@ import { Layout, Menu } from "antd";
 import React, { useMemo } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { getRoutes } from "routes/routes-setup";
+import { ROLE } from "util/const";
 
 const NavBar = (props) => {
   const { collapsed } = props;
   const { Sider } = Layout;
   const { pathname } = useLocation();
 
-  const routes = getRoutes("staff");
+  const routes = getRoutes(ROLE);
   const rootRoutes = useMemo(() => {
     if (pathname.includes("/quan-ly-ho-so-ca-nhan")) {
       return pathname.slice(0, 22);

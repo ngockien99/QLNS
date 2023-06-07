@@ -9,12 +9,18 @@ use App\Models\User;
 use App\Models\AcademicLevel;
 use App\Models\Timekeeping;
 use App\Models\Salary;
+use App\Models\LogRequestModel;
+use App\Models\Department;
+use App\Models\Level;
+use App\Models\Position;
+use App\Models\Specialize;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -127,6 +133,8 @@ class UserController extends Controller
             'avatar' => $fileNameToStore,
             'address' => $request->address,
             'phone' => $request->phone,
+            'cccd' => $request->cccd,
+            'mst' => $request->mst,
             'gender' => $request->gender,
             'work_status' => $request->work_status,
             'marital_status' => $request->marital_status,
@@ -149,10 +157,39 @@ class UserController extends Controller
     public function detailUser(Request $request) {
         $user = User::findOrFail($request->id);
         $user->file = config('app.linkFile') . '/uploads/user/' . $user->avatar;
+        $user->manager_name = User::find($user->manager_id)->name;
+
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
+        $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
+        
+        $month = Carbon::now()->format('Y-m');
+        $logRequestPaid = LogRequestModel::where('user_id', $user->id)
+        ->where('day_create', 'like', "%$month%")
+        ->where('check_paid', config('constants.log_request.check_paid.paid'))
+        ->where('status', config('constants.log_request.status.approve'))
+        ->count();
+
+        $checkManager = User::where('manager_id', $user->id)->first();
+
+        $leave = [
+            "total_leave" => 12,
+            "leave_used" =>  12 - $user->annual_leave,
+            "leave_remaining" => $user->annual_leave,
+            "leave_used_pay" =>  $logRequestPaid
+        ];
         $data = [
             "user" => $user,
+            "check_manager" => $checkManager ? false : true,
             "academic" => AcademicLevel::where('id', $user->academic_level_id)->first(),
             "salary" => Salary::where('id', $user->salary_id)->first(),
+            "department" => Department::findOrFail($user->department_id),
+            "level" => Level::findOrFail($user->level_id),
+            "leave" => $leave,
+            "checkin" => $findToday && $findToday->checkin ? true : false,
+            "checkout" => $findToday && $findToday->checkout ? true : false,
+            "manager" => $checkManager->name,
+            "position" => Position::findOrFail($user->position_id),
+            "specialize" => Specialize::findOrFail($user->specialize_id)
         ];
         return $this->responseSuccess($data);
     }

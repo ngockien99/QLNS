@@ -19,6 +19,14 @@ const StaffInformation = () => {
       label: <Link to="bao-cao-tong-hop-cong">Báo cáo tổng hợp công</Link>,
       key: "bao-cao-tong-hop-cong",
     },
+    {
+      label: (
+        <Link to="danh-sach-bao-cao-cho-duyet">
+          Danh sách báo cáo chờ duyệt
+        </Link>
+      ),
+      key: "danh-sach-bao-cao-cho-duyet",
+    },
   ];
 
   return (

@@ -1,83 +1,16 @@
-import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Col, Divider, Input, Row, Select, Space, Table } from "antd";
+import { Button, Divider, Input, Select, Space } from "antd";
+import { useCallback } from "react";
+import { useNavigate } from "react-router";
+import TableComponent from "./subs/table";
 
 const { Search } = Input;
 const ManagementStaff = () => {
-  const columns = [
-    {
-      title: "Mã Nhân Viên",
-      dataIndex: "id",
-      key: "id",
-      with: "100%",
-    },
-    {
-      title: "Họ và tên",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Vị trí",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Phòng ban",
-      dataIndex: "month",
-      key: "start_date",
-    },
-    {
-      title: "Hành động",
-      key: "action",
-      render: () => (
-        <Row gutter={8}>
-          <Col span="auto">
-            <Button
-              style={{
-                background: "#62a73b",
-                color: "#fff",
-                borderRadius: "4px",
-              }}
-              icon={<CopyOutlined />}
-            >
-              Xem chi tiết
-            </Button>
-          </Col>
-          <Col span="auto">
-            <Button
-              style={{
-                backgroundColor: "#f56a00",
-                color: "#fff",
-                borderRadius: "4px",
-              }}
-              icon={<EditOutlined />}
-            >
-              Sửa
-            </Button>
-          </Col>
-          <Col span="auto">
-            <Button
-              type="primary"
-              danger
-              style={{
-                borderRadius: "4px",
-              }}
-              icon={<DeleteOutlined />}
-            >
-              Xoá
-            </Button>
-          </Col>
-        </Row>
-      ),
-    },
-  ];
+  const navigate = useNavigate();
+  const onCreateStaff = useCallback(
+    () => navigate("/them-thong-tin-nhan-su"),
+    [navigate]
+  );
 
-  const data = [
-    {
-      id: "HO012032",
-      name: "Nguyễn Ngọc Kiên",
-      month: "12/2021",
-    },
-  ];
   return (
     <div
       style={{
@@ -119,9 +52,11 @@ const ManagementStaff = () => {
       </div>
       <Divider />
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button type="primary">Them moi</Button>
+        <Button type="primary" onClick={onCreateStaff}>
+          Thêm
+        </Button>
       </div>
-      <Table columns={columns} dataSource={data} />
+      <TableComponent />
     </div>
   );
 };

@@ -6,6 +6,7 @@ const PhepNam = () => {
   const userInfo = useRecoilValue(UserInfoAtom);
   const { leave, user } = userInfo ?? {};
   const dataSource = [{ ...leave, id: user?.id, name: user?.name }];
+  console.log("kienn", dataSource, userInfo);
   const columns = [
     {
       title: "Mã nhân viên",

@@ -1,5 +1,5 @@
 import { Avatar, Button, Card, Form, Input, message } from "antd";
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useMutation } from "react-query";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
@@ -7,7 +7,7 @@ import API from "util/api";
 
 const Profile = () => {
   const userInfo = useRecoilValue(UserInfoAtom);
-  const { name, id } = userInfo?.user ?? {};
+  const { name, email } = userInfo?.user ?? {};
   const [hasUpdatePassword, setHasUpdatePassword] = useState(false);
   const [form] = Form.useForm();
   const { mutate } = useMutation(
@@ -25,6 +25,8 @@ const Profile = () => {
       },
     }
   );
+
+  const firstNameWord = useMemo(() => name?.[0] || "K", []);
 
   const onFinish = useCallback(() => {
     form
@@ -66,10 +68,10 @@ const Profile = () => {
             border: "2px solid #fff",
           }}
         >
-          H
+          {firstNameWord}
         </Avatar>
         <h2 style={{ marginTop: 1 }}>{name}</h2>
-        <h4 style={{ marginTop: 1 }}>{id}</h4>
+        <h4 style={{ marginTop: 1 }}>{email}</h4>
       </div>
       {hasUpdatePassword ? (
         <Form form={form} onFinish={onFinish} layout="vertical">
@@ -82,8 +84,8 @@ const Profile = () => {
                 message: "Vui lòng nhập mật khẩu !",
               },
               {
-                min: 6,
-                message: "Mật khẩu phải dài ít nhất 6 kí tự",
+                min: 8,
+                message: "Mật khẩu phải dài ít nhất 8 kí tự",
               },
             ]}
             wrapperCol={{
@@ -98,14 +100,15 @@ const Profile = () => {
           <Form.Item
             name="new_password"
             label="Mật khẩu mới"
+            hasFeedback
             rules={[
               {
                 required: true,
-                message: "Vui lòng nhập mật khẩu !",
+                message: "Vui lòng nhập mật khẩu mới !",
               },
               {
-                min: 6,
-                message: "Mật khẩu phải dài ít nhất 6 kí tự",
+                min: 8,
+                message: "Mật khẩu phải dài ít nhất 8 kí tự",
               },
             ]}
             wrapperCol={{
@@ -120,15 +123,29 @@ const Profile = () => {
           <Form.Item
             name="retype_password"
             label="Nhập lại mật khẩu mới"
+            dependencies={["new_password"]}
+            hasFeedback
             rules={[
               {
                 required: true,
                 message: "Vui lòng nhập mật khẩu !",
               },
               {
-                min: 6,
-                message: "Mật khẩu phải dài ít nhất 6 kí tự",
+                min: 8,
+                message: "Mật khẩu phải dài ít nhất 8 kí tự",
               },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("new_password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(
+                    new Error(
+                      "Mật khẩu bạn vừa nhập phải trùng với mật khẩu mới!!"
+                    )
+                  );
+                },
+              }),
             ]}
             wrapperCol={{
               offset: 0,

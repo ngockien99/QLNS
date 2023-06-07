@@ -52,7 +52,9 @@ const FormSpecialize = forwardRef((_, ref) => {
         const { name } = variable;
         queriesClient.invalidateQueries(GET_LIST_SPECIALIZED);
         message.success(
-          `Bạn đã ${newData ? "sửa" : "thêm"} vị trí ${name} thành công`
+          `Bạn đã ${
+            newData ? "sửa" : "thêm"
+          } vị trí chuyên môn ${name} thành công`
         );
         form.resetFields();
         setNewData("");

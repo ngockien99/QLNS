@@ -1,23 +1,23 @@
-import { Menu } from "antd";
+import { Menu, Spin, message } from "antd";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { Link, Outlet, useParams } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
-import { GET_STAFF_INFO } from "util/const";
+import { ActiveUserInfoAtom } from "./recoil";
 
 const StaffInformation = () => {
   const [route, setRoute] = useState("thong-tin-ca-nhan");
   const onClick = (e) => {
     setRoute(e.key);
   };
-  const setUserInfo = useSetRecoilState(UserInfoAtom);
+
+  const setActiveUserInfo = useSetRecoilState(ActiveUserInfoAtom);
   const params = useParams();
   const { id } = params;
 
-  useQuery(
-    [id, GET_STAFF_INFO],
+  const { isLoading } = useQuery(
+    [id, "ACTIVE_USER_INFO"],
     () => {
       const config = {
         url: `/user/detail`,
@@ -27,10 +27,10 @@ const StaffInformation = () => {
     },
     {
       onSuccess: (data) => {
-        setUserInfo(data);
+        setActiveUserInfo(data);
       },
       onError: (error) => {
-        console.log(error);
+        message.error(error);
       },
       enabled: !!id,
     }
@@ -52,10 +52,14 @@ const StaffInformation = () => {
       key: "tien-luong",
     },
     {
-      label: <Link to={`qua-trinh-dao-tao/${id}`}>Qúa trình đào tạo</Link>,
+      label: <Link to={`qua-trinh-dao-tao/${id}`}>Quá trình đào tạo</Link>,
       key: "qua-trinh-dao-tao",
     },
   ];
+
+  if (isLoading) {
+    return <Spin />;
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

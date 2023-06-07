@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('avatar')->nullable();
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
+            $table->string('cccd');
+            $table->string('mst');
             $table->string('date_of_birth')->nullable();
             $table->tinyInteger('gender')->default(1); //1: male, 2: female
             $table->tinyInteger('work_status')->default(1); //trạng thái: làm việc, đã nghỉ,...

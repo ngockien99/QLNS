@@ -6,9 +6,11 @@ import TableComponent from "./subs/table";
 
 const ManagementDepartment = () => {
   const modalAddRef = useRef();
+
   const showModal = useCallback(() => {
     modalAddRef.current.show();
   }, []);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>

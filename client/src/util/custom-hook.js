@@ -1,11 +1,32 @@
 import { useQuery } from "react-query";
+import { useSetRecoilState } from "recoil";
+import {
+  LisLevelAtom,
+  ListDepartmentAtom,
+  ListPositionAtom,
+  ListSpecializedAtom,
+  ListUserAtom,
+} from "state-management/recoil";
+
 import API from "util/api";
 
 export const useQuerySpecializedList = () => {
-  const { data, isLoading } = useQuery(["QUERY_SPECIALIZED_LIST"], () => {
-    const config = { url: "specialize/list" };
-    return API.request(config);
-  });
+  const setListSpecialized = useSetRecoilState(ListSpecializedAtom);
+  const { data, isLoading } = useQuery(
+    ["QUERY_SPECIALIZED_LIST"],
+    () => {
+      const config = { url: "specialize/list" };
+      return API.request(config);
+    },
+    {
+      onSuccess: (data) => {
+        const options = data?.data.map((e) => {
+          return { value: e.id, label: e.name };
+        });
+        setListSpecialized(options);
+      },
+    }
+  );
 
   const options = data?.data.map((e) => {
     return { value: e.id, label: e.name };
@@ -14,10 +35,22 @@ export const useQuerySpecializedList = () => {
 };
 
 export const useQueryManagerList = () => {
-  const { data, isLoading } = useQuery(["QUERY_MANAGER_LIST"], () => {
-    const config = { url: "user/list" };
-    return API.request(config);
-  });
+  const setListUser = useSetRecoilState(ListUserAtom);
+  const { data, isLoading } = useQuery(
+    ["QUERY_MANAGER_LIST"],
+    () => {
+      const config = { url: "user/list" };
+      return API.request(config);
+    },
+    {
+      onSuccess: (data) => {
+        const options = data?.data?.map((e) => {
+          return { value: e.id, label: e.name };
+        });
+        setListUser(options);
+      },
+    }
+  );
 
   const options = data?.data?.map((e) => {
     return { value: e.id, label: e.name };
@@ -25,10 +58,22 @@ export const useQueryManagerList = () => {
   return { options, isLoading };
 };
 export const useQueryPositionList = () => {
-  const { data, isLoading } = useQuery(["QUERY_POSITION_LIST"], () => {
-    const config = { url: "position/list" };
-    return API.request(config);
-  });
+  const setListPosition = useSetRecoilState(ListPositionAtom);
+  const { data, isLoading } = useQuery(
+    ["QUERY_POSITION_LIST"],
+    () => {
+      const config = { url: "position/list" };
+      return API.request(config);
+    },
+    {
+      onSuccess: (data) => {
+        const options = data?.data.map((e) => {
+          return { value: e.id, label: e.name };
+        });
+        setListPosition(options);
+      },
+    }
+  );
 
   const options = data?.data.map((e) => {
     return { value: e.id, label: e.name };
@@ -36,10 +81,22 @@ export const useQueryPositionList = () => {
   return { options, isLoading };
 };
 export const useQueryLevelList = () => {
-  const { data, isLoading } = useQuery(["QUERY_LEVEL_LIST"], () => {
-    const config = { url: "level/list" };
-    return API.request(config);
-  });
+  const setListLevel = useSetRecoilState(LisLevelAtom);
+  const { data, isLoading } = useQuery(
+    ["QUERY_LEVEL_LIST"],
+    () => {
+      const config = { url: "level/list" };
+      return API.request(config);
+    },
+    {
+      onSuccess: (data) => {
+        const options = data?.data.map((e) => {
+          return { value: e.id, label: e.name };
+        });
+        setListLevel(options);
+      },
+    }
+  );
 
   const options = data?.data.map((e) => {
     return { value: e.id, label: e.name };
@@ -47,10 +104,23 @@ export const useQueryLevelList = () => {
   return { options, isLoading };
 };
 export const useQueryDepartmentList = () => {
-  const { data, isLoading } = useQuery(["QUERY_DEPARTMENT_LIST"], () => {
-    const config = { url: "department/list" };
-    return API.request(config);
-  });
+  const setListDepartment = useSetRecoilState(ListDepartmentAtom);
+  const { data, isLoading } = useQuery(
+    ["QUERY_DEPARTMENT_LIST"],
+    () => {
+      const config = { url: "department/list", params: { status: 1 } };
+      return API.request(config);
+    },
+    {
+      onSuccess: (data) => {
+        const options = data?.data.map((e) => {
+          return { value: e.id, label: e.name };
+        });
+        setListDepartment(options);
+        console.log(options, data);
+      },
+    }
+  );
 
   const options = data?.data.map((e) => {
     return { value: e.id, label: e.name };

@@ -10,7 +10,13 @@ import API from "util/api";
 
 const Salary = () => {
   const userInfo = useRecoilValue(UserInfoAtom);
-  const { name, id } = userInfo?.user ?? {};
+  const {
+    allowance_money,
+    insurance_premium_salary,
+    salary_basic,
+    salary_factor,
+  } = userInfo?.salary ?? {};
+  console.log(userInfo);
   const { data: queryData } = useQuery("QUERY_PAYROLL_LIST", () => {
     const config = {
       url: "payroll/list",
@@ -27,7 +33,6 @@ const Salary = () => {
 
     const {
       bonus_money,
-      id,
       month_pay,
       tax,
       total_money_actual_receive,
@@ -45,7 +50,7 @@ const Salary = () => {
     let currentY = PADDING;
     doc.setFontSize(16);
     doc.setFont("", "", "bold");
-    doc.text("Cong ty CP chung khoan VNDIRECT", PADDING, currentY);
+    doc.text("Cong ty CP TRICO", PADDING, currentY);
     currentY += LINE_HEIGHT;
     doc.setFont("", "", "normal");
     doc.setFontSize(14);
@@ -81,8 +86,8 @@ const Salary = () => {
       startY: currentY,
       head: [["So thu tu", "Muc", "Don vi", "So luong"]],
       body: [
-        ["A", "Tong luong Gross theo hop dong", "Dong", "18000000"],
-        ["1", "Luong co ban", "Dong", "50000"],
+        ["A", "Tong luong Gross theo hop dong", "Dong", "15400000"],
+        ["1", "Luong co ban", "Dong", salary_basic],
         ["2", "Thuong hieu qua cong viec", "Dong", bonus_money],
         ["B", "Ngay cong", "Ngay", total_working_days_standard],
         ["1", "Ngay lam viec thuc te", "Ngay", total_working_days],
@@ -91,8 +96,13 @@ const Salary = () => {
         ["4", "Ngay nghi nguyen luong", "Ngay", "18000000"],
         ["C", "Tong thu nhap", "Dong", total_money_actual_receive],
         ["D", "Cac khoan khau tru ca nhan", "Dong", "50000"],
-        ["1", "Tru tien dong BHXH, BHYT, BHTN", "Dong", "18000"],
-        ["3", "Tru tien khau tru thuu TNCN", "Dong", tax],
+        [
+          "1",
+          "Tru tien dong BHXH, BHYT, BHTN",
+          "Dong",
+          insurance_premium_salary,
+        ],
+        ["3", "Tru tien khau tru thue TNCN", "Dong", tax],
         ["4", "Cac khoan tru khac", "Dong", "18000000"],
         ["E", "Luong thuc nhan", "Dong", "1800"],
       ],
@@ -122,10 +132,11 @@ const Salary = () => {
     doc.save("test.pdf");
   }, []);
 
-  console.log(name, userInfo, queryData);
   const data = queryData?.data.map((e) => {
-    return { ...e, name: name, id: id };
+    return { ...e.payroll, ...e.salary, ...e.user };
   });
+
+  console.log(data);
 
   const columns = [
     {
@@ -163,7 +174,7 @@ const Salary = () => {
     },
   ];
 
-  return <Table columns={columns} dataSource={data} />;
+  return <Table columns={columns} dataSource={data} bordered />;
 };
 
 export default Salary;

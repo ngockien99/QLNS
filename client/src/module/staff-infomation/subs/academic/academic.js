@@ -1,51 +1,61 @@
 import { Button, Table } from "antd";
+import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import { useCallback, useRef } from "react";
 import { useRecoilValue } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
+import { ROLE } from "util/const";
 import UpdateAcademic from "../update-form/update-academic";
 
 const Salary = () => {
-  const userInfo = useRecoilValue(UserInfoAtom);
-  const { academic = {}, user } = userInfo ?? {};
-  const data = [{ academic, id: user?.id, name: user?.name }];
+  const activeUserInfo = useRecoilValue(ActiveUserInfoAtom);
+  const showEditButton = ROLE === "admin" ? true : false;
+  const { academic = {}, user } = activeUserInfo ?? {};
+  const data = [{ ...academic, staff_name: user?.name }];
   const modalRef = useRef();
-  const showModal = useCallback(() => modalRef.current.show());
+  const showModal = useCallback(() => modalRef.current.show(), []);
 
   const columns = [
     {
-      title: "MNV",
+      title: "id",
       dataIndex: "id",
       key: "id",
+      with: "10%",
     },
     {
       title: "Họ và tên",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "staff_name",
+      key: "staff_name",
+      with: "15%",
     },
     {
       title: "Tên Trường",
       dataIndex: "name",
       key: "name",
+      with: "20%",
     },
     {
       title: "Trình độ",
       dataIndex: "rank",
       key: "rank",
+      with: "15%",
       render: (_, record) => {
         const { rank } = record;
         if (rank === 1) {
           return "Trung cấp";
         } else if (rank === 2) {
           return "Cao đẳng";
-        } else {
+        } else if (rank === 3) {
           return "Đại học";
+        } else {
+          return "Cao học";
         }
       },
     },
+
     {
-      title: "Vị trí hiện tại",
+      title: "Ngành học",
       dataIndex: "specialized",
       key: "specialized",
+      with: "40%",
     },
   ];
 
@@ -58,8 +68,8 @@ const Salary = () => {
           justifyContent: "space-between",
         }}
       >
-        <h1>Qúa trình đào tạo</h1>
-        <Button onClick={showModal}>Edit</Button>
+        <h1>Quá trình đào tạo</h1>
+        {showEditButton && <Button onClick={showModal}>Chỉnh sửa</Button>}
       </div>
       <Table
         columns={columns}

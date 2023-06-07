@@ -1,4 +1,16 @@
-import { Col, Form, Input, Modal, Radio, Row, message } from "antd";
+import {
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Radio,
+  Row,
+  Select,
+  message,
+} from "antd";
+import dayjs from "dayjs";
+import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import {
   forwardRef,
   useCallback,
@@ -8,26 +20,17 @@ import {
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useParams } from "react-router-dom";
-import { useRecoilState } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
+import { useRecoilValue } from "recoil";
 import API from "util/api";
 import { GET_STAFF_INFO } from "util/const";
+import { Marital } from "util/data-form";
 
 const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
   const [form] = Form.useForm();
   const [open, setOpen] = useState(false);
 
-  const [userInfo, setUserInfo] = useRecoilState(UserInfoAtom);
+  const activeUserInfo = useRecoilValue(ActiveUserInfoAtom);
 
-  const {
-    name,
-    date_of_birth,
-    address,
-    phone,
-    gender,
-    academic_level_id,
-    marital_status,
-  } = userInfo?.user || {};
   const queryClient = useQueryClient();
   const params = useParams();
   const { id } = params;
@@ -37,13 +40,12 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
       const config = {
         url: "user/update",
         method: "put",
-        data: { ...userInfo?.user, ...data },
+        data: { ...activeUserInfo?.user, ...activeUserInfo?.salary, ...data },
       };
       return API.request(config);
     },
     {
-      onSuccess: (_, variables) => {
-        setUserInfo((pre) => ({ ...pre, ...variables }));
+      onSuccess: () => {
         queryClient.invalidateQueries([id, GET_STAFF_INFO]);
         message.success("Bạn đã cập nhật thông tin thành công!");
         setOpen(false);
@@ -57,6 +59,7 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
     form
       .validateFields()
       .then((values) => {
+        values.date_of_birth = dayjs(values.date_of_birth).format("YYYY-MM-DD");
         mutate(values);
       })
       .catch((info) => {
@@ -72,35 +75,27 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
 
   const data = useMemo(() => {
     return [
-      { title: "Tên nhân viên", value: name, key: "name" },
+      { title: "Tên nhân viên", key: "name" },
       {
         title: "Ngày sinh",
-        value: date_of_birth || "15/09/99",
-        key: date_of_birth,
+        key: "date_of_birth",
+        type: "date",
       },
-      { title: "Địa chỉ", value: address, key: "address" },
-      { title: "Số điện thoại", value: phone || "0236627637", key: "phone" },
-      { title: "Giới tính", value: gender, type: "radio", key: "gender" },
+      { title: "Địa chỉ", key: "address" },
+      { title: "Số điện thoại", key: "phone" },
+      { title: "Giới tính", type: "radio", key: "gender" },
       {
-        title: "Trình độ chuyên môn",
-        value: academic_level_id,
-        key: "academic_level_id",
+        title: "email",
+        key: "email",
       },
       {
         title: "Tình trạng hôn nhân",
-        value: marital_status,
+        type: "select",
+        option: Marital,
         key: "marital_status",
       },
     ];
-  }, [
-    academic_level_id,
-    address,
-    date_of_birth,
-    gender,
-    marital_status,
-    name,
-    phone,
-  ]);
+  }, []);
 
   return (
     <Modal
@@ -116,20 +111,31 @@ const UpdateFormStaff1 = forwardRef(({ onCancel, onCreate }, ref) => {
         name="update-info-staff"
         onFinish={onFinish}
         layout="vertical"
+        initialValues={{
+          ...activeUserInfo?.user,
+          date_of_birth: dayjs(
+            activeUserInfo?.user?.date_of_birth,
+            "YYYY-MM-DD"
+          ),
+        }}
       >
         <Row gutter={24}>
           {data.map((item) => {
-            const { title, value: initValue, type, key } = item;
+            const { title, type, key, option } = item;
             return (
               <Col span={12}>
                 <Form.Item name={key} label={title}>
-                  {type ? (
-                    <Radio.Group defaultValue={initValue}>
+                  {type === "radio" ? (
+                    <Radio.Group name={key}>
                       <Radio value={0}> Nam </Radio>
                       <Radio value={1}> Nữ </Radio>
                     </Radio.Group>
+                  ) : type === "select" ? (
+                    <Select name={key} options={option} />
+                  ) : type === "date" ? (
+                    <DatePicker name={key} format="DD/MM/YYYY" />
                   ) : (
-                    <Input defaultValue={initValue} />
+                    <Input name={key} />
                   )}
                 </Form.Item>
               </Col>

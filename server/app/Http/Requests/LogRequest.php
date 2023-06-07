@@ -25,7 +25,7 @@ class LogRequest extends FormRequest
     {
         $rules = [
             'type' => 'required|numeric',
-            'date' => 'required|date_format:Y-m-d',
+            'date' => 'required|array',
         ];
 
         if ($this->type === config('constants.log_request.type.leave')) {

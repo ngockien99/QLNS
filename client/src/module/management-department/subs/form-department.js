@@ -7,13 +7,15 @@ import {
   useState,
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { useRecoilValue } from "recoil";
+import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_LIST_DEPARTMENT } from "util/const";
-import { useQueryManagerList } from "util/custom-hook";
 
 const FormDepartment = forwardRef((_, ref) => {
   const [form] = Form.useForm();
-
+  const managerList = useRecoilValue(ListUserAtom);
+  console.log(managerList);
   const [show, setShow] = useState(false);
   const [newData, setNewData] = useState("");
   const queriesClient = useQueryClient();
@@ -29,11 +31,12 @@ const FormDepartment = forwardRef((_, ref) => {
     },
   }));
   const title = useMemo(
-    () => (newData ? `Chỉnh sửa vị trí ${newData?.name}` : "Thêm vị trí"),
+    () =>
+      newData
+        ? `Chỉnh sửa thông tin phòng ban ${newData?.name}`
+        : "Thêm phòng ban",
     [newData]
   );
-
-  const { options: userList } = useQueryManagerList();
 
   const formConfig = useMemo(
     () => [
@@ -45,11 +48,11 @@ const FormDepartment = forwardRef((_, ref) => {
         key: "head_of_department_id",
         title: "Trưởng phòng",
         type: "select",
-        option: userList,
+        option: managerList,
       },
     ],
 
-    []
+    [managerList]
   );
 
   const { mutate } = useMutation(
@@ -111,8 +114,8 @@ const FormDepartment = forwardRef((_, ref) => {
             <Form.Item name={key} label={title}>
               {type === "radio" ? (
                 <Radio.Group>
-                  <Radio value={0}>Đang hoạt động</Radio>
-                  <Radio value={1}>Giải thể</Radio>
+                  <Radio value={1}>Đang hoạt động</Radio>
+                  <Radio value={0}>Giải thể</Radio>
                 </Radio.Group>
               ) : type === "select" ? (
                 <Select name={key} options={option} />
