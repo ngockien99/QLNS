@@ -69,7 +69,7 @@ const ButtonComponent = memo(({ onClose }) => {
           setCurrentStep((pre) => pre - 1);
           setNewStaffInfo((pre) => ({ ...pre, ...values }));
         })
-        .catch(() => console.log("ha12")),
+        .catch(() => console.log("kienn")),
     [setCurrentStep]
   );
 

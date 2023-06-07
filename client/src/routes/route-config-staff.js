@@ -5,6 +5,7 @@ import {
   MoneyCollectOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import CheckInCheckOut from "module/checkin-checkout/checkin-checkout";
 
 import PhepNam from "module/phep-nam";
 import Profile from "module/profile";
@@ -24,6 +25,12 @@ export const RoleStaff = [
         component: <StaffInformation />,
         icon: <IdcardOutlined />,
         children: [{ title: "Thông tin nhân sự" }],
+      },
+      {
+        title: "Chấm công",
+        to: "/cham-cong",
+        component: <CheckInCheckOut />,
+        icon: <UserOutlined />,
       },
       {
         title: "Phép năm",

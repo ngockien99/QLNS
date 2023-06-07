@@ -1,4 +1,5 @@
 import {
+  Button,
   DatePicker,
   Form,
   Input,
@@ -15,21 +16,24 @@ import {
   Fragment,
   forwardRef,
   useCallback,
+  useEffect,
   useImperativeHandle,
   useMemo,
   useState,
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import API from "util/api";
+import { GET_REQUEST_LIST } from "util/const";
 
 const { TextArea } = Input;
 
 const FormVerify = forwardRef((_, ref) => {
   const [form] = Form.useForm();
-
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(0);
   const [isEdit, setIsEdit] = useState(false);
+  const [disable, setDisable] = useState(false);
+  const [data, setData] = useState(undefined);
   const [id, setId] = useState("");
   const queryClient = useQueryClient();
   useImperativeHandle(ref, () => ({
@@ -37,24 +41,25 @@ const FormVerify = forwardRef((_, ref) => {
       setShow(true);
     },
     setValue: (value) => {
-      Object.entries(value).map(([formKey, value]) => {
-        return form.setFields([{ name: formKey, value: value }]);
-      });
+      setData(value);
       setIsEdit(!!value?.isEdit);
+      setDisable(!!value?.disabled);
       setId(value?.id);
-      setValue(value?.type);
+      setValue(value?.type || 0);
     },
   }));
   const title = useMemo(
-    () => (isEdit ? "Sửa báo cáo" : "Thêm báo cáo"),
-    [isEdit]
+    () => (disable ? "Xem báo cáo" : isEdit ? "Sửa báo cáo" : "Thêm báo cáo"),
+    [disable, isEdit]
   );
   const onChange = (e) => {
     setValue(e.target.value);
     form.resetFields();
   };
 
-  const { mutate } = useMutation(
+  console.log(value);
+
+  const { mutate, isLoading } = useMutation(
     (data) => {
       const method = isEdit ? "put" : "post";
       const url = isEdit ? "request/update" : "request/create";
@@ -69,7 +74,7 @@ const FormVerify = forwardRef((_, ref) => {
     },
     {
       onSuccess: () => {
-        queryClient.invalidateQueries("QUERY_REQUEST");
+        queryClient.invalidateQueries(GET_REQUEST_LIST);
         message.success("Bạn đã gửi duyệt công thành công!");
         !!isEdit && form.resetFields();
         setShow(false);
@@ -103,23 +108,58 @@ const FormVerify = forwardRef((_, ref) => {
       });
   }, [form, mutate, value]);
 
+  useEffect(() => {
+    if (data) {
+      Object.entries(data).map(([formKey, value]) => {
+        return form.setFields([{ name: formKey, value: value }]);
+      });
+    }
+  }, [data, form, value]);
+
   return (
     <Modal
       open={show}
       title={title}
-      okText="Xác nhận"
-      cancelText="Huỷ"
       onCancel={() => {
         setShow(false);
         form.resetFields();
         setIsEdit(false);
         setId("");
+        setDisable(false);
+        setData(undefined);
       }}
       onOk={onSubmit}
+      footer={
+        !disable && (
+          <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }}>
+            <Button
+              disabled={isLoading}
+              onClick={() => {
+                setShow(false);
+                form.resetFields();
+                setIsEdit(false);
+                setId("");
+                setDisable(false);
+                setData(undefined);
+              }}
+            >
+              Huỷ
+            </Button>
+            <Button type="primary" onClick={onSubmit} loading={isLoading}>
+              Xác nhận
+            </Button>
+          </div>
+        )
+      }
     >
-      <Form form={form} layout="vertical" name="form_in_modal">
+      <Form
+        form={form}
+        layout="vertical"
+        name="form_in_modal"
+        disabled={disable}
+      >
         <Form.Item name="type" label="Loại báo cáo:">
-          <Radio.Group defaultValue={value} disabled={isEdit}>
+          <Radio.Group defaultValue={value} disabled={isEdit || disable}>
             <Radio onChange={onChange} value={0}>
               Nghỉ Phép
             </Radio>

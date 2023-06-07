@@ -1,14 +1,14 @@
 import { Button, Table } from "antd";
+import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import { useCallback, useRef } from "react";
 import { useRecoilValue } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
 import { ROLE } from "util/const";
 import UpdateAcademic from "../update-form/update-academic";
 
 const Salary = () => {
-  const userInfo = useRecoilValue(UserInfoAtom);
+  const activeUserInfo = useRecoilValue(ActiveUserInfoAtom);
   const showEditButton = ROLE === "admin" ? true : false;
-  const { academic = {}, user } = userInfo ?? {};
+  const { academic = {}, user } = activeUserInfo ?? {};
   const data = [{ ...academic, staff_name: user?.name }];
   const modalRef = useRef();
   const showModal = useCallback(() => modalRef.current.show(), []);

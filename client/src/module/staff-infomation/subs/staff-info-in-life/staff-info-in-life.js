@@ -1,20 +1,19 @@
-import { Button, Col, Form, Input, Radio, Row } from "antd";
+import { Button, Col, Form, Image, Input, Radio, Row } from "antd";
 import dayjs from "dayjs";
+import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import { useCallback, useMemo, useRef } from "react";
 import { useRecoilValue } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
 import { ROLE } from "util/const";
 import UpdateFormStaffInLife from "../update-form/update-info-staff-in-life";
 
-const ThongTinCaNhan = () => {
+const StaffInfoInLife = () => {
   const modalRef = useRef();
   const showModal = useCallback(() => {
     modalRef.current.show();
   }, []);
 
   const showEditButton = useMemo(() => (ROLE === "admin" ? true : false), []);
-
-  const userInfo = useRecoilValue(UserInfoAtom);
+  const activeUserInfo = useRecoilValue(ActiveUserInfoAtom);
   const {
     name,
     date_of_birth,
@@ -24,22 +23,21 @@ const ThongTinCaNhan = () => {
     gender,
     marital_status,
     email,
-  } = userInfo?.user || {};
+  } = activeUserInfo?.user || {};
 
   const data = useMemo(() => {
     return [
-      { title: "Mã nhân viên", value: id },
-
-      { key: "name", title: "Tên nhân viên", value: name },
       {
         key: "date_of_birth",
         title: "Ngày sinh",
         value: dayjs(date_of_birth).format("DD/MM/YYYY"),
       },
       { key: "gender", title: "Giới tính", value: gender, type: "radio" },
+      { key: "CMTND/CCCD", title: "CMTND/CCCD", value: "010291021288" },
       { key: "address", title: "Địa chỉ", value: address },
       { key: "phone", title: "Số điện thoại", value: phone || "0236627637" },
       { key: "email", title: "Email", value: email },
+      { key: "code", title: "Mã số thuế", value: "1722721271" },
       {
         key: "marital_status",
         title: "Tình trạng hôn nhân",
@@ -51,7 +49,7 @@ const ThongTinCaNhan = () => {
             : "Độc thân",
       },
     ];
-  }, [id, name, date_of_birth, gender, address, phone, email, marital_status]);
+  }, [date_of_birth, gender, address, phone, email, marital_status]);
 
   return (
     <div>
@@ -67,12 +65,30 @@ const ThongTinCaNhan = () => {
       </div>
       <div>
         <Form name="form-info-staff-1" layout="vertical" disabled>
+          <Row gutter={24} justify="center">
+            <Col span={12}>
+              <Form.Item name="avatar" label="Ảnh nhân sự">
+                <Image
+                  width={120}
+                  src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item name="id" label="Mã nhân viên">
+                <Input name="id" defaultValue={id} />
+              </Form.Item>
+              <Form.Item name="name" label="Họ và tên">
+                <Input name="name" defaultValue={name} />
+              </Form.Item>
+            </Col>
+          </Row>
           <Row gutter={24}>
             {data.map((item) => {
               const { title, value: initValue, type, key } = item;
               return (
                 <Col span={12}>
-                  <Form.Item name={initValue} label={title}>
+                  <Form.Item name={key} label={title}>
                     {type ? (
                       <Radio.Group defaultValue={initValue} name={key}>
                         <Radio value={0}> Nam </Radio>
@@ -93,4 +109,4 @@ const ThongTinCaNhan = () => {
   );
 };
 
-export default ThongTinCaNhan;
+export default StaffInfoInLife;

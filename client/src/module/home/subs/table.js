@@ -1,33 +1,41 @@
 import { Avatar, List } from "antd";
 
-const TableComponent = () => {
-  const data = [
-    {
-      title: "Nguyễn Ngọc Kiên",
-    },
-    {
-      title: "Vũ Mạnh Dũng",
-    },
-    {
-      title: "Lê Nguyên Hà",
-    },
-    {
-      title: "Nguyễn Minh Ngọc",
-    },
-  ];
+const TableComponent = ({ data }) => {
+  // const data = [
+  //   {
+  //     title: "Nguyễn Ngọc Kiên",
+  //   },
+  //   {
+  //     title: "Vũ Mạnh Dũng",
+  //   },
+  //   {
+  //     title: "Lê Nguyên Hà",
+  //   },
+  //   {
+  //     title: "Nguyễn Minh Ngọc",
+  //   },
+  // ];
   return (
     <div
-      style={{ backgroundColor: "#fff", padding: 12, gap: 12, borderRadius: 4 }}
+      style={{
+        backgroundColor: "#fff",
+        padding: 12,
+        gap: 12,
+        borderRadius: 4,
+        minHeight: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
     >
       <h3 style={{ margin: "10px 0 0 0" }}>
         Nhân viên đi muộn về sớm nhiều nhất
       </h3>
-      <div style={{ margin: "12px 0" }}>Tháng 3/2023</div>
       <List
         itemLayout="horizontal"
         bordered
         size="small"
         dataSource={data}
+        style={{ minHeight: "100%" }}
         renderItem={(item, index) => (
           <List.Item>
             <List.Item.Meta

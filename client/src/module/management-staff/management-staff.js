@@ -1,13 +1,15 @@
 import { Button, Divider, Input, Select, Space } from "antd";
-import { useCallback, useRef } from "react";
-import FormCreateStaff from "./subs/form-create-staff";
+import { useCallback } from "react";
+import { useNavigate } from "react-router";
 import TableComponent from "./subs/table";
 
 const { Search } = Input;
 const ManagementStaff = () => {
-  const modalRef = useRef();
-
-  const onToggle = useCallback(() => modalRef.current.show(), []);
+  const navigate = useNavigate();
+  const onCreateStaff = useCallback(
+    () => navigate("/them-thong-tin-nhan-su"),
+    [navigate]
+  );
 
   return (
     <div
@@ -50,12 +52,11 @@ const ManagementStaff = () => {
       </div>
       <Divider />
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <Button type="primary" onClick={onToggle}>
+        <Button type="primary" onClick={onCreateStaff}>
           Thêm
         </Button>
       </div>
       <TableComponent />
-      <FormCreateStaff ref={modalRef} />
     </div>
   );
 };

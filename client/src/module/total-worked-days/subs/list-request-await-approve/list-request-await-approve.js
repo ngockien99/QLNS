@@ -65,7 +65,7 @@ const ListRequestAwaitApprove = () => {
       dataIndex: "check_paid",
       key: "start_date",
       render: (_, record) => {
-        if (record.check_paid === 0) {
+        if (record.type === 0) {
           return "Nghỉ";
         }
         return "Làm thêm giờ";

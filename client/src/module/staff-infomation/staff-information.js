@@ -1,6 +1,10 @@
-import { Menu } from "antd";
+import { Menu, Spin, message } from "antd";
 import { useState } from "react";
+import { useQuery } from "react-query";
 import { Link, Outlet, useParams } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import API from "util/api";
+import { ActiveUserInfoAtom } from "./recoil";
 
 const StaffInformation = () => {
   const [route, setRoute] = useState("thong-tin-ca-nhan");
@@ -8,8 +12,29 @@ const StaffInformation = () => {
     setRoute(e.key);
   };
 
+  const setActiveUserInfo = useSetRecoilState(ActiveUserInfoAtom);
   const params = useParams();
   const { id } = params;
+
+  const { isLoading } = useQuery(
+    [id, "ACTIVE_USER_INFO"],
+    () => {
+      const config = {
+        url: `/user/detail`,
+        params: { id },
+      };
+      return API.request(config);
+    },
+    {
+      onSuccess: (data) => {
+        setActiveUserInfo(data);
+      },
+      onError: (error) => {
+        message.error(error);
+      },
+      enabled: !!id,
+    }
+  );
 
   const items = [
     {
@@ -31,6 +56,10 @@ const StaffInformation = () => {
       key: "qua-trinh-dao-tao",
     },
   ];
+
+  if (isLoading) {
+    return <Spin />;
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>

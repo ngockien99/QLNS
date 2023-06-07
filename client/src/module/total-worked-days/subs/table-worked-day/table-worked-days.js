@@ -60,7 +60,17 @@ const TableWorkedDays = () => {
     }
   );
   const modalRef = useRef();
-  const openModal = useCallback(() => modalRef.current.show(), []);
+  const openModal = useCallback((data) => {
+    const { date, time_ot_start = "", time_ot_end = "", type } = data;
+    data.date = dayjs(date, "YYYY-MM-DD");
+    if (type === 1) {
+      data.time_ot_start = dayjs(time_ot_start, '"HH:mm"');
+      data.time_ot_end = dayjs(time_ot_end, "HH:mm");
+    }
+    data.disabled = true;
+    modalRef?.current?.setValue(data);
+    modalRef.current.show();
+  }, []);
   const editModal = useCallback((data) => {
     const { date, time_ot_start = "", time_ot_end = "", type } = data;
     data.date = dayjs(date, "YYYY-MM-DD");
@@ -69,6 +79,7 @@ const TableWorkedDays = () => {
       data.time_ot_end = dayjs(time_ot_end, "HH:mm");
     }
     data.isEdit = true;
+    data.disabled = false;
     modalRef.current.show();
     modalRef?.current?.setValue(data);
   }, []);
@@ -89,7 +100,7 @@ const TableWorkedDays = () => {
       dataIndex: "check_paid",
       key: "start_date",
       render: (_, record) => {
-        if (record.check_paid === 0) {
+        if (record.type === 0) {
           return "Nghỉ";
         }
         return "Làm thêm giờ";
@@ -134,7 +145,7 @@ const TableWorkedDays = () => {
                 borderRadius: "4px",
               }}
               icon={<CopyOutlined />}
-              onClick={openModal}
+              onClick={() => openModal(record)}
             >
               Xem chi tiết
             </Button>

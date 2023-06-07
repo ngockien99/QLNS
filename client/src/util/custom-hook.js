@@ -108,7 +108,7 @@ export const useQueryDepartmentList = () => {
   const { data, isLoading } = useQuery(
     ["QUERY_DEPARTMENT_LIST"],
     () => {
-      const config = { url: "department/list" };
+      const config = { url: "department/list", params: { status: 1 } };
       return API.request(config);
     },
     {
@@ -117,6 +117,7 @@ export const useQueryDepartmentList = () => {
           return { value: e.id, label: e.name };
         });
         setListDepartment(options);
+        console.log(options, data);
       },
     }
   );

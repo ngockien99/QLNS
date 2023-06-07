@@ -1,19 +1,20 @@
 import { Button, Col, Form, Input, Radio, Row } from "antd";
 import dayjs from "dayjs";
+import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useRecoilValue } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
 import { ROLE } from "util/const";
 import UpdateFormStaff from "../update-form/update-form-staff";
 
-const ThongTinNhanSu = () => {
+const StaffInfoInWork = () => {
   const [form] = Form.useForm();
   const modalRef = useRef();
   const showModal = useCallback(() => {
     modalRef.current.show();
   }, []);
-  const userInfo = useRecoilValue(UserInfoAtom);
-  const { user, specialize, position, level, department } = userInfo ?? {};
+  const activeUserInfo = useRecoilValue(ActiveUserInfoAtom);
+  const { user, specialize, position, level, department } =
+    activeUserInfo ?? {};
   const showEditButton = useMemo(() => (ROLE === "admin" ? true : false), []);
   const { work_status, start_work, end_work, manager_name } = user ?? {};
 
@@ -121,4 +122,4 @@ const ThongTinNhanSu = () => {
   );
 };
 
-export default ThongTinNhanSu;
+export default StaffInfoInWork;

@@ -2,7 +2,7 @@ import { Col, DatePicker, Form, Input, Radio, Row, Select } from "antd";
 import dayjs from "dayjs";
 import { useEffect, useMemo } from "react";
 import { useRecoilValue } from "recoil";
-import { IsOpen, NewUserInfoAtom, StepAtom } from "../recoil";
+import { IsEditAtom, IsOpen, NewUserInfoAtom, StepAtom } from "../recoil";
 import ButtonComponent from "./button";
 
 const Step1 = () => {
@@ -12,6 +12,7 @@ const Step1 = () => {
   const isOpen = useRecoilValue(IsOpen);
 
   const newStaffInfo = useRecoilValue(NewUserInfoAtom);
+  const isEdit = useRecoilValue(IsEditAtom);
 
   const data = useMemo(
     () => [
@@ -83,6 +84,16 @@ const Step1 = () => {
       form.resetFields();
     }
   }, [form, isOpen]);
+
+  useEffect(() => {
+    if (isEdit && newStaffInfo) {
+      const i = Object.entries(newStaffInfo).map(([key, value]) => {
+        return { [key]: value };
+      });
+      form.setFieldsValue({ i });
+      console.log(newStaffInfo);
+    }
+  }, [form, isEdit, newStaffInfo]);
 
   return (
     <Form
