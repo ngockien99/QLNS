@@ -25,18 +25,19 @@ class LogRequest extends FormRequest
     {
         $rules = [
             'type' => 'required|numeric',
-            'date' => 'required|array',
         ];
 
         if ($this->type === config('constants.log_request.type.leave')) {
             $rules['reason'] = 'required';
             $rules['time_leave'] = 'required|numeric';
+            $rules['date'] = 'required|array';
         }
 
         if ($this->type === config('constants.log_request.type.OT')) {
             $rules['title'] = 'required';
             $rules['time_ot_start'] = 'required|date_format:H:i';
             $rules['time_ot_end'] = 'required|date_format:H:i';
+            $rules['date'] = 'required|date_format:Y-m-d';
         }
         return $rules;
     }
