@@ -27,7 +27,7 @@ class ContractRequest extends FormRequest
             'type_of_contract' => 'required',
             'start_work' => 'required|date_format:Y-m-d',
             'end_work' => 'required|date_format:Y-m-d',
-            'file' => 'mimes:pdf|max:100000',
+            'file' => 'required|mimes:pdf|max:100000',
             'user_id' => 'required'
         ];
     }

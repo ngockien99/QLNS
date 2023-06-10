@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StaffRequest;
 use App\Http\Requests\LogRequest;
+use App\Http\Requests\LogUpdateRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\AcademicLevel;
@@ -178,7 +179,7 @@ class StaffController extends Controller
         }
     }
 
-    public function updateRequest(LogRequest $request) {
+    public function updateRequest(LogUpdateRequest $request) {
         $logLeaveOt = LogRequestModel::findOrFail($request->id);
 
         $getUser = $this->getUser($request);

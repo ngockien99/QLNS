@@ -40,7 +40,8 @@ class UpdateUserRequest extends FormRequest
             'level_id' => 'nullable',
             'department_id' => 'nullable',
             'position_id' => 'nullable',
-            'specialize_id' => 'nullable'
+            'specialize_id' => 'nullable',
+            'date_of_birth' => 'nullable|date_format:Y-m-d'
         ];
     }
 
