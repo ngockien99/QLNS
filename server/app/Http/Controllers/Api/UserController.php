@@ -39,7 +39,6 @@ class UserController extends Controller
                   ->orWhere('users.name', 'like' , "%$key_search%")
                   ->orWhere('users.address', 'like' , "%$key_search%");
         })
-        ->where('users.role', 'like', 2)
         ->paginate(10,['*'],'page', $request->page);
 
         if ($user) {
@@ -59,12 +58,12 @@ class UserController extends Controller
         $user = User::findOrFail($request->id);
         $fileOld = User::find($request->id)->avatar;
         $fileNameToStore = '';
-        if($request->hasFile('file')){
-            $filenameWithExt = $request->file('file')->getClientOriginalName();
+        if($request->hasFile('avatar')){
+            $filenameWithExt = $request->file('avatar')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('file')->getClientOriginalExtension();
+            $extension = $request->file('avatar')->getClientOriginalExtension();
             $fileNameToStore = $filename.'_'.time().'.'.$extension;
-            $path = $request->file('file')->move('uploads/user/', $fileNameToStore);
+            $path = $request->file('avatar')->move('uploads/user/', $fileNameToStore);
             if ($fileOld) {
                 File::delete(public_path("uploads/user/".$fileOld));
             }
@@ -96,12 +95,12 @@ class UserController extends Controller
         $validated = $request->validated();
 
         $fileNameToStore = '';
-        if($request->hasFile('file')){
-            $filenameWithExt = $request->file('file')->getClientOriginalName();
+        if($request->hasFile('avatar')){
+            $filenameWithExt = $request->file('avatar')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
-            $extension = $request->file('file')->getClientOriginalExtension();
+            $extension = $request->file('avatar')->getClientOriginalExtension();
             $fileNameToStore = $filename.'_'.time().'.'.$extension;
-            $path = $request->file('file')->move('uploads/user/', $fileNameToStore);
+            $path = $request->file('avatar')->move('uploads/user/', $fileNameToStore);
         }
 
         $academic = '';
@@ -147,7 +146,8 @@ class UserController extends Controller
             'position_id' => $request->position_id,
             'specialize_id' => $request->specialize_id,
             'academic_level_id' => $academic->id,
-            'salary_id' => $salary->id
+            'salary_id' => $salary->id,
+            'date_of_birth' => $request->date_of_birth
         ];
 
         $user = User::create($data);

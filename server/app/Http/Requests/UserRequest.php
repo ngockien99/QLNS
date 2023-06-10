@@ -42,7 +42,8 @@ class UserRequest extends FormRequest
             'level_id' => 'required',
             'department_id' => 'required',
             'position_id' => 'required',
-            'specialize_id' => 'required'
+            'specialize_id' => 'required',
+            'date_of_birth' => 'required|date_format:Y-m-d'
         ];
     }
 

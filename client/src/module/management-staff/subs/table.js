@@ -22,6 +22,7 @@ const TableComponent = () => {
   const { data: queryData } = useQuery(GET_LIST_STAFF, () => {
     const config = {
       url: "user/list",
+      params: { search: "", page: 1 },
     };
     return API.request(config);
   });
