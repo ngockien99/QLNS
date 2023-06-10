@@ -1,6 +1,5 @@
-import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeTwoTone, LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Form, Image, Input, message } from "antd";
-import logo from "assets/image/logo-sunoffice.jpg";
 import banner from "assets/image/quy-trinh-cham-cong-1.jpg";
 import { useCallback, useState } from "react";
 import { useMutation } from "react-query";
@@ -88,11 +87,25 @@ const Login = () => {
           gap: 8,
         }}
       >
-        <Image
-          src={logo}
-          style={{ width: 120, height: 60, marginBottom: 12 }}
-          preview={false}
-        />
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 4,
+          }}
+        >
+          <HomeTwoTone style={{ fontSize: 24 }} />
+          <h2
+            style={{
+              fontWeight: 600,
+              color: "#f7a306",
+              padding: 0,
+              margin: 0,
+            }}
+          >
+            TRICO
+          </h2>
+        </div>
         <h4 style={{ marginBottom: 12 }}>
           Chào mừng bạn đến với hệ thống Quản lý nhân sự
         </h4>

@@ -46,6 +46,8 @@ const Step1 = () => {
     marital_status,
     mst,
     cccd,
+    file,
+    avatar,
   } = newStaffInfo ?? {};
 
   const data = useMemo(
@@ -67,7 +69,9 @@ const Step1 = () => {
         title: "Ngày sinh",
         key: "date_of_birth",
         type: "date",
-        value: date_of_birth ? dayjs(date_of_birth, "YYYY-MM-DD") : "",
+        value: !isEmpty(date_of_birth)
+          ? dayjs(date_of_birth, "YYYY-MM-DD")
+          : "",
         rules: [{ required: true, message: "Vui lòng nhập ngày sinh" }],
       },
       {
@@ -95,7 +99,7 @@ const Step1 = () => {
         rules: [{ required: true, message: "Vui lòng nhập CCCD!" }],
       },
       {
-        title: "mst",
+        title: "Mã số thuế",
         key: "mst",
         value: mst,
         rules: [{ required: true, message: "Vui lòng nhập mã số thuế!" }],
@@ -196,6 +200,14 @@ const Step1 = () => {
             {imageUrl ? (
               <img
                 src={URL.createObjectURL(imageUrl)}
+                alt="avatar"
+                style={{
+                  width: "100%",
+                }}
+              />
+            ) : !isEmpty(avatar) && file ? (
+              <img
+                src={file}
                 alt="avatar"
                 style={{
                   width: "100%",

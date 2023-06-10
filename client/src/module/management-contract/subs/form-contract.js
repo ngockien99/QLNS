@@ -1,4 +1,13 @@
-import { DatePicker, Form, Input, Modal, Space, Upload, message } from "antd";
+import {
+  DatePicker,
+  Form,
+  Input,
+  Modal,
+  Select,
+  Space,
+  Upload,
+  message,
+} from "antd";
 import dayjs from "dayjs";
 
 import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
@@ -10,6 +19,8 @@ import {
   useState,
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
+import { useRecoilValue } from "recoil";
+import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_LIST_CONTACT } from "util/const";
 
@@ -36,6 +47,7 @@ const FormContract = forwardRef((_, ref) => {
   const [loading, setLoading] = useState(false);
   const [newData, setNewData] = useState("");
   const queriesClient = useQueryClient();
+  const listUser = useRecoilValue(ListUserAtom);
   const uploadButton = (
     <div>
       {loading ? <LoadingOutlined /> : <PlusOutlined />}
@@ -66,33 +78,49 @@ const FormContract = forwardRef((_, ref) => {
       setShow(true);
     },
     setValue: (value) => {
-      value.start_date = dayjs(value.start_date, "YYYY-MM-DD");
-      value.end_date = dayjs(value.end_date, "YYYY-MM-DD");
+      value.start_work = dayjs(value.start_work, "YYYY-MM-DD");
+      value.end_work = dayjs(value.end_work, "YYYY-MM-DD");
+      setNewData(value);
       Object.entries(value).map(([formKey, value]) => {
+        if (formKey === "file") {
+          return;
+        }
         return form.setFields([{ name: formKey, value: value }]);
       });
-      setNewData(value);
     },
   }));
   const title = useMemo(
-    () => (newData ? `Chỉnh sửa vị trí ${newData?.name}` : "Thêm vị trí"),
+    () => (newData ? `Chỉnh sửa hợp đồng` : "Thêm hợp đồng"),
     [newData]
   );
 
   const { mutate } = useMutation(
     (data) => {
-      const method = newData ? "put" : "post";
-      data.start_date = dayjs(data?.start_date || newData?.start_date).format(
+      let formData = new FormData();
+      data.start_work = dayjs(data?.start_work || newData?.start_work).format(
         "YYYY-MM-DD"
       );
-      data.end_date = dayjs(data?.end_date || newData?.end_date).format(
+      data.end_work = dayjs(data?.end_work || newData?.end_work).format(
         "YYYY-MM-DD"
       );
+      if (data.file) {
+        data.file = data?.file?.[0].originFileObj;
+      } else {
+        delete data.file;
+      }
       const url = newData ? "contract/update" : "contract/create";
+      Object.entries(data).map(([key, value]) => {
+        formData.append(key, value);
+      });
+      if (newData) {
+        formData.append("_method", "PUT");
+      }
+
       const config = {
         url: url,
-        data: { ...newData, ...data },
-        method: method,
+        data: formData,
+        method: "post",
+        header: { "Content-Type": "multipart/form-data" },
       };
       return API.request(config);
     },
@@ -137,6 +165,9 @@ const FormContract = forwardRef((_, ref) => {
       onOk={onSubmit}
     >
       <Form form={form} layout="vertical" name="form_in_modal">
+        <Form.Item name="user_id" label="Người lao động:">
+          <Select options={listUser} name="user_id" />
+        </Form.Item>
         <Form.Item name="type_of_contract" label="Loại hợp đồng:">
           <Input name="type_of_contract" />
         </Form.Item>
@@ -167,6 +198,11 @@ const FormContract = forwardRef((_, ref) => {
             {uploadButton}
           </Upload>
           {file && file}
+          {newData?.file && !file && (
+            <a href={newData?.file} download target="_blank" rel="noreferrer">
+              {newData?.file}
+            </a>
+          )}
         </Form.Item>
       </Form>
     </Modal>
