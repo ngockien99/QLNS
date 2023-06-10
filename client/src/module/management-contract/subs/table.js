@@ -10,6 +10,7 @@ const TableComponent = () => {
   const { data = [] } = useQuery(GET_LIST_CONTACT, () => {
     const config = {
       url: "contract/list",
+      params: { type_of_contract: "", start_end_work: "" },
     };
     return API.request(config);
   });

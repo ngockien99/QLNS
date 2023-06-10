@@ -91,6 +91,7 @@ const FormVerify = forwardRef((_, ref) => {
     form
       .validateFields()
       .then((values) => {
+        console.log("kienn", values);
         values.type = value;
         const params =
           value === 1
@@ -99,14 +100,21 @@ const FormVerify = forwardRef((_, ref) => {
                 time_ot_end: dayjs(values?.time_ot_end).format("HH:mm"),
                 date: dayjs(values?.date).format("YYYY-MM-DD"),
               }
-            : { date: dayjs(values?.date).format("YYYY-MM-DD") };
+            : {
+                date: !isEdit
+                  ? [
+                      dayjs(values?.date_start).format("YYYY-MM-DD"),
+                      dayjs(values?.date_end).format("YYYY-MM-DD"),
+                    ]
+                  : dayjs(values?.date).format("YYYY-MM-DD"),
+              };
 
         mutate({ ...values, ...params });
       })
       .catch((info) => {
         console.log("Validate Failed:", info);
       });
-  }, [form, mutate, value]);
+  }, [form, isEdit, mutate, value]);
 
   useEffect(() => {
     if (data) {
@@ -169,23 +177,60 @@ const FormVerify = forwardRef((_, ref) => {
           </Radio.Group>
         </Form.Item>
         <Space>
-          <Form.Item
-            name="date"
-            label="Ngày:"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng chọn ngày...!",
-              },
-            ]}
-          >
-            <DatePicker
+          {(isEdit || disable || value === 1) && (
+            <Form.Item
               name="date"
-              placeholder="Vui lòng chọn ngày..."
-              format={"YYYY-MM-DD"}
-            />
-          </Form.Item>
-
+              label="Ngày:"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn ngày...!",
+                },
+              ]}
+            >
+              <DatePicker
+                name="date"
+                placeholder="Vui lòng chọn ngày..."
+                format={"YYYY-MM-DD"}
+              />
+            </Form.Item>
+          )}
+          {!isEdit && !disable && value !== 1 && (
+            <Space>
+              <Form.Item
+                name="date_start"
+                label="Ngày bắt đầu:"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng chọn ngày bắt đầu...!",
+                  },
+                ]}
+              >
+                <DatePicker
+                  name="date_start"
+                  placeholder="Vui lòng chọn ngày bắt đầu..."
+                  format={"YYYY-MM-DD"}
+                />
+              </Form.Item>
+              <Form.Item
+                name="date_end"
+                label="Ngày kết thúc:"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng chọn ngày kết thúc...!",
+                  },
+                ]}
+              >
+                <DatePicker
+                  name="date_end"
+                  placeholder="Vui lòng chọn ngày kết thúc..."
+                  format={"YYYY-MM-DD"}
+                />
+              </Form.Item>
+            </Space>
+          )}
           {value === 1 && (
             <Space>
               <Form.Item

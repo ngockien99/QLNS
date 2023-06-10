@@ -26,20 +26,32 @@ const ButtonComponent = memo(() => {
 
   const { mutate, isLoading } = useMutation(
     (data) => {
+      let formData = new FormData();
       data.date_of_birth = dayjs(newStaffInfo?.date_of_birth || "").format(
         "YYYY-MM-DD"
       );
       data.start_work = dayjs(newStaffInfo?.start_work || "").format(
         "YYYY-MM-DD"
       );
-      data.end_work = dayjs(newStaffInfo?.end_work || "").format("YYYY-MM-DD");
+
+      data.avatar = newStaffInfo?.avatar?.[0]?.originFileObj;
+      if (newStaffInfo?.end_work) {
+        data.end_work = dayjs(newStaffInfo?.end_work || "").format(
+          "YYYY-MM-DD"
+        );
+      }
       data.department_id = newStaffInfo.department_id || 1;
+      const params = { ...newStaffInfo, ...data };
+      console.log("kiennn", params);
+      Object.entries(params).map(([key, value]) => formData.append(key, value));
 
       const config = {
         url: id ? "user/update" : "user/create",
         method: id ? "put" : "post",
-        data: { ...newStaffInfo, ...data },
+        data: formData,
+        header: { "Content-Type": "multipart/form-data" },
       };
+      console.log("kienn", formData.get("avatar"));
       return API.request(config);
     },
     {
@@ -62,6 +74,7 @@ const ButtonComponent = memo(() => {
         .validateFields()
         .then((values) => {
           setCurrentStep((pre) => pre + 1);
+          console.log("kienn", values);
           setNewStaffInfo((pre) => ({ ...pre, ...values }));
         })
         .catch((reason) => console.log(reason)),

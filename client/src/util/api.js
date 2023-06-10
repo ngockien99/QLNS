@@ -20,8 +20,8 @@ class API {
     };
     if (header) {
       request.headers = {
-        ...header,
         ...request.headers,
+        ...header,
       };
     }
     if (token) {
