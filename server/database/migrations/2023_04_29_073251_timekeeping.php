@@ -18,6 +18,8 @@ return new class extends Migration
             $table->time('checkout', $precision = 0)->nullable();
             $table->integer('late')->nullable();
             $table->double('work_day')->nullable();
+            $table->unsignedInteger('request_id')->nullable();
+            $table->double('approve_work_day')->nullable();
 
             $table->foreignId('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

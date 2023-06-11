@@ -87,7 +87,7 @@ class UserController extends Controller
         ]);
         
 
-        $user = $user->update($request->all());
+        $user = $user->update($data);
         return $this->responseSuccess(['success' => 'Cập nhật nhân viên thành công']);
     }
 
