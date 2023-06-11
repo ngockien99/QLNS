@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\LogRequestModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -18,11 +19,14 @@ class TimekeepingController extends Controller
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
 
+        $requestDetail = LogRequestModel::where('type', config('constants.log_request.type.leave'))->where('date', 'like', "%$today%")->first();
+        
         if (!$findToday) {
             $data = [
                 'date' => $today,
                 'checkin' => Carbon::now('Asia/Ho_Chi_Minh')->format('H:i:s'),
-                'user_id' => $user->id
+                'user_id' => $user->id,
+                'request_id' => $requestDetail ? $requestDetail->id : '' 
             ];
             $checkin = Timekeeping::create($data);
             return $this->responseSuccess($checkin);
@@ -63,7 +67,7 @@ class TimekeepingController extends Controller
 
             // Tính toán giờ đi muộn chiều
             $lateAfternoon = 0;
-            $timeNow = Carbon::now('Asia/Ho_Chi_Minh')->format('H:i:s');
+            $timeNow = Carbon::create('11:00:00')->format('H:i:s');
 
             if ($timeNow > $endLunchBreak && $timeNow < $endCheck) {
                 $lateAfternoon = $endCheck->diffInMinutes(Carbon::parse($timeNow));
@@ -82,7 +86,13 @@ class TimekeepingController extends Controller
                 'late' => $totalLate,
                 'work_day' => round(((480 - $totalLate) / 480), 2)
             ];
-            $checkout = Timekeeping::where('user_id', $user->id)->where('date', $today)->update($data);
+            $checkout = Timekeeping::where('user_id', $user->id)->where('date', 'like', "%$today%")->update($data);
+
+            // check xem có bản ghi request không rồi cập nhật lại data
+            if ($findToday->request_id) {
+                $logRequest = LogRequestModel::findOrFail($findToday->request_id);
+                app('App\Http\Controllers\Api\StaffController')->updateTimeKeeping($logRequest);
+            }
             return $this->responseSuccess($checkout);
         } else {
             return $this->responseSuccess(['success' => 'Bạn đã checkout rồi']);

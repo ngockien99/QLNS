@@ -146,7 +146,6 @@ class StaffController extends Controller
 
                     array_push($data, $params);
                 }
-                
                 $logRequest = LogRequestModel::insert($data);
             }
 
