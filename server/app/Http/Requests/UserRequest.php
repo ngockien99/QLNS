@@ -26,7 +26,7 @@ class UserRequest extends FormRequest
         return [
             'name' => 'required',
             'email' => 'required|email:rfc,dns|unique:users,email,' .$this->id,
-            'password' => 'required||min:8|max:32',
+            // 'password' => 'required||min:8|max:32',
             'avatar' => 'nullable|mimes:jpeg,jpg,png',
             'address' => 'required',
             'phone' => ['required','regex:/^(0[3|5|7|8|9])[0-9]{8}+$/', 'unique:users,phone,' .$this->id],

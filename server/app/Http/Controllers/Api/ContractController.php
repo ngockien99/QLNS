@@ -9,6 +9,7 @@ use App\Models\Contract;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\ContractRequest;
+use App\Http\Requests\ContractUpdateRequest;
 use Illuminate\Support\Facades\File;
 use Throwable;
 
@@ -76,7 +77,7 @@ class ContractController extends Controller
         return $this->responseSuccess(['success' => 'Thêm thành công']);
     }
 
-    public function updateContract(ContractRequest $request) {
+    public function updateContract(ContractUpdateRequest $request) {
         $validated = $request->validated();
 
         $fileOld = Contract::find($request->id)->file;

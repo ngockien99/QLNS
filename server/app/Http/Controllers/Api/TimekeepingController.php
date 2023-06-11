@@ -34,6 +34,8 @@ class TimekeepingController extends Controller
     public function checkout() {
         $user = JWTAuth::user();
 
+        // check xem có ngày nghỉ không, nếu có thì thay đổi giờ checkin
+
         // Giờ check quy đinh
         $startCheck = new Carbon('08:00:00');
         $endCheck = new Carbon('23:59:59');
