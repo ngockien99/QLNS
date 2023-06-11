@@ -156,7 +156,7 @@ class UserController extends Controller
 
     public function detailUser(Request $request) {
         $user = User::findOrFail($request->id);
-        $user->file = config('app.linkFile') . '/uploads/user/' . $user->avatar;
+        $user->avatar = config('app.linkFile') . '/uploads/user/' . $user->avatar;
         $user->manager_name = User::find($user->manager_id)->name;
 
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');

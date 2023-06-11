@@ -81,6 +81,7 @@ class ContractController extends Controller
         $validated = $request->validated();
 
         $fileOld = Contract::find($request->id)->file;
+        $fileNameToStore = '';
         if($request->hasFile('file')){
             $filenameWithExt = $request->file('file')->getClientOriginalName();
             $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
@@ -95,8 +96,11 @@ class ContractController extends Controller
             'start_work' => $request->start_work,
             'end_work' => $request->end_work,
             'user_id' => $request->user_id,
-            'file' => $fileNameToStore
         ];
+
+        if ($fileNameToStore) {
+            $data['file'] = $fileNameToStore;
+        }
         
         $contract = Contract::where('id', $request->id)->update($data);
         return $this->responseSuccess(['success' => 'Sửa thành công']);
