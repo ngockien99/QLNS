@@ -54,7 +54,7 @@ Route::group(['middleware' => 'jwt.auth', 'middleware' => 'permission',], functi
   Route::group(['prefix' => 'contract'], function(){
     Route::get('list', [ContractController::class, 'listContract']);
     Route::get('detail', [ContractController::class, 'detailContract']);
-    Route::post('update', [ContractController::class, 'updateContract']);
+    Route::put('update', [ContractController::class, 'updateContract']);
     Route::delete('delete', [ContractController::class, 'deleteContract']);
     Route::post('create', [ContractController::class, 'createContract']);
   });

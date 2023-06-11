@@ -1,5 +1,6 @@
 import { Button, Form, message } from "antd";
 import dayjs from "dayjs";
+import { isEmpty } from "lodash";
 import { memo, useCallback } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router";
@@ -35,7 +36,7 @@ const ButtonComponent = memo(() => {
       );
 
       data.avatar = newStaffInfo?.avatar?.[0]?.originFileObj;
-      if (newStaffInfo?.end_work) {
+      if (!isEmpty(newStaffInfo?.end_work)) {
         data.end_work = dayjs(newStaffInfo?.end_work || "").format(
           "YYYY-MM-DD"
         );
@@ -44,10 +45,13 @@ const ButtonComponent = memo(() => {
       const params = { ...newStaffInfo, ...data };
       console.log("kiennn", params);
       Object.entries(params).map(([key, value]) => formData.append(key, value));
+      if (id) {
+        formData.append("_method", "PUT");
+      }
 
       const config = {
         url: id ? "user/update" : "user/create",
-        method: id ? "put" : "post",
+        method: "post",
         data: formData,
         header: { "Content-Type": "multipart/form-data" },
       };

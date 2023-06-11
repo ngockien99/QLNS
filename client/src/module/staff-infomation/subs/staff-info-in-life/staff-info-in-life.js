@@ -23,6 +23,9 @@ const StaffInfoInLife = () => {
     gender,
     marital_status,
     email,
+    avatar,
+    mst,
+    file,
   } = activeUserInfo?.user || {};
 
   const data = useMemo(() => {
@@ -37,7 +40,7 @@ const StaffInfoInLife = () => {
       { key: "address", title: "Địa chỉ", value: address },
       { key: "phone", title: "Số điện thoại", value: phone || "0236627637" },
       { key: "email", title: "Email", value: email },
-      { key: "code", title: "Mã số thuế", value: "1722721271" },
+      { key: "mst", title: "Mã số thuế", value: mst },
       {
         key: "marital_status",
         title: "Tình trạng hôn nhân",
@@ -49,7 +52,7 @@ const StaffInfoInLife = () => {
             : "Độc thân",
       },
     ];
-  }, [date_of_birth, gender, address, phone, email, marital_status]);
+  }, [date_of_birth, gender, address, phone, email, mst, marital_status]);
 
   return (
     <div>
@@ -70,7 +73,10 @@ const StaffInfoInLife = () => {
               <Form.Item name="avatar" label="Ảnh nhân sự">
                 <Image
                   width={120}
-                  src="https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                  src={
+                    file ||
+                    "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                  }
                 />
               </Form.Item>
             </Col>

@@ -56,8 +56,6 @@ class LogRequest extends FormRequest
             'time_ot_start.date_format' => 'Định dạng giờ sai',
             'time_ot_end.required' => 'Bạn chưa chọn thời gian kết thúc OT',
             'time_ot_end.date_format' => 'Định dạng giờ sai',
-            
-
         ];
     }
 

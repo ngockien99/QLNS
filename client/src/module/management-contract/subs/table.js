@@ -2,18 +2,21 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Col, Popconfirm, Row, Table, message } from "antd";
 import { Fragment, useCallback, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useRecoilValue } from "recoil";
+import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_LIST_CONTACT } from "util/const";
 import FormContract from "./form-contract";
 
 const TableComponent = () => {
-  const { data = [] } = useQuery(GET_LIST_CONTACT, () => {
+  const { data = {} } = useQuery(GET_LIST_CONTACT, () => {
     const config = {
       url: "contract/list",
       params: { type_of_contract: "", start_end_work: "" },
     };
     return API.request(config);
   });
+  const userList = useRecoilValue(ListUserAtom);
 
   const queryClient = useQueryClient();
 
@@ -60,15 +63,23 @@ const TableComponent = () => {
       width: "10%",
     },
     {
-      title: "Tên vị trí",
+      title: "Tên người lao động",
       dataIndex: "name",
       key: "name",
       width: "25%",
+      render: (_, record) => {
+        const { user_id } = record;
+        const name = userList?.find((e) => e.value === user_id);
+        if (!name) {
+          return;
+        }
+        return name.label;
+      },
     },
     {
-      title: "Mô tả",
-      dataIndex: "description",
-      key: "start_date",
+      title: "Loại hợp đồng",
+      dataIndex: "type_of_contract",
+      key: "type_of_contract",
       width: "30%",
     },
     {
@@ -113,6 +124,7 @@ const TableComponent = () => {
       ),
     },
   ];
+
   return (
     <Fragment>
       <Table

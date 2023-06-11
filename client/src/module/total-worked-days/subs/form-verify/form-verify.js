@@ -118,11 +118,15 @@ const FormVerify = forwardRef((_, ref) => {
 
   useEffect(() => {
     if (data) {
+      if (value !== 1 && data.date && !isEdit) {
+        data.date_start = dayjs(data?.date, "YYYY-MM-DD");
+        data.date_end = dayjs(data.date_end || data?.date, "YYYY-MM-DD");
+      }
       Object.entries(data).map(([formKey, value]) => {
         return form.setFields([{ name: formKey, value: value }]);
       });
     }
-  }, [data, form, value]);
+  }, [data, form, isEdit, value]);
 
   return (
     <Modal
@@ -208,6 +212,7 @@ const FormVerify = forwardRef((_, ref) => {
                 ]}
               >
                 <DatePicker
+                  disabled={value !== 1 && data?.date && !isEdit}
                   name="date_start"
                   placeholder="Vui lòng chọn ngày bắt đầu..."
                   format={"YYYY-MM-DD"}
@@ -225,6 +230,7 @@ const FormVerify = forwardRef((_, ref) => {
               >
                 <DatePicker
                   name="date_end"
+                  disabled={value !== 1 && data?.date && !isEdit}
                   placeholder="Vui lòng chọn ngày kết thúc..."
                   format={"YYYY-MM-DD"}
                 />
