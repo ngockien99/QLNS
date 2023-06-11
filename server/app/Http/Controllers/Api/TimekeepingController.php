@@ -67,7 +67,7 @@ class TimekeepingController extends Controller
 
             // Tính toán giờ đi muộn chiều
             $lateAfternoon = 0;
-            $timeNow = Carbon::create('11:00:00')->format('H:i:s');
+            $timeNow = Carbon::now('Asia/Ho_Chi_Minh')->format('H:i:s');
 
             if ($timeNow > $endLunchBreak && $timeNow < $endCheck) {
                 $lateAfternoon = $endCheck->diffInMinutes(Carbon::parse($timeNow));
