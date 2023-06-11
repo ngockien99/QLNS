@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\LogRequestModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -34,11 +33,6 @@ class TimekeepingController extends Controller
 
     public function checkout() {
         $user = JWTAuth::user();
-        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
-
-        // check xem có ngày nghỉ không, nếu có thì thay đổi giờ checkin
-        $request = LogRequestModel::where('date', $today)->first();
-        Log::info($request);
 
         // Giờ check quy đinh
         $startCheck = new Carbon('08:00:00');
@@ -49,49 +43,50 @@ class TimekeepingController extends Controller
         $startLunchBreak = new Carbon('12:00:00');
         $endLunchBreak = new Carbon('13:00:00');
 
+        $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
 
         
         $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
 
-        // if (!$findToday->checkout) {
-        //     $totalLate = '';
+        if (!$findToday->checkout) {
+            $totalLate = '';
 
-        //     // Tính toán giờ đi muộn sáng
-        //     $lateMorning = 0;
-        //     if (Carbon::parse($findToday->checkin) < $startLunchBreak && Carbon::parse($findToday->checkin) > $startCheck) {
-        //         $lateMorning = Carbon::parse($findToday->checkin)->diffInMinutes($startCheck);
-        //     } else if (Carbon::parse($findToday->checkin) >= $startLunchBreak) {
-        //         $lateMorning = 240;
-        //     } else if (Carbon::parse($findToday->checkin) > $endLunchBreak) {
-        //         $lateMorning = Carbon::parse($findToday->checkin)->diffInMinutes($startCheck) - $lunchBreak;
-        //     }
+            // Tính toán giờ đi muộn sáng
+            $lateMorning = 0;
+            if (Carbon::parse($findToday->checkin) < $startLunchBreak && Carbon::parse($findToday->checkin) > $startCheck) {
+                $lateMorning = Carbon::parse($findToday->checkin)->diffInMinutes($startCheck);
+            } else if (Carbon::parse($findToday->checkin) >= $startLunchBreak) {
+                $lateMorning = 240;
+            } else if (Carbon::parse($findToday->checkin) > $endLunchBreak) {
+                $lateMorning = Carbon::parse($findToday->checkin)->diffInMinutes($startCheck) - $lunchBreak;
+            }
 
-        //     // Tính toán giờ đi muộn chiều
-        //     $lateAfternoon = 0;
-        //     $timeNow = Carbon::now('Asia/Ho_Chi_Minh')->format('H:i:s');
+            // Tính toán giờ đi muộn chiều
+            $lateAfternoon = 0;
+            $timeNow = Carbon::now('Asia/Ho_Chi_Minh')->format('H:i:s');
 
-        //     if ($timeNow > $endLunchBreak && $timeNow < $endCheck) {
-        //         $lateAfternoon = $endCheck->diffInMinutes(Carbon::parse($timeNow));
-        //     } else if ($timeNow >= $endCheck && $findToday->checkin <= $endCheck) {
-        //         $lateAfternoon = 0;
-        //     } else if ($timeNow >= $startLunchBreak && $timeNow <= $endLunchBreak || $findToday->checkin >= $endCheck && $timeNow >= $endCheck) {
-        //         $lateAfternoon = 240;
-        //     } else {
-        //         $lateAfternoon = $endCheck->diffInMinutes($timeNow) - $lunchBreak;
-        //     }
+            if ($timeNow > $endLunchBreak && $timeNow < $endCheck) {
+                $lateAfternoon = $endCheck->diffInMinutes(Carbon::parse($timeNow));
+            } else if ($timeNow >= $endCheck && $findToday->checkin <= $endCheck) {
+                $lateAfternoon = 0;
+            } else if ($timeNow >= $startLunchBreak && $timeNow <= $endLunchBreak || $findToday->checkin >= $endCheck && $timeNow >= $endCheck) {
+                $lateAfternoon = 240;
+            } else {
+                $lateAfternoon = $endCheck->diffInMinutes($timeNow) - $lunchBreak;
+            }
             
-        //     $totalLate = $lateMorning + $lateAfternoon;
+            $totalLate = $lateMorning + $lateAfternoon;
 
-        //     $data = [
-        //         'checkout' => $timeNow,
-        //         'late' => $totalLate,
-        //         'work_day' => round(((480 - $totalLate) / 480), 2)
-        //     ];
-        //     $checkout = Timekeeping::where('user_id', $user->id)->where('date', $today)->update($data);
-        //     return $this->responseSuccess($checkout);
-        // } else {
-        //     return $this->responseSuccess(['success' => 'Bạn đã checkout rồi']);
-        // }
+            $data = [
+                'checkout' => $timeNow,
+                'late' => $totalLate,
+                'work_day' => round(((480 - $totalLate) / 480), 2)
+            ];
+            $checkout = Timekeeping::where('user_id', $user->id)->where('date', $today)->update($data);
+            return $this->responseSuccess($checkout);
+        } else {
+            return $this->responseSuccess(['success' => 'Bạn đã checkout rồi']);
+        }
     }
 
     public function getTimeSheet() {

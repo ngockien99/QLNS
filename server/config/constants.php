@@ -35,5 +35,9 @@ return [
             'no' => 0,
             'yes' => 1
         ]
-    ]  
+    ],
+    'rewardDiscipline' => [
+        'reward' => 0,
+        'discipline' => 1
+    ]
 ];

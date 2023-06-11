@@ -11,6 +11,10 @@ class Payroll extends Model
 
     protected $table = 'payroll';
 
+    protected $casts = [
+        'info_payroll' => 'array'
+   ];
+
     protected $fillable = [
         'month_pay',
         'bonus_money',
@@ -18,7 +22,8 @@ class Payroll extends Model
         'total_working_days',
         'tax',
         'total_money_actual_receive',
-        'user_id'
+        'user_id',
+        'info_payroll'
     ];
 
     public function user()
