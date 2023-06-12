@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('total_working_days'); // Tổng ngày tính công
             $table->integer('tax')->nullable();
             $table->integer('total_money_actual_receive'); // Tiền thực nhận
+            $table->json('info_payroll');
 
             $table->foreignId('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

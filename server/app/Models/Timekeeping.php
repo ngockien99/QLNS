@@ -17,7 +17,9 @@ class Timekeeping extends Model
         'checkout',
         'late',
         'work_day',
-        'user_id'
+        'user_id',
+        'request_id',
+        'approve_work_day',
     ];
 
     public function user()

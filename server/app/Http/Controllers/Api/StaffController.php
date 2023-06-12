@@ -32,8 +32,10 @@ class StaffController extends Controller
         $getUser = $this->getUser($request);
         if ($getUser) {
             $user = User::findOrFail($getUser->id);
-            $user->file = config('app.linkFile') . '/uploads/user/' . $user->avatar;
-            $user->manager_name = User::find($user->manager_id)->name;
+            if ($user->avatar) {
+                $user->avatar = config('app.linkFile') . '/uploads/user/' . $user->avatar;
+            }
+            $user->manager_name = User::find($user->manager_id) ? User::find($user->manager_id)->name : null;
 
             $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
             $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
@@ -56,7 +58,7 @@ class StaffController extends Controller
 
             $data = [
                 "user" => $user,
-                "check_manager" => $checkManager ? false : true,
+                "check_manager" => $checkManager ? true : false,
                 "academic" => AcademicLevel::where('id', $user->academic_level_id)->first(),
                 "salary" => Salary::where('id', $user->salary_id)->first(),
                 "department" => Department::findOrFail($user->department_id),
@@ -64,7 +66,7 @@ class StaffController extends Controller
                 "leave" => $leave,
                 "checkin" => $findToday && $findToday->checkin ? true : false,
                 "checkout" => $findToday && $findToday->checkout ? true : false,
-                "manager" => $checkManager->name,
+                "manager" => $user->manager_name,
                 "position" => Position::findOrFail($user->position_id),
                 "specialize" => Specialize::findOrFail($user->specialize_id)
             ];
@@ -144,7 +146,6 @@ class StaffController extends Controller
 
                     array_push($data, $params);
                 }
-                
                 $logRequest = LogRequestModel::insert($data);
             }
 
@@ -275,7 +276,10 @@ class StaffController extends Controller
                 'status' => config('constants.log_request.status.approve')
             ];
 
+            $this->updateTimeKeeping($logRequest);
+
             $logRequest->update($data);
+
             return $this->responseSuccess(['success' => 'Chấp nhận request thành công']);
 
         } else {
@@ -318,5 +322,133 @@ class StaffController extends Controller
         } else {
             return $this->responseError('Truyền không đúng định dạng');
         }
+    }
+
+    public function updateTimeKeeping($request) {
+        $logRequest = $request;
+        $timekeeping = Timekeeping::where('date', $logRequest->date)->first();
+        
+        if ($timekeeping) {
+
+            // Giờ check quy đinh
+            $startCheck = new Carbon('08:00:00');
+            $endCheck = new Carbon('17:00:00');
+            if ($logRequest->time_leave == config('constants.log_request.time_leave.morning')) {
+                $startCheck = new Carbon('13:00:00');
+                $endCheck = new Carbon('17:00:00');
+                $totalLate = $this->leaveMorning($timekeeping, $startCheck, $endCheck);
+                
+                $data = [
+                    'request_id' => $logRequest->id,
+                    'work_day' => round(((480 - ($totalLate + 240)) / 480), 2)
+                ];
+
+                if ($logRequest->check_paid == config('constants.log_request.check_paid.paid')) {
+                    $data['approve_work_day'] = round(((480 - $totalLate) / 480), 2);
+                }
+                if ($logRequest->check_paid == config('constants.log_request.check_paid.unpaid')) {
+                    $data['approve_work_day'] = round(((480 - ($totalLate + 240)) / 480), 2);
+                }
+
+                $timekeeping->update($data);
+
+            } else if ($logRequest->time_leave == config('constants.log_request.time_leave.afternoon')) {
+                $startCheck = new Carbon('08:00:00');
+                $endCheck = new Carbon('12:00:00');
+                $totalLate = $this->leaveAfternoon($timekeeping, $startCheck, $endCheck);
+
+                $data = [
+                    'request_id' => $logRequest->id,
+                    'work_day' => round(((480 - ($totalLate + 240)) / 480), 2)
+                ];
+
+                if ($logRequest->check_paid == config('constants.log_request.check_paid.paid')) {
+                    $data['approve_work_day'] = round(((480 - $totalLate) / 480), 2);
+                }
+                if ($logRequest->check_paid == config('constants.log_request.check_paid.unpaid')) {
+                    $data['approve_work_day'] = round(((480 - ($totalLate + 240)) / 480), 2);
+                }
+
+                $timekeeping->update($data);
+
+            } else if ($logRequest->time_leave === config('constants.log_request.time_leave.allday')) {
+                $data = [
+                    'request_id' => $logRequest->id,
+                    'work_day' => 0,
+                ];
+
+                if ($logRequest->check_paid == config('constants.log_request.check_paid.paid')) {
+                    $data['approve_work_day'] = 1;
+                }
+                if ($logRequest->check_paid == config('constants.log_request.check_paid.unpaid')) {
+                    $data['approve_work_day'] = 0;
+                }
+
+                $timekeeping->update($data);
+            }
+            
+        }
+    }
+
+    public function leaveMorning($findToday, $startCheck, $endCheck) {
+        $totalLate = '';
+        $checkin = Carbon::parse($findToday->checkin);
+        $checkout = Carbon::parse($findToday->checkout);
+
+        // Tính toán giờ đi muộn
+        $lateMorning = 0;
+        if ($checkin <= $startCheck) {
+            $lateMorning = 0;
+        }
+        if ($checkin > $startCheck) {
+            $lateMorning = $checkin->diffInMinutes($startCheck);
+        }
+
+        // Tính toán giờ đi về sớm
+        $lateAfternoon = 0;
+        if ($checkout >= $endCheck) {
+            $lateAfternoon = 0;
+        }
+        if ($checkout < $endCheck) {
+            $lateAfternoon = $endCheck->diffInMinutes($checkout);
+        }
+        if ($checkout < $startCheck) {
+            $lateAfternoon = 240;
+        }
+        
+        $totalLate = $lateMorning + $lateAfternoon;
+
+        return $totalLate;
+    }
+
+    public function leaveAfternoon ($findToday, $startCheck, $endCheck) {
+        $totalLate = '';
+        $checkin = Carbon::parse($findToday->checkin);
+        $checkout = Carbon::parse($findToday->checkout);
+
+        // Tính toán giờ đi muộn
+        $lateMorning = 0;
+        if ($checkin <= $startCheck) {
+            $lateMorning = 0;
+        }
+        if ($checkin > $startCheck) {
+            $lateMorning = $checkin->diffInMinutes($startCheck);
+        }
+
+        // Tính toán giờ đi về sớm
+        $lateAfternoon = 0;
+        if ($checkout >= $endCheck) {
+            $lateAfternoon = 0;
+        }
+        if ($checkout < $endCheck) {
+            $lateAfternoon = $endCheck->diffInMinutes($checkout);
+        }
+        if ($checkout < $startCheck) {
+            $lateAfternoon = 240;
+        }
+        
+        $totalLate = $lateMorning + $lateAfternoon;
+
+        return $totalLate;
     }
 }
