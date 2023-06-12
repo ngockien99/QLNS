@@ -58,6 +58,9 @@ const FormVerify = forwardRef((_, ref) => {
   };
 
   console.log(value);
+  const disabledDate = useCallback((current) => {
+    return current && current < dayjs().subtract(1, "day").endOf("day");
+  }, []);
 
   const { mutate, isLoading } = useMutation(
     (data) => {
@@ -216,6 +219,7 @@ const FormVerify = forwardRef((_, ref) => {
                   name="date_start"
                   placeholder="Vui lòng chọn ngày bắt đầu..."
                   format={"YYYY-MM-DD"}
+                  disabledDate={disabledDate}
                 />
               </Form.Item>
               <Form.Item

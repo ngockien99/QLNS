@@ -2,7 +2,6 @@ import { Button, Table } from "antd";
 import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import { useCallback, useMemo, useRef } from "react";
 import { useRecoilValue } from "recoil";
-import { ROLE } from "util/const";
 import UpdateFormSalary from "../update-form/update-form-salary";
 
 const Salary = () => {
@@ -13,7 +12,7 @@ const Salary = () => {
     modalRef.current.show();
   }, []);
   const data = [{ ...salary, name: user?.name }];
-  const showEditButton = useMemo(() => (ROLE === "admin" ? true : false), []);
+  const showEditButton = useMemo(() => false, []);
 
   const columns = [
     {

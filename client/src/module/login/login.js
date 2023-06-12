@@ -7,12 +7,14 @@ import { Navigate } from "react-router";
 import { useSetRecoilState } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
-import { ROLE, TOKEN_JWT } from "util/const";
+import { TOKEN_JWT } from "util/const";
+import { useCheckRole } from "util/custom-hook";
 
 const Login = () => {
   const token = localStorage.getItem(TOKEN_JWT);
   const setUseInfo = useSetRecoilState(UserInfoAtom);
   const [id, setId] = useState("");
+  const role = useCheckRole();
 
   const { mutate } = useMutation(
     (formValue) => {
@@ -45,7 +47,7 @@ const Login = () => {
   );
   if (token) {
     const redirectTo =
-      ROLE === "admin"
+      role === "admin"
         ? "/dashboard"
         : `/quan-ly-ho-so-ca-nhan/thong-tin-ca-nhan/${id}`;
     return <Navigate to={redirectTo} />;

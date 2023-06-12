@@ -63,7 +63,7 @@ const FormContract = forwardRef((_, ref) => {
 
   const handleChange = (e) => {
     console.log(e);
-    setFile(e?.file?.name);
+    setFile(e?.fileList);
   };
 
   const normFile = (e) => {
@@ -103,13 +103,18 @@ const FormContract = forwardRef((_, ref) => {
       data.end_work = dayjs(data?.end_work || newData?.end_work).format(
         "YYYY-MM-DD"
       );
-      if (data.file) {
-        data.file = data?.file?.[0].originFileObj;
+      console.log(data, newData.file, file?.[0]?.name, newData.file, file);
+      if (file) {
+        data.file = file?.[0].originFileObj;
       } else {
+        if (newData.file) {
+          delete newData.file;
+        }
         delete data.file;
       }
+      const params = { ...newData, ...data };
       const url = newData ? "contract/update" : "contract/create";
-      Object.entries(data).map(([key, value]) => {
+      Object.entries(params).map(([key, value]) => {
         formData.append(key, value);
       });
       if (newData) {
@@ -133,6 +138,7 @@ const FormContract = forwardRef((_, ref) => {
         form.resetFields();
         setNewData("");
         setShow(false);
+        setFile(undefined);
       },
       onError: (error) => {
         message.error(error);
@@ -161,10 +167,11 @@ const FormContract = forwardRef((_, ref) => {
         setShow(false);
         form.resetFields();
         setNewData("");
+        setFile(undefined);
       }}
       onOk={onSubmit}
     >
-      <Form form={form} layout="vertical" name="form_in_modal">
+      <Form form={form} layout="vertical" name="form_in_modal_contract">
         <Form.Item name="user_id" label="Người lao động:">
           <Select options={listUser} name="user_id" />
         </Form.Item>
@@ -192,12 +199,12 @@ const FormContract = forwardRef((_, ref) => {
             showUploadList={false}
             beforeUpload={beforeUpload}
             onChange={handleChange}
-            accept=".doc,.docx,.pdf"
+            accept=".pdf"
             maxCount={1}
           >
             {uploadButton}
           </Upload>
-          {file && file}
+          {file && file?.[0]?.name}
           {newData?.file && !file && (
             <a href={newData?.file} download target="_blank" rel="noreferrer">
               {newData?.file}

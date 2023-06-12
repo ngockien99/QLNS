@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash";
 import { useQuery } from "react-query";
 import { useSetRecoilState } from "recoil";
 import {
@@ -9,6 +10,19 @@ import {
 } from "state-management/recoil";
 
 import API from "util/api";
+
+export const useCheckRole = () => {
+  const role = localStorage.getItem("role");
+  if (isEmpty(role)) {
+    return;
+  }
+  if (Number(role)) {
+    if (Number(role) === 2) {
+      return "admin";
+    }
+    return "staff";
+  }
+};
 
 export const useQuerySpecializedList = () => {
   const setListSpecialized = useSetRecoilState(ListSpecializedAtom);
