@@ -1,11 +1,11 @@
 import { Button, DatePicker, Divider, Input, Select, Space } from "antd";
 import { useCallback, useRef } from "react";
-import FormRewardDiscipline from "./subs/form-reward-discipline";
+import FormPayroll from "./subs/form-payroll";
 import TableComponent from "./subs/table";
 
 const { Search } = Input;
 
-const ManagementRewardAndDiscipline = () => {
+const ManagementPayroll = () => {
   const modalRef = useRef();
   const openModal = useCallback(() => {
     modalRef.current.show();
@@ -58,9 +58,9 @@ const ManagementRewardAndDiscipline = () => {
         </Button>
       </div>
       <TableComponent />
-      <FormRewardDiscipline ref={modalRef} />
+      <FormPayroll ref={modalRef} />
     </div>
   );
 };
 
-export default ManagementRewardAndDiscipline;
+export default ManagementPayroll;

@@ -1,31 +1,69 @@
+import { Col, Divider, Form, Input, Modal, Row, Select } from "antd";
+
 import { FilePdfOutlined } from "@ant-design/icons";
-import { Button, Table } from "antd";
+import { Button } from "antd";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
-import { useCallback } from "react";
-import { useQuery } from "react-query";
+import { forwardRef, useCallback, useImperativeHandle, useState } from "react";
 import { useRecoilValue } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
-import API from "util/api";
+import { ListSpecializedAtom } from "state-management/recoil";
 
-const Salary = () => {
-  const userInfo = useRecoilValue(UserInfoAtom);
+const FormScreenPayroll = forwardRef((_, ref) => {
+  const [form] = Form.useForm();
+  const [show, setShow] = useState(false);
+  const listSpecialized = useRecoilValue(ListSpecializedAtom);
+  const [dataForm, setDataForm] = useState(undefined);
 
-  console.log(userInfo);
-  const { data: queryData } = useQuery("QUERY_PAYROLL_LIST", () => {
-    const config = {
-      url: "payroll/list",
-    };
-    return API.request(config);
-  });
+  useImperativeHandle(ref, () => ({
+    show: () => {
+      setShow(true);
+    },
+    setValue: (value) => {
+      const data = { ...value, ...value?.info_payroll };
+      setDataForm(data);
+      Object.entries(data).map(([formKey, value]) => {
+        return form.setFields([{ name: formKey, value: value }]);
+      });
+    },
+  }));
+  const userData = [
+    {
+      title: "Mã nhân viên",
+      key: "user_id",
+    },
+    {
+      title: "Họ tên nhân viên",
+      key: "name",
+    },
+    {
+      title: "Phòng ban",
+      key: "specialize_id",
+      options: listSpecialized,
+      type: "select",
+    },
+  ];
+  const data = [
+    { title: "Tổng lương  theo hợp đồng (đơn vị:VND)", key: "gross" },
+    { title: "Lương cơ bản (đơn vị:VND)", key: "salary_basic" },
+    { title: "Thưởng hiệu quả công việc (đơn vị:VND)", key: "bonus_money" },
+    { title: "Khen thưởng (đơn vị:VND)", key: "reward" },
+    { title: "Phụ cấp (đơn vị:VND)", key: "allowance_money" },
+    { title: "Ngày công (đơn vị:Ngày)", key: "total_working_days_standard" },
+    { title: "Ngày làm việc thực tế (đơn vị:Ngày)", key: "total_working_days" },
+    { title: "Ngày nghỉ phép (đơn vị:Ngày)", key: "leave_paid" },
+    { title: "Ngày nghỉ không lương (đơn vị:Ngày)", key: "leave_unpaid" },
+    { title: "Tổng thu nhập (đơn vị:VND)", key: "total_money" },
+    {
+      title: "Trừ tiền đóng BHXH, BHYT, BHTN (đơn vị:VND)",
+      key: "insurance_premium_salary",
+    },
+    { title: "Trừ tiền thuế TNCN (đơn vị:VND)", key: "tax" },
+    { title: "Kỷ luật", key: "discipline" },
+    { title: "Lương thực nhận (đơn vị:VND)", key: "real_money_received" },
+  ];
 
-  const download = useCallback((data) => {
-    const newData = {
-      ...data,
-      ...data.info_payroll,
-    };
-
+  const download = useCallback(() => {
     const doc = new jsPDF({ orientation: "portrait" });
     const PADDING = 10;
     const LINE_HEIGHT = 8;
@@ -48,9 +86,10 @@ const Salary = () => {
       total_working_days_standard,
       insurance_premium_salary,
       salary_basic,
-    } = newData;
+    } = dataForm;
     let drawCell = function (data) {
       const doc = data.doc;
+      console.log(data, doc);
       if ([0, 5, 10, 11, 16].includes(data.row.index)) {
         doc.setTextColor("#ff0000");
       }
@@ -157,51 +196,64 @@ const Salary = () => {
     doc.text("Phong Nhan Su", PADDING, currentY);
     currentY += LINE_HEIGHT * 2;
     doc.save("test.pdf");
-  }, []);
+  }, [dataForm]);
 
-  const data = queryData?.data.map((e) => {
-    return { ...e.payroll, ...e.salary, ...e.user };
-  });
+  return (
+    <Modal
+      open={show}
+      title="Xem chi tiết bảng lương"
+      onCancel={() => {
+        setShow(false);
+      }}
+      width={1000}
+      footer={null}
+    >
+      <Form form={form} layout="vertical" name="form_screen_payroll">
+        <Row gutter={24}>
+          {userData.map((item) => {
+            const { title, type, key, rules, options } = item;
+            return (
+              <Col span={8}>
+                <Form.Item name={key} rules={rules} label={title}>
+                  {type === "select" ? (
+                    <Select name={key} options={options} />
+                  ) : (
+                    <Input name={key} />
+                  )}
+                </Form.Item>
+              </Col>
+            );
+          })}
+        </Row>
+        <Divider style={{ marginTop: -8 }} />
+        <Row gutter={24}>
+          {data.map((item) => {
+            const { title, key, rules } = item;
+            return (
+              <Col span={8}>
+                <Form.Item name={key} rules={rules} label={title}>
+                  <Input name={key} />
+                </Form.Item>
+              </Col>
+            );
+          })}
+        </Row>
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button
+            type="primary"
+            danger
+            style={{
+              borderRadius: "4px",
+            }}
+            icon={<FilePdfOutlined />}
+            onClick={download}
+          >
+            Tải về
+          </Button>
+        </div>
+      </Form>
+    </Modal>
+  );
+});
 
-  console.log(data);
-
-  const columns = [
-    {
-      title: "Mã Nhân Viên",
-      dataIndex: "id",
-      key: "id",
-    },
-    {
-      title: "Họ và tên",
-      dataIndex: "name",
-      key: "name",
-    },
-    {
-      title: "Lương tháng",
-      dataIndex: "month_pay",
-      key: "month_pay",
-    },
-
-    {
-      title: "Hành động",
-      key: "action",
-      render: (_, record) => (
-        <Button
-          type="primary"
-          danger
-          style={{
-            borderRadius: "4px",
-          }}
-          icon={<FilePdfOutlined />}
-          onClick={() => download(record)}
-        >
-          Tải về
-        </Button>
-      ),
-    },
-  ];
-
-  return <Table columns={columns} dataSource={data} bordered />;
-};
-
-export default Salary;
+export default FormScreenPayroll;

@@ -1,7 +1,4 @@
-const user_id = localStorage.getItem("user_id");
-
 export const TOKEN_JWT = "web_qlns_token_jwt";
-export const ROLE = user_id === 2 ? "admin" : "staff";
 
 export const GET_LIST_CONTACT = "GET_LIST_CONTACT";
 export const GET_LIST_DEPARTMENT = "GET_LIST_DEPARTMENT";

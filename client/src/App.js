@@ -1,19 +1,20 @@
+import { Route, Routes } from "react-router-dom";
+
 import Home from "module/home";
 import Login from "module/login";
 import Main from "module/main";
+
 import ManagementContract from "module/management-contract/management-contract";
 import ManagementDepartment from "module/management-department/management-department";
 import ManagementLevel from "module/management-level";
 import ManagementPosition from "module/management-position";
 import ManagementSpecialize from "module/management-specialize";
-
-import { Route, Routes } from "react-router-dom";
 import ManagementRewardAndDiscipline from "./module/management-reward-discipline";
 import ManagementStaff from "./module/management-staff";
-import ManagementWorkedDays from "./module/management-working-days";
 
 import CheckInCheckOut from "module/checkin-checkout/checkin-checkout";
 import { FormCreate, FormEdit } from "module/form-staff";
+import ManagementPayroll from "module/management-payroll/management-payroll";
 import NotFound from "module/not-found/not-found";
 import PhepNam from "./module/phep-nam";
 import Profile from "./module/profile";
@@ -44,12 +45,12 @@ function App() {
         <Route path="/quan-ly-vi-tri" element={<ManagementPosition />} />
         <Route path="/quan-ly-chuyen-mon" element={<ManagementSpecialize />} />
         <Route path="/quan-ly-cap-bac" element={<ManagementLevel />} />
+        <Route path="/quan-ly-bang-luong" element={<ManagementPayroll />} />
         <Route
           path="/quan-ly-khen-thuong-ky-luat"
           element={<ManagementRewardAndDiscipline />}
         />
         <Route path="*" element={<NotFound />} />
-        <Route path="/quan-ly-cong" element={<ManagementWorkedDays />} />
         <Route path="/phep-nam" element={<PhepNam />} />
         <Route path="/cham-cong" element={<CheckInCheckOut />} />
         <Route path="/them-thong-tin-nhan-su" element={<FormCreate />} />

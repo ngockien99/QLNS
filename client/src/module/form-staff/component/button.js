@@ -28,6 +28,7 @@ const ButtonComponent = memo(() => {
   const { mutate, isLoading } = useMutation(
     (data) => {
       let formData = new FormData();
+      console.log("ha12-m", data, newStaffInfo);
       data.date_of_birth = dayjs(newStaffInfo?.date_of_birth || "").format(
         "YYYY-MM-DD"
       );
@@ -35,7 +36,6 @@ const ButtonComponent = memo(() => {
         "YYYY-MM-DD"
       );
 
-      data.avatar = newStaffInfo?.avatar?.[0]?.originFileObj;
       if (!isEmpty(newStaffInfo?.end_work)) {
         data.end_work = dayjs(newStaffInfo?.end_work || "").format(
           "YYYY-MM-DD"
@@ -43,8 +43,22 @@ const ButtonComponent = memo(() => {
       }
       data.department_id = newStaffInfo.department_id || 1;
       const params = { ...newStaffInfo, ...data };
-      console.log("kiennn", params);
-      Object.entries(params).map(([key, value]) => formData.append(key, value));
+
+      if (
+        newStaffInfo.hasOwnProperty("avatar") &&
+        (typeof newStaffInfo?.avatar === "string" || !newStaffInfo?.avatar)
+      ) {
+        delete params?.avatar;
+      } else if (
+        typeof newStaffInfo?.avatar === "object" &&
+        !isEmpty(newStaffInfo?.avatar)
+      ) {
+        params.avatar = newStaffInfo?.avatar?.[0]?.originFileObj;
+      }
+      console.log(params, data, newStaffInfo);
+      Object.entries(params).map(([key, value]) => {
+        formData.append(key, value);
+      });
       if (id) {
         formData.append("_method", "PUT");
       }
@@ -78,7 +92,7 @@ const ButtonComponent = memo(() => {
         .validateFields()
         .then((values) => {
           setCurrentStep((pre) => pre + 1);
-          console.log("kienn", values);
+          console.log("kienn-next", values);
           setNewStaffInfo((pre) => ({ ...pre, ...values }));
         })
         .catch((reason) => console.log(reason)),

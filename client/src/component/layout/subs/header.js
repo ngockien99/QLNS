@@ -5,6 +5,7 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
+import { TOKEN_JWT } from "util/const";
 import "./layout.css";
 
 const { Search } = Input;
@@ -20,7 +21,9 @@ const HeaderComponent = (props) => {
   console.log("kiennn", userInfo);
   const login = () => {
     navigate("/login");
-    localStorage.clear();
+    localStorage.removeItem("role");
+    localStorage.removeItem("user_id");
+    localStorage.removeItem(TOKEN_JWT);
   };
   const menu = (
     <Menu style={{ width: 220 }}>

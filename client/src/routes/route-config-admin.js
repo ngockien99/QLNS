@@ -9,11 +9,11 @@ import Home from "module/home";
 import ManagementContract from "module/management-contract/management-contract";
 import ManagementDepartment from "module/management-department/management-department";
 import ManagementLevel from "module/management-level";
+import ManagementPayroll from "module/management-payroll/management-payroll";
 import ManagementPosition from "module/management-position";
 import ManagementRewardAndDiscipline from "module/management-reward-discipline";
 import ManagementSpecialize from "module/management-specialize";
 import ManagementStaff from "module/management-staff";
-import ManagementWorkedDays from "module/management-working-days";
 
 export const RoleAdmin = [
   {
@@ -32,16 +32,16 @@ export const RoleAdmin = [
         icon: <TeamOutlined />,
       },
       {
-        title: "Quản lý công",
-        to: "/quan-ly-cong",
-        component: <ManagementWorkedDays />,
-        icon: <TableOutlined />,
-      },
-      {
         title: "Quản lý khen thưởng kỷ luật",
         to: "/quan-ly-khen-thuong-ky-luat",
         component: <ManagementRewardAndDiscipline />,
         icon: <BookOutlined />,
+      },
+      {
+        title: "Quản lý bảng lương",
+        to: "/quan-ly-bang-luong",
+        component: <ManagementPayroll />,
+        icon: <TableOutlined />,
       },
       {
         title: "Quản lý vị trí",

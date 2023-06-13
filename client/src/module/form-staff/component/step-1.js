@@ -42,11 +42,9 @@ const Step1 = () => {
     address,
     phone,
     email,
-    password,
     marital_status,
     mst,
     cccd,
-    file,
     avatar,
   } = newStaffInfo ?? {};
 
@@ -104,12 +102,7 @@ const Step1 = () => {
         value: mst,
         rules: [{ required: true, message: "Vui lòng nhập mã số thuế!" }],
       },
-      {
-        title: "Mật khẩu",
-        key: "password",
-        value: password || "12345678",
-        rules: [{ required: true, message: "Vui lòng nhập email!" }],
-      },
+
       {
         title: "Tình trạng hôn nhân",
         key: "marital_status",
@@ -134,7 +127,6 @@ const Step1 = () => {
       marital_status,
       mst,
       name,
-      password,
       phone,
     ]
   );
@@ -202,15 +194,19 @@ const Step1 = () => {
                 src={URL.createObjectURL(imageUrl)}
                 alt="avatar"
                 style={{
-                  width: "100%",
+                  width: 100,
+                  height: 100,
+                  objectFit: "cover",
                 }}
               />
-            ) : !isEmpty(avatar) && file ? (
+            ) : !isEmpty(avatar) ? (
               <img
-                src={file}
+                src={avatar}
                 alt="avatar"
                 style={{
-                  width: "100%",
+                  width: 100,
+                  height: 100,
+                  objectFit: "cover",
                 }}
               />
             ) : (

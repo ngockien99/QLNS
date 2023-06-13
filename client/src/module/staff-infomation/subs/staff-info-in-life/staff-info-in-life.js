@@ -3,7 +3,6 @@ import dayjs from "dayjs";
 import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import { useCallback, useMemo, useRef } from "react";
 import { useRecoilValue } from "recoil";
-import { ROLE } from "util/const";
 import UpdateFormStaffInLife from "../update-form/update-info-staff-in-life";
 
 const StaffInfoInLife = () => {
@@ -12,7 +11,7 @@ const StaffInfoInLife = () => {
     modalRef.current.show();
   }, []);
 
-  const showEditButton = useMemo(() => (ROLE === "admin" ? true : false), []);
+  const showEditButton = useMemo(() => false, []);
   const activeUserInfo = useRecoilValue(ActiveUserInfoAtom);
   const {
     name,
@@ -25,7 +24,6 @@ const StaffInfoInLife = () => {
     email,
     avatar,
     mst,
-    file,
   } = activeUserInfo?.user || {};
 
   const data = useMemo(() => {
@@ -74,7 +72,7 @@ const StaffInfoInLife = () => {
                 <Image
                   width={120}
                   src={
-                    file ||
+                    avatar ||
                     "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
                   }
                 />

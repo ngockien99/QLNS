@@ -1,12 +1,13 @@
 import { Spin, message } from "antd";
 import Layout from "component/layout";
 import { useQuery } from "react-query";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_STAFF_INFO, TOKEN_JWT } from "util/const";
 import {
+  useCheckRole,
   useQueryDepartmentList,
   useQueryLevelList,
   useQueryManagerList,
@@ -19,6 +20,8 @@ const Main = () => {
 
   const setUserInfo = useSetRecoilState(UserInfoAtom);
   const id = localStorage.getItem("user_id");
+  const role = useCheckRole();
+  const navigate = useNavigate();
 
   const { isLoading } = useQueryManagerList();
   const { isLoading: specialize_loading } = useQuerySpecializedList();
@@ -30,7 +33,7 @@ const Main = () => {
     [id, GET_STAFF_INFO],
     () => {
       const config = {
-        url: `/staff/detail`,
+        url: `/user/detail`,
         params: { id },
       };
       return API.request(config);
