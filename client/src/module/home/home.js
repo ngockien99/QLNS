@@ -1,5 +1,6 @@
-import { Col, Image, Row, Spin } from "antd";
+import { Col, Image, Row } from "antd";
 import helloImage from "assets/image/hello.png";
+import LoadingComponent from "component/loading";
 import { useMemo } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
@@ -37,7 +38,7 @@ const Home = () => {
   }, [data?.percent_department]);
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
   return (
     <div

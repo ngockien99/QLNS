@@ -1,12 +1,18 @@
-import { Space } from "antd";
+import Header from "component/header-component/header";
 import TableComponent from "./subs/table";
 
 const ListWorkingDayOfMonth = () => {
   return (
-    <Space direction="vertical" style={{ padding: "12px 24px", width: "100%" }}>
-      <h3>Danh sách công</h3>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+      }}
+    >
+      <Header content="Danh sách công" noButton />
       <TableComponent />
-    </Space>
+    </div>
   );
 };
 

@@ -4,7 +4,7 @@ import { memo, useCallback } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import { useRecoilState, useRecoilValue } from "recoil";
 import API from "util/api";
-import { GET_LIST_STAFF } from "util/const";
+import { GET_LIST_STAFF, QUERY_LIST_MANAGER } from "util/const";
 import { IsEditAtom, NewUserInfoAtom, StepAtom } from "../recoil";
 
 const ButtonComponent = memo(({ onClose }) => {
@@ -40,6 +40,7 @@ const ButtonComponent = memo(({ onClose }) => {
           } thông tin nhân viên thành công!`
         );
         queryClient.invalidateQueries(GET_LIST_STAFF);
+        queryClient.invalidateQueries(QUERY_LIST_MANAGER);
         onClose();
         setNewStaffInfo(undefined);
       },
@@ -58,7 +59,7 @@ const ButtonComponent = memo(({ onClose }) => {
           setNewStaffInfo((pre) => ({ ...pre, ...values }));
         })
         .catch((reason) => console.log(reason)),
-    [setCurrentStep]
+    [form, setCurrentStep, setNewStaffInfo]
   );
 
   const previous = useCallback(
@@ -70,15 +71,18 @@ const ButtonComponent = memo(({ onClose }) => {
           setNewStaffInfo((pre) => ({ ...pre, ...values }));
         })
         .catch(() => console.log("kienn")),
-    [setCurrentStep]
+    [form, setCurrentStep, setNewStaffInfo]
   );
 
-  const onSubmitForm = useCallback((e) => {
-    e.preventDefault();
-    form.validateFields().then((values) => {
-      mutate(values);
-    });
-  }, []);
+  const onSubmitForm = useCallback(
+    (e) => {
+      e.preventDefault();
+      form.validateFields().then((values) => {
+        mutate(values);
+      });
+    },
+    [form, mutate]
+  );
 
   return (
     <div

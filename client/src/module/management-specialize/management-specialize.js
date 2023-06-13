@@ -1,5 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import Header from "component/header-component/header";
 import { useCallback, useRef } from "react";
 import FormSpecialize from "./subs/form-specialize";
 import TableComponent from "./subs/table";
@@ -11,17 +10,7 @@ const ManagementSpecialize = () => {
   }, []);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h3>Quản lý vị trí chuyên môn</h3>
-        <Button
-          onClick={showModal}
-          type="primary"
-          style={{ backgroundColor: "#09aeae" }}
-          icon={<PlusOutlined />}
-        >
-          Thêm
-        </Button>
-      </div>
+      <Header content="Quản lý vị trí chuyên môn" onClick={showModal} />
       <TableComponent />
       <FormSpecialize ref={modalAddRef} />
     </div>

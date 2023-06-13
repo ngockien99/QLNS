@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import API from "util/api";
-import { GET_LIST_SPECIALIZED } from "util/const";
+import { GET_LIST_SPECIALIZED, QUERY_SPECIALIZED_LIST } from "util/const";
 
 const FormSpecialize = forwardRef((_, ref) => {
   const [form] = Form.useForm();
@@ -51,6 +51,7 @@ const FormSpecialize = forwardRef((_, ref) => {
       onSuccess: (_, variable) => {
         const { name } = variable;
         queriesClient.invalidateQueries(GET_LIST_SPECIALIZED);
+        queriesClient.invalidateQueries(QUERY_SPECIALIZED_LIST);
         message.success(
           `Bạn đã ${
             newData ? "sửa" : "thêm"

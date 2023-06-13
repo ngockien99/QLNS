@@ -1,4 +1,5 @@
 import { Table } from "antd";
+import Header from "component/header-component/header";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 
@@ -19,11 +20,6 @@ const PhepNam = () => {
       key: "name",
     },
     {
-      title: "Phép còn dư từ năm trước",
-      dataIndex: "leave_used_pay",
-      key: "phep_con_thua",
-    },
-    {
       title: "Tổng phép được sử dụng trong năm",
       dataIndex: "total_leave",
       key: "total_leave",
@@ -41,12 +37,21 @@ const PhepNam = () => {
   ];
 
   return (
-    <Table
-      columns={columns}
-      dataSource={dataSource}
-      bordered
-      pagination={false}
-    />
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+      }}
+    >
+      <Header content="Bảng nghỉ phép năm" noButton />
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        bordered
+        pagination={false}
+      />
+    </div>
   );
 };
 

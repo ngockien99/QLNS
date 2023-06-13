@@ -1,7 +1,8 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Col, Popconfirm, Row, Table, message } from "antd";
 import { Fragment, useCallback, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
@@ -88,6 +89,25 @@ const TableComponent = () => {
       width: "35%",
       render: (_, record) => (
         <Row gutter={8}>
+          <Col span="auto">
+            <Link
+              to={record.file}
+              download={true}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <Button
+                style={{
+                  background: "#62a73b",
+                  color: "#fff",
+                  borderRadius: "4px",
+                }}
+                icon={<CopyOutlined />}
+              >
+                Xem chi tiết
+              </Button>
+            </Link>
+          </Col>
           <Col span="auto">
             <Button
               style={{

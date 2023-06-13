@@ -1,5 +1,6 @@
 import { FilePdfOutlined } from "@ant-design/icons";
 import { Button, Table } from "antd";
+import Header from "component/header-component/header";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -12,10 +13,11 @@ import API from "util/api";
 const Salary = () => {
   const userInfo = useRecoilValue(UserInfoAtom);
 
-  console.log(userInfo);
+  const { id } = userInfo?.user;
   const { data: queryData } = useQuery("QUERY_PAYROLL_LIST", () => {
     const config = {
       url: "payroll/list",
+      params: { user_id: id },
     };
     return API.request(config);
   });
@@ -201,7 +203,18 @@ const Salary = () => {
     },
   ];
 
-  return <Table columns={columns} dataSource={data} bordered />;
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+      }}
+    >
+      <Header content="Bảng lương" noButton />
+      <Table columns={columns} dataSource={data} bordered />;
+    </div>
+  );
 };
 
 export default Salary;

@@ -5,8 +5,9 @@ import {
   CopyOutlined,
 } from "@ant-design/icons";
 import { Button, Table, Tag } from "antd";
+import Header from "component/header-component/header";
 import dayjs from "dayjs";
-import { Fragment, useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
@@ -117,10 +118,17 @@ const ListRequestAwaitApprove = () => {
   ];
 
   return (
-    <Fragment>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 12,
+      }}
+    >
+      <Header content="Bảng duyệt báo cáo tổng hợp công" noButton />
       <Table columns={columns} dataSource={data} />
       <FormApprove ref={modalRef} />
-    </Fragment>
+    </div>
   );
 };
 

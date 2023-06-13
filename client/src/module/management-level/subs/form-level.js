@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import API from "util/api";
-import { GET_LIST_LEVEL } from "util/const";
+import { GET_LIST_LEVEL, QUERY_LEVEL_LIST } from "util/const";
 
 const FormLevel = forwardRef((_, ref) => {
   const [form] = Form.useForm();
@@ -48,6 +48,7 @@ const FormLevel = forwardRef((_, ref) => {
       onSuccess: (_, variable) => {
         const { name } = variable;
         queriesClient.invalidateQueries(GET_LIST_LEVEL);
+        queriesClient.invalidateQueries(QUERY_LEVEL_LIST);
         message.success(
           `Bạn đã ${newData ? "sửa" : "thêm"} cấp bậc ${name} thành công`
         );

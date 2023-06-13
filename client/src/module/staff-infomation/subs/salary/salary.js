@@ -56,7 +56,7 @@ const Salary = () => {
           justifyContent: "space-between",
         }}
       >
-        <h1>Thông tin nhân sự</h1>
+        <h1>Lương thưởng</h1>
         {showEditButton && <Button onClick={showModal}>Chỉnh sửa</Button>}
       </div>
       <Table

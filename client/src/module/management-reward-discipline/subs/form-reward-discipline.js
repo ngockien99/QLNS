@@ -18,7 +18,12 @@ const FormRewardDiscipline = forwardRef((_, ref) => {
   const [form] = Form.useForm();
   const [show, setShow] = useState(false);
   const [action, setAction] = useState("create");
+  const [type, setType] = useState(0);
+  const onChange = useCallback((e) => {
+    setType(e.target.value);
+  }, []);
 
+  console.log(type);
   const [newData, setNewData] = useState("");
   const queriesClient = useQueryClient();
   const listUser = useRecoilValue(ListUserAtom);
@@ -50,7 +55,7 @@ const FormRewardDiscipline = forwardRef((_, ref) => {
   const { mutate } = useMutation(
     (data) => {
       data.date = dayjs(data?.date || newData?.date).format("YYYY-MM-DD");
-      data.type = Number(data.type || newData.type);
+      data.type = Number(data.type || newData.type || type);
       const params = { ...newData, ...data };
       const url = newData
         ? "reward-discipline/update"
@@ -115,10 +120,10 @@ const FormRewardDiscipline = forwardRef((_, ref) => {
       >
         <Form.Item name="type" label="Loại quyết định:">
           <Radio.Group name="type">
-            <Radio value={0} name="type">
+            <Radio value={0} name="type" onChange={onChange}>
               Khen thưởng
             </Radio>
-            <Radio value={1} name="type">
+            <Radio value={1} name="type" onChange={onChange}>
               Kỷ luật
             </Radio>
           </Radio.Group>

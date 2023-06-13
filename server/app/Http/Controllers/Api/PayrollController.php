@@ -29,7 +29,7 @@ class PayrollController extends Controller
             $pay = Payroll::findOrFail($value->id);
             $user = User::where('id', $value->user_id)->first();
             $salary = Salary::where('id', $user->salary_id)->first();
-            
+
             $data = [
                 'payroll' => $pay,
                 'user' => $user,
@@ -40,12 +40,12 @@ class PayrollController extends Controller
 
         return $this->responseSuccess($payroll);
     }
-    
+
     public function detailPayroll(Request $request) {
         $payroll = Payroll::findOrFail($request->id);
         $user = User::where('id', $payroll->user_id)->first();
         $salary = Salary::where('id', $user->salary_id)->first();
-        
+
         $data = [
             'payroll' => $payroll,
             'user' => $user,
@@ -101,7 +101,7 @@ class PayrollController extends Controller
             $countOt = $countOt + Carbon::parse($OT->time_ot_end)->diffInMinutes(Carbon::parse($OT->time_ot_start));
         }
         $otMoney = round(((($salary->salary_basic + $salary->salary_factor + $salary->allowance_money) / (480 * $totalDayWork)) * $countOt), 2) * 1.5;
-        
+
         // tính công ngày mình chấm công
         $timeSheet = Timekeeping::where('date', 'like', "%$month%")->where('user_id', $request->user_id)->get();
         $totalWorkDayUser = 0;
@@ -114,17 +114,17 @@ class PayrollController extends Controller
 
         // Tính tiền khen thưởng kỉ luật
         $discipline = RewardDiscipline::where('date', 'like', "%$month%")->where('type', config('constants.rewardDiscipline.discipline'))->where('user_id', $request->user_id)->sum('money');
-        
+
 
         // Tính toán tổng số tiền chưa trừ
         $totalMoney = round(((($salary->salary_basic + $salary->salary_factor + $salary->allowance_money + $request->bonus_money + $otMoney + $reward + $discipline) * $totalWorkDayUser) / $totalDayWork), 2);
-        
+
         // // Tính toán trừ thuế
         $tax = 0;
         if ($totalMoney > 11000000) {
             $tax = ($totalMoney-11000000) * 0.05;
         }
-        
+
         $realMoneyReceived = $totalMoney - $salary->insurance_premium_salary - $tax;
 
         $exportFile = [
@@ -203,7 +203,7 @@ class PayrollController extends Controller
             $countOt = $countOt + Carbon::parse($OT->time_ot_end)->diffInMinutes(Carbon::parse($OT->time_ot_start));
         }
         $otMoney = round(((($salary->salary_basic + $salary->salary_factor + $salary->allowance_money) / (480 * $totalDayWork)) * $countOt), 2) * 1.5;
-        
+
         // tính công ngày mình chấm công
         $timeSheet = Timekeeping::where('date', 'like', "%$month%")->where('user_id', $request->user_id)->get();
         $totalWorkDayUser = 0;
@@ -216,17 +216,17 @@ class PayrollController extends Controller
 
         // Tính tiền khen thưởng kỉ luật
         $discipline = RewardDiscipline::where('date', 'like', "%$month%")->where('type', config('constants.rewardDiscipline.discipline'))->where('user_id', $request->user_id)->sum('money');
-        
+
 
         // Tính toán tổng số tiền chưa trừ
         $totalMoney = round(((($salary->salary_basic + $salary->salary_factor + $salary->allowance_money + $request->bonus_money + $otMoney + $reward + $discipline) * $totalWorkDayUser) / $totalDayWork), 2);
-        
+
         // // Tính toán trừ thuế
         $tax = 0;
         if ($totalMoney > 11000000) {
             $tax = ($totalMoney-11000000) * 0.05;
         }
-        
+
         $realMoneyReceived = $totalMoney - $salary->insurance_premium_salary - $tax;
 
         $exportFile = [

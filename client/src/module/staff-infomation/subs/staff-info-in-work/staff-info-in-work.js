@@ -1,5 +1,6 @@
 import { Button, Col, Form, Input, Radio, Row } from "antd";
 import dayjs from "dayjs";
+import { isEmpty } from "lodash";
 import { ActiveUserInfoAtom } from "module/staff-infomation/recoil";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { useRecoilValue } from "recoil";
@@ -30,12 +31,13 @@ const StaffInfoInWork = () => {
       {
         key: "start_work",
         title: "Ngày bắt đầu công việc",
-        value: dayjs(start_work || "2021-12-06").format("DD/MM/YYYY"),
+        value: dayjs(start_work).format("DD/MM/YYYY"),
       },
       {
+        hidden: isEmpty(end_work),
         key: "end_work",
         title: "Ngày nghỉ việc",
-        value: dayjs(end_work || "2023-03-02").format("DD/MM/YYYY"),
+        value: dayjs(end_work).format("DD/MM/YYYY"),
       },
       { title: "Quản lý", value: manager_name, key: " manager" },
       {
@@ -86,14 +88,17 @@ const StaffInfoInWork = () => {
           justifyContent: "space-between",
         }}
       >
-        <h1>Thông tin nhân sự</h1>
+        <h1>Thông tin làm việc của nhân sự</h1>
         {showEditButton && <Button onClick={showModal}>Chỉnh sửa</Button>}
       </div>
       <div>
         <Form name="form-info-staff-2" layout="vertical" disabled form={form}>
           <Row gutter={24}>
             {data.map((item) => {
-              const { title, type, key } = item;
+              const { title, type, key, hidden } = item;
+              if (hidden) {
+                return;
+              }
               return (
                 <Col span={12}>
                   <Form.Item name={key} label={title}>

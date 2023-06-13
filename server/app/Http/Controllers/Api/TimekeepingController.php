@@ -20,13 +20,13 @@ class TimekeepingController extends Controller
         $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
 
         $requestDetail = LogRequestModel::where('type', config('constants.log_request.type.leave'))->where('date', 'like', "%$today%")->first();
-        
+
         if (!$findToday) {
             $data = [
                 'date' => $today,
                 'checkin' => Carbon::now('Asia/Ho_Chi_Minh')->format('H:i:s'),
                 'user_id' => $user->id,
-                'request_id' => $requestDetail ? $requestDetail->id : '' 
+                'request_id' => $requestDetail ? $requestDetail->id : null
             ];
             $checkin = Timekeeping::create($data);
             return $this->responseSuccess($checkin);
@@ -49,7 +49,7 @@ class TimekeepingController extends Controller
 
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
 
-        
+
         $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
 
         if (!$findToday->checkout) {
@@ -78,7 +78,7 @@ class TimekeepingController extends Controller
             } else {
                 $lateAfternoon = $endCheck->diffInMinutes($timeNow) - $lunchBreak;
             }
-            
+
             $totalLate = $lateMorning + $lateAfternoon;
 
             $data = [

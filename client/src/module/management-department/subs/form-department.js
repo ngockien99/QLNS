@@ -10,7 +10,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
-import { GET_LIST_DEPARTMENT } from "util/const";
+import { GET_LIST_DEPARTMENT, QUERY_DEPARTMENT_LIST } from "util/const";
 
 const FormDepartment = forwardRef((_, ref) => {
   const [form] = Form.useForm();
@@ -70,6 +70,7 @@ const FormDepartment = forwardRef((_, ref) => {
       onSuccess: (_, variable) => {
         const { name } = variable;
         queriesClient.invalidateQueries(GET_LIST_DEPARTMENT);
+        queriesClient.invalidateQueries(QUERY_DEPARTMENT_LIST);
         message.success(
           `Bạn đã ${newData ? "sửa" : "thêm"} phòng ban ${name} thành công`
         );

@@ -3,7 +3,7 @@ import { Button, Col, Popconfirm, Row, Table, message } from "antd";
 import { Fragment, useCallback, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import API from "util/api";
-import { GET_LIST_DEPARTMENT } from "util/const";
+import { GET_LIST_DEPARTMENT, QUERY_DEPARTMENT_LIST } from "util/const";
 import FormDepartment from "./form-department";
 
 const TableComponent = () => {
@@ -38,6 +38,7 @@ const TableComponent = () => {
         const { name } = variable;
         message.success(`Bạn đã xoá phòng ban ${name} thành công`);
         queryClient.invalidateQueries(GET_LIST_DEPARTMENT);
+        queryClient.invalidateQueries(QUERY_DEPARTMENT_LIST);
       },
       onError: (error) => {
         message.error(error);

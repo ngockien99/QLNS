@@ -3,7 +3,7 @@ import { Button, Col, Popconfirm, Row, Table, message } from "antd";
 import { Fragment, useCallback, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import API from "util/api";
-import { GET_LIST_SPECIALIZED } from "util/const";
+import { GET_LIST_SPECIALIZED, QUERY_SPECIALIZED_LIST } from "util/const";
 import FormSpecialize from "./form-specialize";
 
 const TableComponent = () => {
@@ -37,6 +37,7 @@ const TableComponent = () => {
         const { name } = variable;
         message.success(`Bạn đã xoá vị trí chuyên môn ${name} thành công`);
         queryClient.invalidateQueries(GET_LIST_SPECIALIZED);
+        queryClient.invalidateQueries(QUERY_SPECIALIZED_LIST);
       },
       onError: (error) => {
         message.error(error);

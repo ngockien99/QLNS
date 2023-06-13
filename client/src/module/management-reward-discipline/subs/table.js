@@ -1,7 +1,6 @@
 import {
   CheckCircleOutlined,
   CopyOutlined,
-  DeleteOutlined,
   EditOutlined,
   WarningOutlined,
 } from "@ant-design/icons";
@@ -110,18 +109,6 @@ const TableComponent = () => {
               onClick={() => onEdit(record, true)}
             >
               Sửa
-            </Button>
-          </Col>
-          <Col span="auto">
-            <Button
-              type="primary"
-              danger
-              style={{
-                borderRadius: "4px",
-              }}
-              icon={<DeleteOutlined />}
-            >
-              Xoá
             </Button>
           </Col>
         </Row>

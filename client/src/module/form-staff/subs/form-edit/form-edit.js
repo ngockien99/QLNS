@@ -1,4 +1,4 @@
-import { Spin } from "antd";
+import LoadingComponent from "component/loading";
 import Step from "module/form-staff/component/step";
 import Step1 from "module/form-staff/component/step-1";
 import Step2 from "module/form-staff/component/step-2";
@@ -63,7 +63,7 @@ const FormEdit = () => {
   }, [id, queryClient]);
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
   return (
     <Fragment>

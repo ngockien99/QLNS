@@ -9,7 +9,7 @@ import {
 } from "react";
 import { useMutation, useQueryClient } from "react-query";
 import API from "util/api";
-import { GET_LIST_POSITION } from "util/const";
+import { GET_LIST_POSITION, QUERY_POSITION_LIST } from "util/const";
 
 const FormPosition = forwardRef((_, ref) => {
   const [form] = Form.useForm();
@@ -48,6 +48,7 @@ const FormPosition = forwardRef((_, ref) => {
       onSuccess: (_, variable) => {
         const { name } = variable;
         queriesClient.invalidateQueries(GET_LIST_POSITION);
+        queriesClient.invalidateQueries(QUERY_POSITION_LIST);
         message.success(
           `Bạn đã ${newData ? "sửa" : "thêm"} vị trí ${name} thành công`
         );
