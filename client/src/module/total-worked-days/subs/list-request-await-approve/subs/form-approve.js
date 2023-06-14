@@ -23,7 +23,6 @@ const FormVerify = forwardRef((_, ref) => {
 
   const [show, setShow] = useState(false);
   const [value, setValue] = useState(0);
-  const [isEdit, setIsEdit] = useState(false);
   const [data, setData] = useState("");
   const queryClient = useQueryClient();
 
@@ -95,7 +94,7 @@ const FormVerify = forwardRef((_, ref) => {
           initialValues={data}
         >
           <Form.Item name="type" label="Loại báo cáo:">
-            <Radio.Group defaultValue={value} disabled={isEdit}>
+            <Radio.Group defaultValue={value}>
               <Radio onChange={onChange} value={0}>
                 Nghỉ Phép
               </Radio>

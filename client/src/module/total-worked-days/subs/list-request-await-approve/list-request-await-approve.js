@@ -10,15 +10,13 @@ import dayjs from "dayjs";
 import { useCallback, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
-import { UserInfoAtom } from "state-management/recoil";
+import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_REQUEST_LIST } from "util/const";
 import FormApprove from "./subs/form-approve";
 
 const ListRequestAwaitApprove = () => {
-  const userInfo = useRecoilValue(UserInfoAtom) ?? {};
-  console.log(userInfo?.user);
-  const { name = "kiennn" } = userInfo?.user ?? {};
+  const listUser = useRecoilValue(ListUserAtom);
   const [data, setData] = useState();
   useQuery(
     GET_REQUEST_LIST,
@@ -32,7 +30,7 @@ const ListRequestAwaitApprove = () => {
       onSuccess: (data) => {
         console.log(data);
         const newData = data.people_request.map((e) => {
-          return { ...e, name };
+          return { ...e };
         });
         setData(newData);
       },
@@ -55,6 +53,14 @@ const ListRequestAwaitApprove = () => {
       title: "Họ và tên",
       dataIndex: "name",
       key: "name",
+      render: (_, record) => {
+        const { user_id } = record;
+        const username = listUser.find((e) => e.value === user_id);
+        if (!username) {
+          return;
+        }
+        return username.label;
+      },
     },
     {
       title: "Thời gian",

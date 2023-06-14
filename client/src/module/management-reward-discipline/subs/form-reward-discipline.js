@@ -77,6 +77,7 @@ const FormRewardDiscipline = forwardRef((_, ref) => {
         form.resetFields();
         setNewData("");
         setShow(false);
+        setType(0);
       },
       onError: (error) => {
         message.error(error);
@@ -109,6 +110,7 @@ const FormRewardDiscipline = forwardRef((_, ref) => {
         form.resetFields();
         setNewData("");
         setAction("create");
+        setType(0);
       }}
       onOk={onSubmit}
     >

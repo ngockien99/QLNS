@@ -11,7 +11,6 @@ import { useMutation, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
-const { TextArea } = Input;
 
 const FormPayroll = forwardRef((_, ref) => {
   const [form] = Form.useForm();

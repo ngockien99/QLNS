@@ -1,15 +1,18 @@
 import { Button, Space, message } from "antd";
 import imageClock from "assets/image/clock.png";
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
+import { GET_STAFF_INFO } from "util/const";
 import Clock from "./subs/clock";
 
 const CheckInCheckOut = () => {
   const userInfo = useRecoilValue(UserInfoAtom);
-  const { checkin, checkout } = userInfo;
+  const { checkin, checkout } = userInfo ?? {};
+  const queryClient = useQueryClient();
+  const { id } = userInfo?.user;
   const [disabledCheckIn, setDisableCheckIn] = useState(checkin);
   const [disabledCheckOut, setDisableCheckOut] = useState(checkout);
   const { mutate: checkInMutate, isLoading: checkInLoading } = useMutation(
@@ -20,6 +23,7 @@ const CheckInCheckOut = () => {
     {
       onSuccess: () => {
         message.success("Bạn đã chấm công vào thành công!");
+        queryClient.invalidateQueries([id, GET_STAFF_INFO]);
         setDisableCheckIn(true);
       },
       onError: (reason) => {
@@ -35,6 +39,7 @@ const CheckInCheckOut = () => {
     {
       onSuccess: () => {
         message.success("Bạn đã chấm công về thành công");
+        queryClient.invalidateQueries([id, GET_STAFF_INFO]);
         setDisableCheckOut(true);
       },
       onError: (reason) => {
