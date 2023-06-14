@@ -19,9 +19,13 @@ class PayrollController extends Controller
 {
     public function listPayroll(Request $request) {
         $key_search = $request->search;
+        $user_id = $request->user_id;
         $payroll = DB::table('payroll')
         ->where(function ($query) use($key_search) {
             $query->where('payroll.month_pay', 'like' , "%$key_search%");
+        })
+         ->where(function ($query) use($user_id) {
+            $query->where('payroll.user_id', 'like' , "%$user_id%");
         })
         ->paginate(10,['*'],'page', $request->page);
 

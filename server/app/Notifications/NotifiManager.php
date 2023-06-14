@@ -37,7 +37,7 @@ class NotifiManager extends Notification
      */
     public function toMail(object $notifiable): Mailable
     {
-        $url = url('test');
+        $url = url('http://localhost:3000/bao-cao-tong-hop-cong/danh-sach-bao-cao-cho-duyet');
         return (new Mailable)
                 ->view('notifiManager', ['url' => $url])
                 ->subject("Bạn có một request cần duyệt")

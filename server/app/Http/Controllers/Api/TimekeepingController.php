@@ -39,13 +39,13 @@ class TimekeepingController extends Controller
         $user = JWTAuth::user();
 
         // Giờ check quy đinh
-        $startCheck = new Carbon('08:00:00');
+        $startCheck = new Carbon('15:00:00');
         $endCheck = new Carbon('23:59:59');
 
         //Giờ nghỉ trưa quy định
         $lunchBreak = 60;
-        $startLunchBreak = new Carbon('12:00:00');
-        $endLunchBreak = new Carbon('13:00:00');
+        $startLunchBreak = new Carbon('19:00:00');
+        $endLunchBreak = new Carbon('20:00:00');
 
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
 
@@ -67,13 +67,13 @@ class TimekeepingController extends Controller
 
             // Tính toán giờ đi muộn chiều
             $lateAfternoon = 0;
-            $timeNow = Carbon::now('Asia/Ho_Chi_Minh')->format('H:i:s');
+            $timeNow = Carbon::parse(Carbon::now('Asia/Ho_Chi_Minh')->format('H:i:s'));
 
             if ($timeNow > $endLunchBreak && $timeNow < $endCheck) {
-                $lateAfternoon = $endCheck->diffInMinutes(Carbon::parse($timeNow));
-            } else if ($timeNow >= $endCheck && $findToday->checkin <= $endCheck) {
+                $lateAfternoon = $endCheck->diffInMinutes($timeNow);
+            } else if ($timeNow >= $endCheck && Carbon::parse($findToday->checkin) <= $endCheck) {
                 $lateAfternoon = 0;
-            } else if ($timeNow >= $startLunchBreak && $timeNow <= $endLunchBreak || $findToday->checkin >= $endCheck && $timeNow >= $endCheck) {
+            } else if ($timeNow >= $startLunchBreak && $timeNow <= $endLunchBreak || Carbon::parse($findToday->checkin) >= $endCheck && $timeNow >= $endCheck) {
                 $lateAfternoon = 240;
             } else {
                 $lateAfternoon = $endCheck->diffInMinutes($timeNow) - $lunchBreak;
@@ -82,7 +82,7 @@ class TimekeepingController extends Controller
             $totalLate = $lateMorning + $lateAfternoon;
 
             $data = [
-                'checkout' => $timeNow,
+                'checkout' => Carbon::now('Asia/Ho_Chi_Minh')->format('H:i:s'),
                 'late' => $totalLate,
                 'work_day' => round(((480 - $totalLate) / 480), 2)
             ];

@@ -49,7 +49,7 @@ class UserController extends Controller
         }
 
         return $this->responseSuccess($user);
-    } 
+    }
 
     public function updateUser(UpdateUserRequest $request) {
         $validated = $request->validated();
@@ -71,7 +71,7 @@ class UserController extends Controller
             $data['avatar'] = $fileNameToStore;
         }
 
-        
+
         $academic = AcademicLevel::findOrFail($user->academic_level_id);
         $academic->update([
             'name' => $request->academic_name ? $request->academic_name : $academic->name,
@@ -85,7 +85,7 @@ class UserController extends Controller
             'allowance_money' => $request->allowance_money,
             'insurance_premium_salary' => $request->insurance_premium_salary
         ]);
-        
+
 
         $user = $user->update($data);
         return $this->responseSuccess(['success' => 'Cập nhật nhân viên thành công']);
@@ -163,7 +163,7 @@ class UserController extends Controller
 
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         $findToday = Timekeeping::where('user_id', $user->id)->where('date', $today)->first();
-        
+
         $month = Carbon::now()->format('Y-m');
         $logRequestPaid = LogRequestModel::where('user_id', $user->id)
         ->where('day_create', 'like', "%$month%")
@@ -197,11 +197,12 @@ class UserController extends Controller
 
     public function deleteUser(Request $request) {
         $user = User::find($request->id);
+        Log::info($user);
         if ($user->avatar) {
             File::delete(public_path("uploads/user/".$user->image));
         }
         $timeSheet = Timekeeping::where('user_id', $user->id)->first();
-        $salary = Salary::where('user_id', $user->id)->first();
+        $salary = Salary::where('id', $user->salary_id)->first();
 
         if (!$timeSheet && !$salary) {
             $user->delete();
