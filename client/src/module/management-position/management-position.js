@@ -10,7 +10,7 @@ const ManagementPosition = () => {
   }, []);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <Header content="Quản lý  vị trí" onClick={showModal} />
+      <Header content="Quản lý  vị trí" onClick={showModal} hiddenFilter />
       <TableComponent />
       <FormPosition ref={modalAddRef} />
     </div>

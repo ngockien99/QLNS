@@ -1,5 +1,7 @@
 import { PlusOutlined } from "@ant-design/icons";
-import { Button, Spin, Table } from "antd";
+import { Button } from "antd";
+import LoadingComponent from "component/loading";
+import Table from "component/table";
 import dayjs from "dayjs";
 import { Fragment, useCallback, useRef } from "react";
 import { useQuery } from "react-query";
@@ -8,15 +10,27 @@ import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_TIME_SHEET } from "util/const";
 import FormVerify from "../../form-verify/form-verify";
+import { EndDateKeyAtom, StartDateKeyAtom, TypeKeyAtom } from "../recoil";
 
 const TableComponent = () => {
   const modalRef = useRef();
-  const { data: queryData = [], isLoading } = useQuery(GET_TIME_SHEET, () => {
-    const config = {
-      url: "get-time-sheet",
-    };
-    return API.request(config);
-  });
+  const typeKey = useRecoilValue(TypeKeyAtom);
+  const startDateKey = useRecoilValue(StartDateKeyAtom);
+  const endDateKey = useRecoilValue(EndDateKeyAtom);
+  const { data: queryData = [], isLoading } = useQuery(
+    [GET_TIME_SHEET, typeKey, startDateKey, endDateKey],
+    () => {
+      const config = {
+        url: "get-time-sheet",
+        params: {
+          end_date: endDateKey,
+          start_date: startDateKey,
+          type: typeKey,
+        },
+      };
+      return API.request(config);
+    }
+  );
 
   const userInfo = useRecoilValue(UserInfoAtom);
   const { name } = userInfo?.user ?? {};
@@ -59,6 +73,11 @@ const TableComponent = () => {
       title: "Giờ về",
       dataIndex: "checkout",
       key: "checkout",
+    },
+    {
+      title: "Thời gian đi muộn",
+      dataIndex: "late",
+      key: "late",
     },
     {
       title: "Thời gian làm việc",
@@ -109,17 +128,12 @@ const TableComponent = () => {
   ];
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
 
   return (
     <Fragment>
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{ pageSize: 5 }}
-        bordered
-      />
+      <Table columns={columns} dataSource={data} />
       <FormVerify ref={modalRef} />
     </Fragment>
   );

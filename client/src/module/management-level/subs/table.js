@@ -1,5 +1,6 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Col, Popconfirm, Row, Table, message } from "antd";
+import { Col, Row, message } from "antd";
+import { ButtonDelete, ButtonEdit } from "component/button";
+import Table from "component/table";
 import { Fragment, useCallback, useRef } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import API from "util/api";
@@ -84,36 +85,13 @@ const TableComponent = () => {
       render: (_, record) => (
         <Row gutter={8}>
           <Col span="auto">
-            <Button
-              style={{
-                backgroundColor: "#f56a00",
-                color: "#fff",
-                borderRadius: "4px",
-              }}
-              icon={<EditOutlined />}
-              onClick={() => editModal(record)}
-            >
-              Sửa
-            </Button>
+            <ButtonEdit onClick={() => editModal(record)} />
           </Col>
           <Col span="auto">
-            <Popconfirm
+            <ButtonDelete
               description={`Bạn có chắc chắn muốn xoá cấp bậc ${record?.name}?`}
               onConfirm={() => confirm(record)}
-              okText="Có, tôi chắc chắn"
-              cancelText="Không"
-            >
-              <Button
-                type="primary"
-                danger
-                style={{
-                  borderRadius: "4px",
-                }}
-                icon={<DeleteOutlined />}
-              >
-                Xoá
-              </Button>
-            </Popconfirm>
+            />
           </Col>
         </Row>
       ),
@@ -121,12 +99,7 @@ const TableComponent = () => {
   ];
   return (
     <Fragment>
-      <Table
-        columns={columns}
-        size="small"
-        dataSource={data?.data}
-        pagination={{ pageSize: 5 }}
-      />
+      <Table columns={columns} size="small" dataSource={data?.data} />
       <FormLevel ref={modalEditRef} />
     </Fragment>
   );

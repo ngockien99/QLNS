@@ -1,7 +1,7 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Popconfirm } from "antd";
 
-const DeleteButton = ({ description, onConfirm }) => {
+const DeleteButton = ({ description, onConfirm, textButton = "Xoá" }) => {
   return (
     <Popconfirm
       description={description}
@@ -17,7 +17,7 @@ const DeleteButton = ({ description, onConfirm }) => {
         }}
         icon={<DeleteOutlined />}
       >
-        Xoá
+        {textButton}
       </Button>
     </Popconfirm>
   );

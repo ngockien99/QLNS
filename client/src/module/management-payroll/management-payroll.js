@@ -1,5 +1,6 @@
 import Header from "component/header-component/header";
 import { useCallback, useRef } from "react";
+import FilterComponent from "./subs/filter";
 import FormPayroll from "./subs/form-payroll";
 import TableComponent from "./subs/table";
 
@@ -16,7 +17,9 @@ const ManagementPayroll = () => {
         gap: 12,
       }}
     >
-      <Header content="Quản lý bảng lương" onClick={openModal} />
+      <Header content="Quản lý bảng lương" onClick={openModal}>
+        <FilterComponent />
+      </Header>
       <TableComponent />
       <FormPayroll ref={modalRef} />
     </div>

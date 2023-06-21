@@ -1,5 +1,6 @@
 import Header from "component/header-component/header";
 import { useCallback, useRef } from "react";
+import FilterComponent from "./subs/filter";
 import FormDepartment from "./subs/form-department";
 import TableComponent from "./subs/table";
 
@@ -12,7 +13,9 @@ const ManagementDepartment = () => {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-      <Header content="Quản lý phòng ban" onClick={showModal} />
+      <Header content="Quản lý phòng ban" onClick={showModal}>
+        <FilterComponent />
+      </Header>
       <TableComponent />
       <FormDepartment ref={modalAddRef} />
     </div>

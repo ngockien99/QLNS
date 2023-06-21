@@ -6,6 +6,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Table, Tag } from "antd";
 import Header from "component/header-component/header";
+import LoadingComponent from "component/loading";
 import dayjs from "dayjs";
 import { useCallback, useRef, useState } from "react";
 import { useQuery } from "react-query";
@@ -13,16 +14,33 @@ import { useRecoilValue } from "recoil";
 import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_REQUEST_LIST } from "util/const";
+import {
+  EndDateKeyAtom,
+  StartDateKeyAtom,
+  TypeKeyAtom,
+  UserKeyAtom,
+} from "./recoil";
+import FilterComponent from "./subs/filter";
 import FormApprove from "./subs/form-approve";
 
 const ListRequestAwaitApprove = () => {
   const listUser = useRecoilValue(ListUserAtom);
+  const typeKey = useRecoilValue(TypeKeyAtom);
+  const userKey = useRecoilValue(UserKeyAtom);
+  const startDateKey = useRecoilValue(StartDateKeyAtom);
+  const endDateKey = useRecoilValue(EndDateKeyAtom);
   const [data, setData] = useState();
-  useQuery(
-    GET_REQUEST_LIST,
+  const { isLoading } = useQuery(
+    [GET_REQUEST_LIST, typeKey, userKey, startDateKey, endDateKey],
     () => {
       const config = {
         url: "request/list",
+        params: {
+          type: typeKey,
+          user: userKey,
+          start_date: startDateKey,
+          end_date: endDateKey,
+        },
       };
       return API.request(config);
     },
@@ -123,6 +141,9 @@ const ListRequestAwaitApprove = () => {
     },
   ];
 
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
   return (
     <div
       style={{
@@ -131,7 +152,9 @@ const ListRequestAwaitApprove = () => {
         gap: 12,
       }}
     >
-      <Header content="Bảng duyệt báo cáo tổng hợp công" noButton />
+      <Header content="Bảng duyệt báo cáo tổng hợp công" noButton>
+        <FilterComponent />
+      </Header>
       <Table columns={columns} dataSource={data} />
       <FormApprove ref={modalRef} />
     </div>

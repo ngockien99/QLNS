@@ -1,4 +1,5 @@
 import { isEmpty } from "lodash";
+import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import { useSetRecoilState } from "recoil";
 import {
@@ -66,7 +67,7 @@ export const useQueryManagerList = () => {
     {
       onSuccess: (data) => {
         const options = data?.data?.map((e) => {
-          return { value: e.id, label: e.name };
+          return { value: e.id, label: `${e.name}${" "}(ID: ${e.id})` };
         });
         setListUser(options);
       },
@@ -147,4 +148,16 @@ export const useQueryDepartmentList = () => {
     return { value: e.id, label: e.name };
   });
   return { options, isLoading };
+};
+
+export const useDebounce = (value, delay = 500) => {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedValue(value), delay);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
 };

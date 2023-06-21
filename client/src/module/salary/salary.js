@@ -1,6 +1,7 @@
 import { FilePdfOutlined } from "@ant-design/icons";
-import { Button, Table } from "antd";
+import { Button } from "antd";
 import Header from "component/header-component/header";
+import Table from "component/table";
 import dayjs from "dayjs";
 import { jsPDF } from "jspdf";
 import "jspdf-autotable";
@@ -13,14 +14,21 @@ import API from "util/api";
 const Salary = () => {
   const userInfo = useRecoilValue(UserInfoAtom);
 
-  const { id } = userInfo?.user;
-  const { data: queryData } = useQuery("QUERY_PAYROLL_LIST", () => {
-    const config = {
-      url: "payroll/list",
-      params: { user_id: id },
-    };
-    return API.request(config);
-  });
+  const { id } = userInfo?.user ?? {};
+
+  const { data: queryData } = useQuery(
+    "QUERY_PAYROLL_LIST",
+    () => {
+      const config = {
+        url: "payroll/list",
+        params: { user_id: id },
+      };
+      return API.request(config);
+    },
+    {
+      enabled: !!id,
+    }
+  );
 
   const download = useCallback((data) => {
     const newData = {
@@ -165,8 +173,6 @@ const Salary = () => {
     return { ...e.payroll, ...e.salary, ...e.user };
   });
 
-  console.log(data);
-
   const columns = [
     {
       title: "Mã Nhân Viên",
@@ -211,8 +217,8 @@ const Salary = () => {
         gap: 12,
       }}
     >
-      <Header content="Bảng lương" noButton />
-      <Table columns={columns} dataSource={data} bordered />;
+      <Header content="Bảng lương" noButton hiddenFilter />
+      <Table columns={columns} dataSource={data} />;
     </div>
   );
 };

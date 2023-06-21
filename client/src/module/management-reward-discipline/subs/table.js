@@ -1,14 +1,19 @@
-import {
-  CheckCircleOutlined,
-  CopyOutlined,
-  EditOutlined,
-  WarningOutlined,
-} from "@ant-design/icons";
-import { Button, Col, Row, Table, Tag } from "antd";
+import { CheckCircleOutlined, WarningOutlined } from "@ant-design/icons";
+import { Col, Row, Table, Tag } from "antd";
+import { ButtonEdit, ButtonScreen } from "component/button";
+import LoadingComponent from "component/loading";
 import dayjs from "dayjs";
 import { Fragment, useCallback, useRef } from "react";
 import { useQuery } from "react-query";
+import { useRecoilValue } from "recoil";
 import API from "util/api";
+import {
+  EndDateKeyAtom,
+  ManagerKeyAtom,
+  MixKeyAtom,
+  StartDateKeyAtom,
+  TypeKeyAtom,
+} from "../recoil";
 import FormRewardDiscipline from "./form-reward-discipline";
 
 const TableComponent = () => {
@@ -19,14 +24,31 @@ const TableComponent = () => {
     modalRef.current.setValue(data);
   }, []);
 
-  const { data } = useQuery(
-    "GET_LIST_REWARD_DISCIPLINE",
+  const mixKey = useRecoilValue(MixKeyAtom);
+  const startDateKey = useRecoilValue(StartDateKeyAtom);
+  const endDateKey = useRecoilValue(EndDateKeyAtom);
+  const typeKey = useRecoilValue(TypeKeyAtom);
+  const userKey = useRecoilValue(ManagerKeyAtom);
+
+  const { isLoading, data } = useQuery(
+    [
+      "GET_LIST_REWARD_DISCIPLINE",
+      mixKey,
+      startDateKey,
+      endDateKey,
+      typeKey,
+      userKey,
+    ],
     () => {
       const config = {
         url: "reward-discipline/list",
         params: {
           date: "",
-          type: "",
+          type: typeKey,
+          keyword: mixKey,
+          endDate: endDateKey,
+          startDateKey: startDateKey,
+          user: userKey,
           page: 1,
         },
       };
@@ -65,7 +87,7 @@ const TableComponent = () => {
       key: "type",
       render: (_, record) => {
         const { type } = record;
-        if (type == 0) {
+        if (type === 0) {
           return (
             <Tag icon={<CheckCircleOutlined />} color="success">
               Khen thưởng
@@ -86,35 +108,19 @@ const TableComponent = () => {
       render: (_, record) => (
         <Row gutter={8}>
           <Col span="auto">
-            <Button
-              style={{
-                background: "#62a73b",
-                color: "#fff",
-                borderRadius: "4px",
-              }}
-              icon={<CopyOutlined />}
-              onClick={() => onEdit(record, false)}
-            >
-              Xem chi tiết
-            </Button>
+            <ButtonScreen onClick={() => onEdit(record, false)} />
           </Col>
           <Col span="auto">
-            <Button
-              style={{
-                backgroundColor: "#f56a00",
-                color: "#fff",
-                borderRadius: "4px",
-              }}
-              icon={<EditOutlined />}
-              onClick={() => onEdit(record, true)}
-            >
-              Sửa
-            </Button>
+            <ButtonEdit onClick={() => onEdit(record, true)} />
           </Col>
         </Row>
       ),
     },
   ];
+
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <Fragment>

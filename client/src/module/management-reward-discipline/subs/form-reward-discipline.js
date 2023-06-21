@@ -23,7 +23,6 @@ const FormRewardDiscipline = forwardRef((_, ref) => {
     setType(e.target.value);
   }, []);
 
-  console.log(type);
   const [newData, setNewData] = useState("");
   const queriesClient = useQueryClient();
   const listUser = useRecoilValue(ListUserAtom);

@@ -1,4 +1,5 @@
 import Header from "component/header-component/header";
+import FilterComponent from "./subs/filter";
 import TableComponent from "./subs/table";
 
 const ListWorkingDayOfMonth = () => {
@@ -10,7 +11,9 @@ const ListWorkingDayOfMonth = () => {
         gap: 12,
       }}
     >
-      <Header content="Danh sách công" noButton />
+      <Header content="Danh sách công" noButton>
+        <FilterComponent />
+      </Header>
       <TableComponent />
     </div>
   );

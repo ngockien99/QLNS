@@ -7,6 +7,7 @@ import {
   EditOutlined,
 } from "@ant-design/icons";
 import { Button, Col, Popconfirm, Row, Table, Tag, message } from "antd";
+import LoadingComponent from "component/loading";
 import dayjs from "dayjs";
 import { Fragment, useCallback, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
@@ -15,18 +16,33 @@ import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_REQUEST_LIST } from "util/const";
 import FormVerify from "../form-verify";
+import {
+  EndDateKeyAtom,
+  StartDateKeyAtom,
+  StatusKeyAtom,
+  TypeKeyAtom,
+} from "./recoil";
 
 const TableWorkedDays = () => {
   const userInfo = useRecoilValue(UserInfoAtom) ?? {};
-  console.log(userInfo?.user);
+  const typeKey = useRecoilValue(TypeKeyAtom);
+  const statusKey = useRecoilValue(StatusKeyAtom);
+  const startDateKey = useRecoilValue(StartDateKeyAtom);
+  const endDateKey = useRecoilValue(EndDateKeyAtom);
   const { name = "kiennn" } = userInfo?.user ?? {};
   const queryClient = useQueryClient();
   const [data, setData] = useState();
-  useQuery(
-    GET_REQUEST_LIST,
+  const { isLoading } = useQuery(
+    [GET_REQUEST_LIST, typeKey, statusKey, endDateKey, startDateKey],
     () => {
       const config = {
         url: "request/list",
+        params: {
+          type: typeKey,
+          status: statusKey,
+          end_date: endDateKey,
+          start_date: startDateKey,
+        },
       };
       return API.request(config);
     },
@@ -186,6 +202,10 @@ const TableWorkedDays = () => {
       ),
     },
   ];
+
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <Fragment>

@@ -1,22 +1,42 @@
 import { CopyOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Col, Row, Spin, Table } from "antd";
+import { Button, Col, Row } from "antd";
+import LoadingComponent from "component/loading";
+import Table from "component/table";
+import dayjs from "dayjs";
 import { Fragment, useCallback, useMemo, useRef } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
-
-import dayjs from "dayjs";
+import {
+  DateKeyAtom,
+  DepartmentKeyAtom,
+  ManagerKeyAtom,
+  MixKeyAtom,
+} from "../recoil";
 import FormPayrol from "./form-payroll";
 import FormScreenPayroll from "./form-screen-payroll";
 
 const TableComponent = () => {
-  const { data = {}, isLoading } = useQuery("GET_LIST_PAYROLL", () => {
-    const config = {
-      url: "payroll/list",
-    };
-    return API.request(config);
-  });
+  const mixKey = useRecoilValue(MixKeyAtom);
+  const departmentKey = useRecoilValue(DepartmentKeyAtom);
+  const userKey = useRecoilValue(ManagerKeyAtom);
+  const dateKey = useRecoilValue(DateKeyAtom);
+  const { data = {}, isLoading } = useQuery(
+    ["GET_LIST_PAYROLL", mixKey, dateKey, departmentKey, userKey],
+    () => {
+      const config = {
+        url: "payroll/list",
+        params: {
+          keyword: mixKey,
+          date: dateKey,
+          department: departmentKey,
+          user: userKey,
+        },
+      };
+      return API.request(config);
+    }
+  );
   const userList = useRecoilValue(ListUserAtom);
 
   const modalEditRef = useRef();
@@ -108,16 +128,11 @@ const TableComponent = () => {
   ];
 
   if (isLoading) {
-    return <Spin />;
+    return <LoadingComponent />;
   }
   return (
     <Fragment>
-      <Table
-        columns={columns}
-        size="small"
-        dataSource={dataSource}
-        pagination={{ pageSize: 5 }}
-      />
+      <Table columns={columns} size="small" dataSource={dataSource} />
       <FormPayrol ref={modalEditRef} />
       <FormScreenPayroll ref={modalScreenPayrollRef} />
     </Fragment>

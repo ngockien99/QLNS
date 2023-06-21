@@ -1,5 +1,5 @@
-import { Table } from "antd";
 import Header from "component/header-component/header";
+import Table from "component/table";
 import { useRecoilValue } from "recoil";
 import { UserInfoAtom } from "state-management/recoil";
 
@@ -7,7 +7,6 @@ const PhepNam = () => {
   const userInfo = useRecoilValue(UserInfoAtom);
   const { leave, user } = userInfo ?? {};
   const dataSource = [{ ...leave, id: user?.id, name: user?.name }];
-  console.log("kienn", dataSource, userInfo);
   const columns = [
     {
       title: "Mã nhân viên",
@@ -44,7 +43,7 @@ const PhepNam = () => {
         gap: 12,
       }}
     >
-      <Header content="Bảng nghỉ phép năm" noButton />
+      <Header content="Bảng nghỉ phép năm" noButton hiddenFilter />
       <Table
         columns={columns}
         dataSource={dataSource}

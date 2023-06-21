@@ -1,60 +1,54 @@
-import { CopyOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Col, Popconfirm, Row, Table, message } from "antd";
+import { Col, Row } from "antd";
+import { ButtonEdit, ButtonScreen } from "component/button";
+import LoadingComponent from "component/loading";
+import Table from "component/table";
 import { Fragment, useCallback, useRef } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { useRecoilValue } from "recoil";
 import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_LIST_CONTACT } from "util/const";
+import {
+  EndDateKeyAtom,
+  ManagerKeyAtom,
+  MixKeyAtom,
+  StartDateKeyAtom,
+  TypeKeyAtom,
+} from "../recoil";
 import FormContract from "./form-contract";
 
 const TableComponent = () => {
-  const { data = {} } = useQuery(GET_LIST_CONTACT, () => {
-    const config = {
-      url: "contract/list",
-      params: { type_of_contract: "", start_end_work: "" },
-    };
-    return API.request(config);
-  });
   const userList = useRecoilValue(ListUserAtom);
+  const mixKey = useRecoilValue(MixKeyAtom);
+  const startDateKey = useRecoilValue(StartDateKeyAtom);
+  const endDateKey = useRecoilValue(EndDateKeyAtom);
+  const typeKey = useRecoilValue(TypeKeyAtom);
+  const userKey = useRecoilValue(ManagerKeyAtom);
 
-  const queryClient = useQueryClient();
+  const { data = {}, isLoading } = useQuery(
+    [GET_LIST_CONTACT, mixKey, startDateKey, endDateKey, typeKey, userKey],
+    () => {
+      const config = {
+        url: "contract/list",
+        params: {
+          type_of_contract: typeKey,
+          start_end_work: "",
+          start_date: startDateKey,
+          end_date: endDateKey,
+          user: userKey,
+          keyword: mixKey,
+        },
+      };
+      return API.request(config);
+    }
+  );
 
   const modalEditRef = useRef();
   const editModal = useCallback((data) => {
     modalEditRef.current.show();
     modalEditRef.current.setValue(data);
   }, []);
-
-  const { mutate } = useMutation(
-    (data) => {
-      const { id } = data;
-      const config = {
-        url: "contract/delete",
-        method: "delete",
-        data: { id },
-      };
-      return API.request(config);
-    },
-    {
-      onSuccess: (_, variable) => {
-        const { name } = variable;
-        message.success(`Bạn đã xoá vị trí ${name} thành công`);
-        queryClient.invalidateQueries(GET_LIST_CONTACT);
-      },
-      onError: (error) => {
-        message.error(error);
-      },
-    }
-  );
-
-  const confirm = useCallback(
-    (data) => {
-      mutate(data);
-    },
-    [mutate]
-  );
 
   const columns = [
     {
@@ -96,63 +90,24 @@ const TableComponent = () => {
               target="_blank"
               rel="noreferrer"
             >
-              <Button
-                style={{
-                  background: "#62a73b",
-                  color: "#fff",
-                  borderRadius: "4px",
-                }}
-                icon={<CopyOutlined />}
-              >
-                Xem chi tiết
-              </Button>
+              <ButtonScreen />
             </Link>
           </Col>
           <Col span="auto">
-            <Button
-              style={{
-                backgroundColor: "#f56a00",
-                color: "#fff",
-                borderRadius: "4px",
-              }}
-              icon={<EditOutlined />}
-              onClick={() => editModal(record)}
-            >
-              Sửa
-            </Button>
-          </Col>
-          <Col span="auto">
-            <Popconfirm
-              description={`Bạn có chắc chắn muốn xoá vị trí ${record?.name}?`}
-              onConfirm={() => confirm(record)}
-              okText="Có, tôi chắc chắn"
-              cancelText="Không"
-            >
-              <Button
-                type="primary"
-                danger
-                style={{
-                  borderRadius: "4px",
-                }}
-                icon={<DeleteOutlined />}
-              >
-                Xoá
-              </Button>
-            </Popconfirm>
+            <ButtonEdit onClick={() => editModal(record)} />
           </Col>
         </Row>
       ),
     },
   ];
 
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+
   return (
     <Fragment>
-      <Table
-        columns={columns}
-        size="small"
-        dataSource={data?.data}
-        pagination={{ pageSize: 5 }}
-      />
+      <Table columns={columns} size="small" dataSource={data?.data} />
       <FormContract ref={modalEditRef} />
     </Fragment>
   );
