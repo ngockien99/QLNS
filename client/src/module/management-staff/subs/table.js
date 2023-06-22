@@ -52,7 +52,7 @@ const TableComponent = () => {
         params: {
           search: "",
           page: 1,
-          keywords: mixKeyword,
+          keyword: mixKeyword,
           manager: managerKeyword,
           department: departmentKeyword,
           position: positionKeyword,

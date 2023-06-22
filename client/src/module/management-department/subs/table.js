@@ -6,6 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useRecoilValue } from "recoil";
 import API from "util/api";
 import { GET_LIST_DEPARTMENT, QUERY_DEPARTMENT_LIST } from "util/const";
+import { useDebounce } from "util/custom-hook";
 import { ManagerKeyAtom, MixKeyAtom, TypeKeyAtom } from "../recoil";
 import FormDepartment from "./form-department";
 
@@ -13,12 +14,19 @@ const TableComponent = () => {
   const mixKey = useRecoilValue(MixKeyAtom);
   const typeKey = useRecoilValue(TypeKeyAtom);
   const userKey = useRecoilValue(ManagerKeyAtom);
+
+  const keyword = useDebounce(mixKey);
   const { data = [], isLoading } = useQuery(
-    [GET_LIST_DEPARTMENT, mixKey, typeKey, userKey],
+    [GET_LIST_DEPARTMENT, keyword, typeKey, userKey],
     () => {
       const config = {
         url: "department/list",
-        params: { status: 1, keyword: mixKey, type: typeKey, manager: userKey },
+        params: {
+          status: 1,
+          keyword: keyword,
+          type: typeKey,
+          manager: userKey,
+        },
       };
       return API.request(config);
     }

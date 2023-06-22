@@ -1,10 +1,22 @@
 import { atom } from "recoil";
 
-export const ManagerKeyAtom = atom({ key: "ManagerKey", default: undefined });
-export const MixKeyAtom = atom({ key: "MixKey", default: undefined });
-export const TypeKeyAtom = atom({ key: "TypeKey", default: undefined });
-export const EndDateKeyAtom = atom({ key: "EndDateKey", default: undefined });
+export const ManagerKeyAtom = atom({
+  key: "ManagerContractKeyAtom",
+  default: undefined,
+});
+export const MixKeyAtom = atom({
+  key: "MixContractKeyAtom",
+  default: undefined,
+});
+export const TypeKeyAtom = atom({
+  key: "TypeContractKeyAtom",
+  default: undefined,
+});
+export const EndDateKeyAtom = atom({
+  key: "EndDateContractKeyAtom",
+  default: undefined,
+});
 export const StartDateKeyAtom = atom({
-  key: "StartDateKey",
+  key: "StartDateContractKeyAtom",
   default: undefined,
 });

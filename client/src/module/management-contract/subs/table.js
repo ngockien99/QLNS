@@ -9,6 +9,7 @@ import { useRecoilValue } from "recoil";
 import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_LIST_CONTACT } from "util/const";
+import { useDebounce } from "util/custom-hook";
 import {
   EndDateKeyAtom,
   ManagerKeyAtom,
@@ -26,8 +27,10 @@ const TableComponent = () => {
   const typeKey = useRecoilValue(TypeKeyAtom);
   const userKey = useRecoilValue(ManagerKeyAtom);
 
+  const keyword = useDebounce(mixKey);
+
   const { data = {}, isLoading } = useQuery(
-    [GET_LIST_CONTACT, mixKey, startDateKey, endDateKey, typeKey, userKey],
+    [GET_LIST_CONTACT, keyword, startDateKey, endDateKey, typeKey, userKey],
     () => {
       const config = {
         url: "contract/list",
@@ -37,7 +40,7 @@ const TableComponent = () => {
           start_date: startDateKey,
           end_date: endDateKey,
           user: userKey,
-          keyword: mixKey,
+          keyword: keyword,
         },
       };
       return API.request(config);

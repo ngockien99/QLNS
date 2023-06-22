@@ -7,6 +7,7 @@ import { Fragment, useCallback, useRef } from "react";
 import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import API from "util/api";
+import { useDebounce } from "util/custom-hook";
 import {
   EndDateKeyAtom,
   ManagerKeyAtom,
@@ -30,10 +31,12 @@ const TableComponent = () => {
   const typeKey = useRecoilValue(TypeKeyAtom);
   const userKey = useRecoilValue(ManagerKeyAtom);
 
+  const keyword = useDebounce(mixKey);
+
   const { isLoading, data } = useQuery(
     [
       "GET_LIST_REWARD_DISCIPLINE",
-      mixKey,
+      keyword,
       startDateKey,
       endDateKey,
       typeKey,
@@ -45,9 +48,9 @@ const TableComponent = () => {
         params: {
           date: "",
           type: typeKey,
-          keyword: mixKey,
-          endDate: endDateKey,
-          startDateKey: startDateKey,
+          keyword: keyword,
+          end_date: endDateKey,
+          start_date: startDateKey,
           user: userKey,
           page: 1,
         },
