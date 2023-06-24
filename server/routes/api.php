@@ -87,6 +87,7 @@ Route::group(['middleware' => 'jwt.auth', 'middleware' => 'permission',], functi
     Route::put('update', [PayrollController::class, 'updatePayroll']);
     Route::delete('delete', [PayrollController::class, 'deletePayroll']);
     Route::post('create', [PayrollController::class, 'createPayroll']);
+    Route::post('create-all', [PayrollController::class, 'createPayrollAll']);
   });
 
   Route::group(['prefix' => 'specialize'], function(){
