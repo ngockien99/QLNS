@@ -114,6 +114,7 @@ Route::group(['middleware' => 'jwt.auth', 'middleware' => 'auth.admin',], functi
   Route::post('checkout', [TimekeepingController::class, 'checkout']);
 
   Route::get('get-time-sheet', [TimekeepingController::class, 'getTimeSheet']);
+  Route::get('list-history-salary', [StaffController::class, 'listHistorySalary']);
 
   Route::group(['prefix' => 'staff'], function(){
     Route::get('detail', [StaffController::class, 'detailStaff']);

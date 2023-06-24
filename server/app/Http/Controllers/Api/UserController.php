@@ -14,6 +14,7 @@ use App\Models\Department;
 use App\Models\Level;
 use App\Models\Position;
 use App\Models\Specialize;
+use App\Models\HistorySalary;
 use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\UpdateUserRequest;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Throwable;
 use Carbon\Carbon;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
@@ -91,7 +93,19 @@ class UserController extends Controller
             'rank' => $request->academic_rank ? $request->academic_rank : $academic->rank
         ]);
 
-        $salary = Salary::findOrFail($user->salary_id)->update([
+        $salary = Salary::findOrFail($user->salary_id);
+
+        if ($request->salary_basic != $salary->salary_basic || $request->salary_factor != $salary->salary_factor || $request->allowance_money != $salary->allowance_money) {
+            HistorySalary::create([
+                'salary_before' => $salary->salary_basic + $salary->salary_factor + $salary->allowance_money,
+                'salary_after' => $request->salary_basic + $request->salary_factor + $request->allowance_money,
+                'date' => Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d'),
+                'user_update' => $this->getUser($request)->id,
+                'user_id' => $user->id
+            ]);
+        }
+
+        Salary::findOrFail($user->salary_id)->update([
             'salary_basic' => $request->salary_basic,
             'salary_factor' => $request->salary_factor,
             'allowance_money' => $request->allowance_money,
@@ -209,7 +223,6 @@ class UserController extends Controller
 
     public function deleteUser(Request $request) {
         $user = User::find($request->id);
-        Log::info($user);
         if ($user->avatar) {
             File::delete(public_path("uploads/user/".$user->image));
         }
@@ -222,5 +235,12 @@ class UserController extends Controller
         } else {
             return $this->responseError('Có bản ghi liên kết với bảng khóa ngoại');
         }
+    }
+
+    public function getUser($request) {
+        $token = $request->bearerToken();
+        $getUser = JWTAuth::toUser(JWTAuth::setToken($token)->getPayload());
+
+        return $getUser;
     }
 }

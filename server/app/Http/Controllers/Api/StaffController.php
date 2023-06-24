@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\AcademicLevel;
 use App\Models\Department;
+use App\Models\HistorySalary;
 use App\Models\Level;
 use App\Models\Salary;
 use App\Models\Timekeeping;
@@ -290,16 +291,23 @@ class StaffController extends Controller
     public function listRequest(Request $request) {
         $month = Carbon::now()->format('Y-m');
         $type = $request->type;
+        $date = [$request->start_date, $request->end_date];
         $status = $request->status;
         $user_id = $request->user;
         $getUser = $this->getUser($request);
         $user = User::findOrFail($getUser->id);
         $logRequestMe = LogRequestModel::where('user_id', $user->id)
+            ->when(isset($request->start_date), function ($query) use ($date) {
+                return $query->whereBetween('date', [$date[0],$date[1]]);
+            })
             ->where('type', 'like', "%$type%")
             ->where('status', 'like', "%$status%")
             ->where('day_create', 'like', "%$month%")
             ->get();
         $logRequestLower = LogRequestModel::where('manager_id', $user->id)
+            ->when(isset($request->start_date), function ($query) use ($date) {
+                return $query->whereBetween('date', [$date[0],$date[1]]);
+            })
             ->where('type', 'like', "%$type%")
             ->where('status', 'like', "%$status%")
             ->where('user_id', 'like', "%$user_id%")
@@ -458,5 +466,16 @@ class StaffController extends Controller
         $totalLate = $lateMorning + $lateAfternoon;
 
         return $totalLate;
+    }
+
+    public function listHistorySalary(Request $request) {
+        $user = $this->getUser($request)->id;
+        $historySalarys = HistorySalary::where('user_id', $user)->get();
+        foreach ($historySalarys as $historySalary) {
+            $historySalary->user_update = User::find($historySalary->user_update)->name;
+            $historySalary->user_id = User::find($historySalary->user_id)->name;
+        }
+
+        return $this->responseSuccess($historySalarys);
     }
 }
