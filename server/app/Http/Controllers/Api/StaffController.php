@@ -289,12 +289,20 @@ class StaffController extends Controller
 
     public function listRequest(Request $request) {
         $month = Carbon::now()->format('Y-m');
+        $type = $request->type;
+        $status = $request->status;
+        $user_id = $request->user;
         $getUser = $this->getUser($request);
         $user = User::findOrFail($getUser->id);
         $logRequestMe = LogRequestModel::where('user_id', $user->id)
+            ->where('type', 'like', "%$type%")
+            ->where('status', 'like', "%$status%")
             ->where('day_create', 'like', "%$month%")
             ->get();
         $logRequestLower = LogRequestModel::where('manager_id', $user->id)
+            ->where('type', 'like', "%$type%")
+            ->where('status', 'like', "%$status%")
+            ->where('user_id', 'like', "%$user_id%")
             ->where('day_create', 'like', "%$month%")
             ->where('status', config('constants.log_request.status.pending'))
             ->get();

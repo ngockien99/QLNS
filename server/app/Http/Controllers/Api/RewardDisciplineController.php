@@ -15,12 +15,20 @@ class RewardDisciplineController extends Controller
     public function listRewardDiscipline(Request $request) {
         $type = $request->type;
         $date = $request->date;
+        $keyword = $request->keyword;
+        $user_id = $request->user;
         $rd = DB::table('reward_discipline')
+        ->when(isset($keyword), function ($query) use ($keyword) {
+            return $query->where('reason', 'like', "%$keyword%");
+        })
         ->when(isset($type), function ($query) use ($type) {
             return $query->where('type', 'like', "%$type%");
         })
         ->when(isset($date), function ($query) use ($date) {
             return $query->where('date', 'like', "%$date%");
+        })
+        ->when(isset($user_id), function ($query) use ($user_id) {
+            return $query->where('user_id', 'like', "%$user_id%");
         })
         ->paginate(10,['*'],'page', $request->page);
 

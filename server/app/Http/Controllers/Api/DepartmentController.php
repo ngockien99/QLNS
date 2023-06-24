@@ -14,8 +14,16 @@ use Throwable;
 class DepartmentController extends Controller
 {
     public function listDepartment(Request $request) {
-        $key_search = $request->search;
+        $key_search = $request->keyword;
+        $type = $request->type;
+        $manager = $request->manager;
         $department = DB::table('department')
+        ->when(isset($type), function ($query) use ($type) {
+            return $query->where('status', 'like', "%$type%");
+        })
+        ->when(isset($manager), function ($query) use ($manager) {
+            return $query->where('head_of_department_id', 'like', "%$manager%");
+        })
         ->where(function ($query) use($key_search) {
             $query->where('department.name', 'like' , "%$key_search%");
             $query->orWhere('department.description', 'like' , "%$key_search%");

@@ -32,12 +32,24 @@ class UserController extends Controller
     // }
 
     public function listUser(Request $request) {
-        $key_search = $request->search;
+        $key_search = $request->keyword;
+        $manager = $request->manager;
+        $department_id = $request->department;
+        $position_id = $request->position_id;
         $user = DB::table('users')
+        ->when(isset($position_id), function ($query) use ($position_id) {
+            return $query->where('position_id', 'like', "%$position_id%");
+        })
+        ->when(isset($department_id), function ($query) use ($department_id) {
+            return $query->where('department_id', 'like', "%$department_id%");
+        })
+        ->when(isset($manager), function ($query) use ($manager) {
+            return $query->where('manager_id', 'like', "%$manager%");
+        })
         ->where(function ($query) use($key_search) {
-            $query->where('users.email', 'like' , "%$key_search%")
-                  ->orWhere('users.name', 'like' , "%$key_search%")
-                  ->orWhere('users.address', 'like' , "%$key_search%");
+            $query->where('users.email', 'like', "%$key_search%")
+                  ->orWhere('users.name', 'like', "%$key_search%")
+                  ->orWhere('users.address', 'like', "%$key_search%");
         })
         ->paginate(10,['*'],'page', $request->page);
 

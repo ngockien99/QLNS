@@ -99,15 +99,19 @@ class TimekeepingController extends Controller
         }
     }
 
-    public function getTimeSheet() {
+    public function getTimeSheet(Request $request) {
         $user = JWTAuth::user();
-
+        $date = $request->date;
         $firstMonth = Carbon::now()->firstOfMonth()->format('Y-m-d');
         $lastMonth = Carbon::now()->lastOfMonth()->format('Y-m-d');
 
         $period = CarbonPeriod::create($firstMonth, $lastMonth);
         $today = Carbon::now('Asia/Ho_Chi_Minh')->format('Y-m-d');
         $dates = [];
+        if ($date) {
+            $timeSheet = Timekeeping::where('date', 'like', "%$date%")->get();
+            return $this->responseSuccess($timeSheet);
+        }
         foreach ($period as $key => $date) {
             $timeSheet = Timekeeping::where('date', $date->format('Y-m-d'))->where('user_id', $user->id)->first();
             $abnormal = false;

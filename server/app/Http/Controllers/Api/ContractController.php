@@ -17,13 +17,18 @@ class ContractController extends Controller
 {
     public function listContract(Request $request) {
         $typeOfContract = $request->type_of_contract;
-        $startEndWork = $request->start_end_work;
+        $start_date = $request->start_date;
+        $end_date = $request->end_date;
+        $user = $request->user;
         $contract = DB::table('contract')
         ->when(isset($typeOfContract), function ($query) use ($typeOfContract) {
             return $query->where('type_of_contract', 'like', "%$typeOfContract%");
         })
-        ->when(isset($startEndWork), function ($query) use ($startEndWork) {
-            return $query->where('start_work', 'like', "%$startEndWork[0]%")->where('end_work', 'like', "%$startEndWork[1]%");
+        ->when(isset($start_date), function ($query) use ($start_date, $end_date) {
+            return $query->where('start_work', 'like', "%$start_date%")->where('end_work', 'like', "%$end_date%");
+        })
+        ->when(isset($user), function ($query) use ($user, $end_date) {
+            return $query->where('user_id', $user);
         })
         ->paginate(10,['*'],'page', $request->page);
 
