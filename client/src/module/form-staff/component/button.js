@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "react-query";
 import { useNavigate, useParams } from "react-router";
 import { useRecoilState } from "recoil";
 import API from "util/api";
-import { GET_LIST_STAFF } from "util/const";
+import { GET_LIST_STAFF, QUERY_LIST_MANAGER } from "util/const";
 import { NewUserInfoAtom, StepAtom } from "../recoil";
 
 const ButtonComponent = memo(() => {
@@ -78,6 +78,7 @@ const ButtonComponent = memo(() => {
           `Bạn đã ${id ? "Chỉnh sửa" : "Thêm"} thông tin nhân viên thành công!`
         );
         queryClient.invalidateQueries(GET_LIST_STAFF);
+        queryClient.invalidateQueries(QUERY_LIST_MANAGER);
         onClose();
       },
       onError: (error) => {

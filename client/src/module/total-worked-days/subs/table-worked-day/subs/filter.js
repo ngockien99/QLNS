@@ -2,7 +2,12 @@ import { DatePicker, Select, Space } from "antd";
 import dayjs from "dayjs";
 import { useCallback } from "react";
 import { useSetRecoilState } from "recoil";
-import { EndDateKeyAtom, StartDateKeyAtom, TypeKeyAtom } from "../recoil";
+import {
+  EndDateKeyAtom,
+  StartDateKeyAtom,
+  StatusKeyAtom,
+  TypeKeyAtom,
+} from "../recoil";
 
 const { RangePicker } = DatePicker;
 
@@ -18,7 +23,7 @@ const FilterComponent = () => {
   ];
 
   const setTypeKey = useSetRecoilState(TypeKeyAtom);
-  const setStatusKey = useSetRecoilState(TypeKeyAtom);
+  const setStatusKey = useSetRecoilState(StatusKeyAtom);
   const setEndDateKey = useSetRecoilState(EndDateKeyAtom);
   const setStartDateKey = useSetRecoilState(StartDateKeyAtom);
 
@@ -29,12 +34,15 @@ const FilterComponent = () => {
   );
 
   const onChangeRangerDate = useCallback(
-    ([start, end]) => {
-      if (start) {
-        setStartDateKey(dayjs(start).format("YYYY-MM-DD"));
-      }
-      if (end) {
+    (value) => {
+      if (Array.isArray(value)) {
+        const start = value?.[0];
+        const end = value?.[1];
+        setStartDateKey(dayjs(start || "").format("YYYY-MM-DD"));
         setEndDateKey(dayjs(end).format("YYYY-MM-DD"));
+      } else {
+        setStartDateKey("");
+        setEndDateKey("");
       }
     },
     [setEndDateKey, setStartDateKey]
@@ -53,11 +61,13 @@ const FilterComponent = () => {
           placeholder="Lọc theo loại báo cáo"
           options={typeOption}
           onChange={onChangeType}
+          allowClear
         />
         <Select
           placeholder="Lọc theo trạng thái phê duyệt"
           options={statusOption}
           onChange={onChangeStatus}
+          allowClear
         />
         <RangePicker
           format="DD/MM/YYYY"

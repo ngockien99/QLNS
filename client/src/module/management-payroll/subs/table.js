@@ -8,32 +8,29 @@ import { useQuery } from "react-query";
 import { useRecoilValue } from "recoil";
 import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
-import { useDebounce } from "util/custom-hook";
 import {
   DateKeyAtom,
-  DepartmentKeyAtom,
-  ManagerKeyAtom,
-  MixKeyAtom,
+  ManagerKeyAtom
 } from "../recoil";
 import FormPayrol from "./form-payroll";
 import FormScreenPayroll from "./form-screen-payroll";
 
 const TableComponent = () => {
-  const mixKey = useRecoilValue(MixKeyAtom);
-  const departmentKey = useRecoilValue(DepartmentKeyAtom);
+  
+
   const userKey = useRecoilValue(ManagerKeyAtom);
   const dateKey = useRecoilValue(DateKeyAtom);
 
-  const keyword = useDebounce(mixKey);
+
   const { data = {}, isLoading } = useQuery(
-    ["GET_LIST_PAYROLL", keyword, dateKey, departmentKey, userKey],
+    ["GET_LIST_PAYROLL", dateKey, userKey],
     () => {
       const config = {
         url: "payroll/list",
         params: {
-          keyword: keyword,
+         
           date: dateKey,
-          department: departmentKey,
+        
           user: userKey,
         },
       };

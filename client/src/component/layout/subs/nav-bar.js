@@ -12,9 +12,13 @@ const NavBar = (props) => {
 
   const routes = getRoutes(role);
   const rootRoutes = useMemo(() => {
-    if (pathname.includes("/quan-ly-ho-so-ca-nhan")) {
+    if (
+      pathname.includes("/quan-ly-ho-so-ca-nhan") ||
+      pathname.includes("/bao-cao-tong-hop-cong")
+    ) {
       return pathname.slice(0, 22);
     }
+
     return pathname;
   }, [pathname]);
 

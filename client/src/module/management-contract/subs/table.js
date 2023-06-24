@@ -9,38 +9,26 @@ import { useRecoilValue } from "recoil";
 import { ListUserAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_LIST_CONTACT } from "util/const";
-import { useDebounce } from "util/custom-hook";
-import {
-  EndDateKeyAtom,
-  ManagerKeyAtom,
-  MixKeyAtom,
-  StartDateKeyAtom,
-  TypeKeyAtom,
-} from "../recoil";
+import { EndDateKeyAtom, ManagerKeyAtom, StartDateKeyAtom } from "../recoil";
 import FormContract from "./form-contract";
 
 const TableComponent = () => {
   const userList = useRecoilValue(ListUserAtom);
-  const mixKey = useRecoilValue(MixKeyAtom);
   const startDateKey = useRecoilValue(StartDateKeyAtom);
   const endDateKey = useRecoilValue(EndDateKeyAtom);
-  const typeKey = useRecoilValue(TypeKeyAtom);
   const userKey = useRecoilValue(ManagerKeyAtom);
 
-  const keyword = useDebounce(mixKey);
-
   const { data = {}, isLoading } = useQuery(
-    [GET_LIST_CONTACT, keyword, startDateKey, endDateKey, typeKey, userKey],
+    [GET_LIST_CONTACT, startDateKey, endDateKey, userKey],
     () => {
       const config = {
         url: "contract/list",
         params: {
-          type_of_contract: typeKey,
+          type_of_contract: "",
           start_end_work: "",
           start_date: startDateKey,
           end_date: endDateKey,
           user: userKey,
-          keyword: keyword,
         },
       };
       return API.request(config);

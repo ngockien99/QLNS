@@ -31,12 +31,15 @@ const FilterComponent = () => {
   );
 
   const onChangeRangerDate = useCallback(
-    ([start, end]) => {
-      if (start) {
-        setStartDateKey(dayjs(start).format("YYYY-MM-DD"));
-      }
-      if (end) {
+    (value) => {
+      if (Array.isArray(value)) {
+        const start = value?.[0];
+        const end = value?.[1];
+        setStartDateKey(dayjs(start || "").format("YYYY-MM-DD"));
         setEndDateKey(dayjs(end).format("YYYY-MM-DD"));
+      } else {
+        setStartDateKey("");
+        setEndDateKey("");
       }
     },
     [setEndDateKey, setStartDateKey]
@@ -55,11 +58,13 @@ const FilterComponent = () => {
           placeholder="Lọc theo loại báo cáo"
           options={typeOption}
           onChange={onChangeType}
+          allowClear
         />
         <Select
           placeholder="Lọc theo tên nhân viên"
           options={managerList}
           onChange={onChangeManager}
+          allowClear
         />
         <RangePicker
           format="DD/MM/YYYY"

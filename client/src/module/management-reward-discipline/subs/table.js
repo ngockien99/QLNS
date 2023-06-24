@@ -90,7 +90,7 @@ const TableComponent = () => {
       key: "type",
       render: (_, record) => {
         const { type } = record;
-        if (type === 0) {
+        if (Number(type) === 0) {
           return (
             <Tag icon={<CheckCircleOutlined />} color="success">
               Khen thưởng
