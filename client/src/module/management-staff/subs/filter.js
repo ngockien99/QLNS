@@ -40,7 +40,7 @@ const FilterComponent = () => {
     (e) => {
       const value = e?.target?.value;
       if (!!value?.trim()) {
-        setMixKey(value);
+        setMixKey(value?.trim());
       }
     },
     [setMixKey]
@@ -58,16 +58,19 @@ const FilterComponent = () => {
           placeholder="Lọc theo người quản lý"
           options={managerList}
           onChange={onChangeManager}
+          allowClear
         />
         <Select
           placeholder="Lọc theo phòng ban"
           options={departmentList}
           onChange={onChangeDepartment}
+          allowClear
         />
         <Select
           placeholder="Lọc theo vị trí"
           options={positionList}
           onChange={onChangePosition}
+          allowClear
         />
       </Space>
 
@@ -75,6 +78,7 @@ const FilterComponent = () => {
         placeholder="Tìm kiếm...."
         enterButton=""
         onChange={onChangeMix}
+        allowClear
         suffix={
           <SearchOutlined
             style={{

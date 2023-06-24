@@ -10,7 +10,7 @@ import { useNavigate } from "react-router";
 import { useRecoilValue } from "recoil";
 import { ListDepartmentAtom, ListPositionAtom } from "state-management/recoil";
 import API from "util/api";
-import { GET_LIST_STAFF } from "util/const";
+import { GET_LIST_STAFF, QUERY_LIST_MANAGER } from "util/const";
 import { useDebounce } from "util/custom-hook";
 import {
   DepartmentKeyAtom,
@@ -75,6 +75,7 @@ const TableComponent = () => {
     {
       onSuccess: () => {
         queryClient.invalidateQueries(GET_LIST_STAFF);
+        queryClient.invalidateQueries(QUERY_LIST_MANAGER);
         message.success("Bạn đã xoá nhân viên thành công!");
       },
       onError: (error) => {

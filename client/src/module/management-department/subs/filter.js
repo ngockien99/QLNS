@@ -44,11 +44,13 @@ const FilterComponent = () => {
           placeholder="Lọc theo loại"
           options={typeOption}
           onChange={onChangeType}
+          allowClear
         />
         <Select
           placeholder="Lọc theo tên trưởng phòng"
           options={managerList}
           onChange={onChangeManager}
+          allowClear
         />
       </Space>
 
@@ -56,6 +58,7 @@ const FilterComponent = () => {
         placeholder="Tìm kiếm...."
         enterButton=""
         onChange={onChangeMix}
+        allowClear
         suffix={
           <SearchOutlined
             style={{

@@ -10,21 +10,18 @@ import { UserInfoAtom } from "state-management/recoil";
 import API from "util/api";
 import { GET_TIME_SHEET } from "util/const";
 import FormVerify from "../../form-verify/form-verify";
-import { EndDateKeyAtom, StartDateKeyAtom, TypeKeyAtom } from "../recoil";
+import { TypeKeyAtom } from "../recoil";
 
 const TableComponent = () => {
   const modalRef = useRef();
   const typeKey = useRecoilValue(TypeKeyAtom);
-  const startDateKey = useRecoilValue(StartDateKeyAtom);
-  const endDateKey = useRecoilValue(EndDateKeyAtom);
+
   const { data: queryData = [], isLoading } = useQuery(
-    [GET_TIME_SHEET, typeKey, startDateKey, endDateKey],
+    [GET_TIME_SHEET, typeKey],
     () => {
       const config = {
         url: "get-time-sheet",
         params: {
-          end_date: endDateKey,
-          start_date: startDateKey,
           type: typeKey,
         },
       };

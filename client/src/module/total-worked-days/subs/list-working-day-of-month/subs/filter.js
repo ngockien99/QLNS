@@ -1,10 +1,7 @@
-import { DatePicker, Select, Space } from "antd";
-import dayjs from "dayjs";
+import { Select } from "antd";
 import { useCallback } from "react";
 import { useSetRecoilState } from "recoil";
-import { EndDateKeyAtom, StartDateKeyAtom, TypeKeyAtom } from "../recoil";
-
-const { RangePicker } = DatePicker;
+import { TypeKeyAtom } from "../recoil";
 
 const FilterComponent = () => {
   const typeOption = [
@@ -13,22 +10,8 @@ const FilterComponent = () => {
   ];
 
   const setTypeKey = useSetRecoilState(TypeKeyAtom);
-  const setEndDateKey = useSetRecoilState(EndDateKeyAtom);
-  const setStartDateKey = useSetRecoilState(StartDateKeyAtom);
 
   const onChangeType = useCallback((value) => setTypeKey(value), [setTypeKey]);
-
-  const onChangeRangerDate = useCallback(
-    ([start, end]) => {
-      if (start) {
-        setStartDateKey(dayjs(start).format("YYYY-MM-DD"));
-      }
-      if (end) {
-        setEndDateKey(dayjs(end).format("YYYY-MM-DD"));
-      }
-    },
-    [setEndDateKey, setStartDateKey]
-  );
 
   return (
     <div
@@ -38,18 +21,12 @@ const FilterComponent = () => {
         margin: "16px 0",
       }}
     >
-      <Space>
-        <Select
-          placeholder="Lọc theo loại ngày làm việc"
-          options={typeOption}
-          onChange={onChangeType}
-        />
-        <RangePicker
-          format="DD/MM/YYYY"
-          placeholder={["Ngày bắt đầu", "Ngày kết thúc"]}
-          onChange={onChangeRangerDate}
-        />
-      </Space>
+      <Select
+        placeholder="Lọc theo loại ngày làm việc"
+        options={typeOption}
+        onChange={onChangeType}
+        allowClear
+      />
     </div>
   );
 };
