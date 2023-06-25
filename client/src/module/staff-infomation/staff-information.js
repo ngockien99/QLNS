@@ -55,6 +55,14 @@ const StaffInformation = () => {
       label: <Link to={`qua-trinh-dao-tao/${id}`}>Quá trình đào tạo</Link>,
       key: "qua-trinh-dao-tao",
     },
+    {
+      label: (
+        <Link to={`lich-su-luong-thuong/${id}`}>
+          Lịch sử thay đổi lương, thưởng
+        </Link>
+      ),
+      key: "lich-su-luong-thuong",
+    },
   ];
 
   if (isLoading) {

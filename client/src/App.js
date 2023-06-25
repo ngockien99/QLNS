@@ -21,6 +21,7 @@ import Profile from "./module/profile";
 import Salary from "./module/salary";
 import StaffInformation, {
   Academi,
+  HistorySalary,
   SalaryInfo,
   StaffInfoInLife,
   StaffInfoInWork,
@@ -64,6 +65,7 @@ function App() {
           <Route path="thong-tin-lam-viec/:id" element={<StaffInfoInWork />} />
           <Route path="thong-tin-luong-thuong/:id" element={<SalaryInfo />} />
           <Route path="qua-trinh-dao-tao/:id" element={<Academi />} />
+          <Route path="lich-su-luong-thuong/:id" element={<HistorySalary />} />
         </Route>
         <Route path="/luong-thuong" element={<Salary />} />
         <Route path="/bao-cao-tong-hop-cong" element={<TotalWorkedDays />}>
