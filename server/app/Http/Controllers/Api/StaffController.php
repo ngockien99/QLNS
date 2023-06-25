@@ -57,6 +57,12 @@ class StaffController extends Controller
                 "leave_used_pay" =>  $logRequestPaid
             ];
 
+            $historySalarys = HistorySalary::where('user_id', $user->id)->get();
+            foreach ($historySalarys as $historySalary) {
+                $historySalary->user_update = User::find($historySalary->user_update)->name;
+                $historySalary->user_id = User::find($historySalary->user_id)->name;
+            }
+
             $data = [
                 "user" => $user,
                 "check_manager" => $checkManager ? true : false,
@@ -69,7 +75,8 @@ class StaffController extends Controller
                 "checkout" => $findToday && $findToday->checkout ? true : false,
                 "manager" => $user->manager_name,
                 "position" => Position::findOrFail($user->position_id),
-                "specialize" => Specialize::findOrFail($user->specialize_id)
+                "specialize" => Specialize::findOrFail($user->specialize_id),
+                "history_salary" => $historySalarys
             ];
             return $this->responseSuccess($data);
         } else {
