@@ -180,7 +180,7 @@ const Step2 = () => {
                 <Form.Item name={key} label={title} rules={rules}>
                   {type === "radio" ? (
                     <Radio.Group defaultValue={initValue} disabled={disable}>
-                      <Radio value={0}> Nhân viên đã nghỉ việc </Radio>
+                      <Radio value={2}> Nhân viên đã nghỉ việc </Radio>
                       <Radio value={1}> Nhân viên đang làm việc </Radio>
                     </Radio.Group>
                   ) : type === "select" ? (

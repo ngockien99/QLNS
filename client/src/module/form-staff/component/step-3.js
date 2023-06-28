@@ -18,13 +18,13 @@ const Step3 = () => {
         rules: [{ required: true, message: "Vui lòng nhập mức lương cơ bản!" }],
       },
 
-      {
-        title: "Hệ số lương",
-        key: "salary_factor",
-        rules: [
-          { required: true, message: "Vui lòng nhập thưởng kinh doanh!" },
-        ],
-      },
+      // {
+      //   title: "Hệ số lương",
+      //   key: "salary_factor",
+      //   rules: [
+      //     { required: true, message: "Vui lòng nhập thưởng kinh doanh!" },
+      //   ],
+      // },
       {
         title: "Thưởng kinh doanh(đơn vị: Đồng)",
         key: "allowance_money",

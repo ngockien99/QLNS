@@ -199,7 +199,7 @@ const UpdateFormStaff = forwardRef((_, ref) => {
                 <Form.Item name={key} label={title}>
                   {type === "radio" ? (
                     <Radio.Group defaultValue={initValue}>
-                      <Radio value={0}> Nhân viên đã nghỉ việc </Radio>
+                      <Radio value={2}> Nhân viên đã nghỉ việc </Radio>
                       <Radio value={1}> Nhân viên đang làm việc </Radio>
                     </Radio.Group>
                   ) : type === "select" ? (

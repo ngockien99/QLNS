@@ -25,11 +25,11 @@ const Salary = () => {
       dataIndex: "name",
       key: "name",
     },
-    {
-      title: "Hệ số lương",
-      dataIndex: "salary_factor",
-      key: "salary_factor",
-    },
+    // {
+    //   title: "Hệ số lương",
+    //   dataIndex: "salary_factor",
+    //   key: "salary_factor",
+    // },
     {
       title: "Lương cơ bản",
       dataIndex: "salary_basic",
